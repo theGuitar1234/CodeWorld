@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="layout-auth">
+    <div class="container1">
+      <form action="#" class="form-login" method="POST" id="login-anchor">
+        <fieldset>
+          <legend>Authenticate</legend>
+          <label
+            for="first-name"
+            data-invalid="Invalid First Name"
+            data-empty="Enter your First Name"
+            data-valid="Valid First Name"
+          >
+            <div class="help" id="first-name-help">
+              You must enter your valid real first name
+            </div>
+            Enter Your First name :
+            <input
+              type="text"
+              id="first-name"
+              aria-describedby="first-name-help"
+              placeholder="John"
+              pattern="^[A-Z]{1}[a-z]{1,14}$"
+              maxlength="15"
+            />
+          </label>
+          <label
+            for="last-name"
+            data-invalid="Invalid Last Name"
+            data-empty="Enter your Last Name"
+            data-valid="Valid Last Name"
+          >
+            <div class="help" id="last-name-help">
+              You must enter your valid real last name
+            </div>
+            Enter Your Last name :
+            <input
+              type="text"
+              id="last-name"
+              aria-describedby="last-name-help"
+              placeholder="Doe"
+              pattern="^[A-Z]{1}[a-z]{1,19}$"
+              maxlength="20"
+            />
+          </label>
+          <label
+            for="password"
+            data-invalid="Invalid Password"
+            data-empty="Input a Password"
+            data-valid="Password is Valid"
+          >
+            <div class="help" id="password-help">
+              At least 1 uppercase, lowercase character, number and a special
+              character is required
+            </div>
+            Enter Your Password :
+            <input
+              type="password"
+              id="password"
+              aria-describedby="password-help"
+              placeholder="password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$"
+            />
+          </label>
+          <div class="remember-me">
+            <input type="checkbox" aria-checked="false" /><span
+              >Remember me</span
+            >
+          </div>
+        </fieldset>
+        <button type="submit">Authenticate</button>
+        <div class="opts">
+          <a href="#sign-in-anchor">Register</a>
+          <a href="#">Forgot Password?</a>
+        </div>
+      </form>
+
+      <form action="#" class="form-signIn" method="POST" id="sign-in-anchor">
+        <fieldset>
+          <legend>Register</legend>
+          <label
+            for="first-name"
+            data-invalid="Invalid First Name"
+            data-empty="Enter your First Name"
+            data-valid="Valid First Name"
+          >
+            <div class="help" id="first-name-help">
+              You must enter your valid real first name
+            </div>
+            Enter Your First name :
+            <input
+              type="text"
+              id="first-name"
+              aria-describedby="first-name-help"
+              placeholder="John"
+              pattern="^[A-Z]{1}[a-z]{1,14}$"
+              maxlength="15"
+            />
+          </label>
+          <label
+            for="last-name"
+            data-invalid="Invalid Last Name"
+            data-empty="Enter your Last Name"
+            data-valid="Valid Last Name"
+          >
+            <div class="help" id="last-name-help">
+              You must enter your valid real last name
+            </div>
+            Enter Your Last name :
+            <input
+              type="text"
+              id="last-name"
+              aria-describedby="last-name-help"
+              placeholder="Doe"
+              pattern="^[A-Z]{1}[a-z]{1,19}$"
+              maxlength="20"
+            />
+          </label>
+          <label
+            for="password"
+            data-invalid="Invalid Password"
+            data-empty="Input a Password"
+            data-valid="Password is Valid"
+          >
+            <div class="help" id="password-help">
+              At least 1 uppercase, lowercase character, number and a special
+              character is required
+            </div>
+            Enter Your Password :
+            <input
+              type="password"
+              id="password"
+              aria-describedby="password-help"
+              placeholder="password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$"
+            />
+          </label>
+        </fieldset>
+        <button type="submit">Sign In</button>
+        <div class="opts">
+          <a href="#login-anchor">Already registered? Authenticate!</a>
+        </div>
+      </form>
+    </div>
+    <div class="container2">
+      <div class="logo auth" title="Website Logo">
+        <a href="#">Pa<span>yy</span>ed</a>
+      </div>
+      <div class="welcome">
+        <h1>Welcome back!</h1>
+        <p>We are glad to see you again! <br>
+            Please authenticate to access and manage your data!</p>
+      </div>
+    </div>
+  </body>
+</html>
