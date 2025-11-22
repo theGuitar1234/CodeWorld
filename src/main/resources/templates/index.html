@@ -1,65 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Students</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="js/scroll-top.js" defer></script>
-    <script src="js/sticky-header.js" defer=""></script>
-    <script src="js/table.js" defer=""></script>
-    <script src="js/dialog.js" defer></script>
-  </head>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+
+  <title>Dashboard</title>
+
+  <div th:replace="~{fragments/head.html :: head}"></div>
+
   <body class="layout-dashboard">
     <div id="top-anchor"></div>
-    <header>
-      <input type="checkbox" id="collapse" />
-      <div class="logo" title="Website Logo">
-        <a href="#">Pa<span>yy</span>ed</a>
-      </div>
-      <nav>
-        <ul>
-          <li class="active"><a href="#">Element</a></li>
-          <li><a href="#">Element</a></li>
-          <li><a href="#">Element</a></li>
-          <li><a href="#">Element</a></li>
-          <li><a href="#">Element</a></li>
-          <li><a href="#">Element</a></li>
-        </ul>
-      </nav>
-      <div class="mores">
-        <div class="i18n">
-          <form action="#">
-            <select name="lang" id="lang">
-              <option value="en" selected>EN</option>
-              <option value="fr">FR</option>
-              <option value="es">ES</option>
-            </select>
-          </form>
-        </div>
-        <div class="notifications has-notifications">
-          <details>
-            <summary>
-              <div class="icon" data-attr="999">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                  fill="#e8eaed"
-                >
-                  <path
-                    d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"
-                  />
-                </svg>
-              </div>
-            </summary>
-            <div class="expandable">Hello World</div>
-          </details>
-        </div>
-        <div class="profile">
-          <details>
-            <summary>
+    
+    <div th:replace="~{fragments/header.html :: header}"></div>
+
+    <main>
+      <div class="wrapper">
+
+        <div th:replace="~{fragments/profile-container.html :: profile-container}"></div>
+        <div th:replace="~{fragments/balance-container.html :: balance-container}"></div>
+        <div th:replace="~{fragments/support.html :: support}"></div>
+        
+        <div class="profile-completeness">
+          <div class="title">
+            <h3>Profile Completeness <span>50%</span></h3>
+          </div>
+          <div class="panel">
+            <div class="step">
               <div class="icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -69,54 +36,34 @@
                   fill="#e8eaed"
                 >
                   <path
-                    d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
+                    d="M280-40q-33 0-56.5-23.5T200-120v-720q0-33 23.5-56.5T280-920h400q33 0 56.5 23.5T760-840v124q18 7 29 22t11 34v80q0 19-11 34t-29 22v404q0 33-23.5 56.5T680-40H280Zm0-80h400v-720H280v720Zm0 0v-720 720Zm200-40q17 0 28.5-11.5T520-200q0-17-11.5-28.5T480-240q-17 0-28.5 11.5T440-200q0 17 11.5 28.5T480-160Z"
                   />
                 </svg>
               </div>
-            </summary>
-            <div class="expandable">Hello World</div>
-          </details>
-        </div>
-      </div>
-      <div class="collapse-menu">
-        <label for="collapse">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-            class="collapse-svg"
-          >
-            <path
-              d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
-            />
-          </svg>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-            class="close-svg"
-          >
-            <path
-              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-            />
-          </svg>
-        </label>
-      </div>
-    </header>
-    <main>
-      <div class="wrapper student">
-        <div class="profile-container">
-          <div class="icon-container">
-            <div class="icon">
-              <img
-                src="assets/sprites/profile-thumb.jpg"
-                alt="Profile picture"
-              />
-              <div class="upload-pfp" title="Upload Profile Picture">
+              <div class="checked-unchecked checked">
+                <div class="checkbox">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <a
+                href="#"
+                class="name"
+                added="Mobile Added"
+                unadded="Add Mobile"
+              ></a>
+            </div>
+            <div class="step">
+              <div class="icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
@@ -125,193 +72,111 @@
                   fill="#e8eaed"
                 >
                   <path
-                    d="M480-260q75 0 127.5-52.5T660-440q0-75-52.5-127.5T480-620q-75 0-127.5 52.5T300-440q0 75 52.5 127.5T480-260Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM160-120q-33 0-56.5-23.5T80-200v-480q0-33 23.5-56.5T160-760h126l74-80h240l74 80h126q33 0 56.5 23.5T880-680v480q0 33-23.5 56.5T800-120H160Zm0-80h640v-480H638l-73-80H395l-73 80H160v480Zm320-240Z"
+                    d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
                   />
                 </svg>
               </div>
-            </div>
-          </div>
-          <p>Hello, <span>Thomas Rhodes!</span></p>
-          <div class="edit">
-            <a href="#" class="edit" title="Edit Profile">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e8eaed"
-              >
-                <path
-                  d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
-                />
-              </svg>
-            </a>
-          </div>
-        </div>
-        <div class="balance-container">
-          <div class="icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"
-              />
-            </svg>
-          </div>
-          <p>&pound;<span>2561</span></p>
-          <small>Available balance</small>
-          <div class="deposit-withdraw">
-            <ul>
-              <li>
-                <a href="#">Deposit</a>
-              </li>
-              <li>
-                <a href="#">Withdraw</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="support">
-          <div class="icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
-              />
-            </svg>
-          </div>
-          <p>Need help?</p>
-          <div class="support-text">
-            <p>
-              <small>Have questions or concerns?</small>
-            </p>
-            <p>
-              <small>regarding your account?</small>
-            </p>
-            <p>
-              <small>Our experts are here to help!.</small>
-            </p>
-          </div>
-          <a href="#" class="chat-with-us"> Chat with Us </a>
-        </div>
-        <div class="students">
-          <div class="title">
-            <h3>Students</h3>
-          </div>
-          <div class="panel students">
-            <div class="wrapper">
-              <input type="date" id="date" />
-              <div class="statements">
-                <details id="statements-details">
-                  <summary>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#e8eaed"
-                    >
-                      <path
-                        d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
-                      />
-                    </svg>
-                    Statements
-                  </summary>
-                  <ul>
-                    <li>
-                      <a href="#">CSV</a>
-                    </li>
-                    <li>
-                      <a href="#">PDF</a>
-                    </li>
-                  </ul>
-                </details>
+              <div class="checked-unchecked checked">
+                <div class="checkbox">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                    />
+                  </svg>
+                </div>
               </div>
+              <a
+                href="#"
+                class="name"
+                added="Email Added"
+                unadded="Add Email"
+              ></a>
             </div>
-            <div class="drop-down">
-              <input
-                type="checkbox"
-                id="create"
-                aria-hidden="true"
-                aria-checked="undefined"
-                focusable="false"
-              />
-              <label
-                for="create"
-                role="menu"
-                aria-expanded="undefined"
-                aria-haspopup="true"
-                tabindex="0"
-              >
-                Add Filters
+            <div class="step">
+              <div class="icon">
                 <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 24 24"
-                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  style="transform: rotate(90deg)"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
                 >
                   <path
-                    d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    d="M880-720v480q0 33-23.5 56.5T800-160H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720Zm-720 80h640v-80H160v80Zm0 160v240h640v-240H160Zm0 240v-480 480Z"
                   />
                 </svg>
-              </label>
-              <ul class="sub-menu">
-                <div class="wrapper">
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
-                  <li role="menuitem">
-                    <input type="radio" id="element" name="element" /><small
-                      >Element</small
-                    >
-                  </li>
+              </div>
+              <div class="checked-unchecked">
+                <div class="checkbox">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                    />
+                  </svg>
                 </div>
-              </ul>
+              </div>
+              <a
+                href="#"
+                class="name"
+                added="Card Added"
+                unadded="Add Card"
+              ></a>
+            </div>
+            <div class="step">
+              <div class="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path
+                    d="M200-280v-280h80v280h-80Zm240 0v-280h80v280h-80ZM80-120v-80h800v80H80Zm600-160v-280h80v280h-80ZM80-640v-80l400-200 400 200v80H80Zm178-80h444-444Zm0 0h444L480-830 258-720Z"
+                  />
+                </svg>
+              </div>
+              <div class="checked-unchecked">
+                <div class="checkbox">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <a
+                href="#"
+                class="name"
+                unadded="Add Account"
+                added="Account Added"
+              ></a>
             </div>
           </div>
         </div>
-        <div class="activity students">
-          <div class="title" id="students">
-            <h1>Students</h1>
+        <div class="activity">
+          <div class="title" id="recent-activity">
+            <h1>Recent Activity</h1>
           </div>
-          <div class="panel" id="students-panel">
+          <div class="panel" id="recent-activity-panel">
             <dialog id="transaction-dialog">
               <div class="wrapper" id="dialog-wrapper">
                 <div class="transaction">
@@ -1183,188 +1048,15 @@
               </tbody>
             </table>
           </div>
-          <div class="pagination">
-            <ul>
-              <li class="disabled">
-                <a href="#" tabindex="-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill="#e8eaed"
-                  >
-                    <path
-                      d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"
-                    />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="#">1</a>
-              </li>
-              <li class="current">
-                <a href="#">2</a>
-              </li>
-              <li>
-                <a href="#">3</a>
-              </li>
-              <li>
-                <a href="#">4</a>
-              </li>
-              <li>
-                <a href="#">5</a>
-              </li>
-              <li>
-                <a href="#">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill="#e8eaed"
-                  >
-                    <path
-                      d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"
-                    />
-                  </svg>
-                </a>
-              </li>
-            </ul>
+          <div class="view-all">
+            <a href="#"> View all > </a>
           </div>
         </div>
       </div>
     </main>
-    <footer>
-      <div class="reach">
-        <div class="contact">
-          <ul>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-          </ul>
-        </div>
-        <div class="social-media-links">
-          <ul>
-            <li title="Facebook" style="--accent-color: #106aff">
-              <a href="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="100"
-                  height="100"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    fill="#039be5"
-                    d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"
-                  ></path>
-                  <path
-                    fill="#fff"
-                    d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"
-                  ></path>
-                </svg>
-              </a>
-            </li>
-            <li title="Twitter" style="--accent-color: #24a3f1">
-              <a href="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="100"
-                  height="100"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    fill="#03A9F4"
-                    d="M42,12.429c-1.323,0.586-2.746,0.977-4.247,1.162c1.526-0.906,2.7-2.351,3.251-4.058c-1.428,0.837-3.01,1.452-4.693,1.776C34.967,9.884,33.05,9,30.926,9c-4.08,0-7.387,3.278-7.387,7.32c0,0.572,0.067,1.129,0.193,1.67c-6.138-0.308-11.582-3.226-15.224-7.654c-0.64,1.082-1,2.349-1,3.686c0,2.541,1.301,4.778,3.285,6.096c-1.211-0.037-2.351-0.374-3.349-0.914c0,0.022,0,0.055,0,0.086c0,3.551,2.547,6.508,5.923,7.181c-0.617,0.169-1.269,0.263-1.941,0.263c-0.477,0-0.942-0.054-1.392-0.135c0.94,2.902,3.667,5.023,6.898,5.086c-2.528,1.96-5.712,3.134-9.174,3.134c-0.598,0-1.183-0.034-1.761-0.104C9.268,36.786,13.152,38,17.321,38c13.585,0,21.017-11.156,21.017-20.834c0-0.317-0.01-0.633-0.025-0.945C39.763,15.197,41.013,13.905,42,12.429"
-                  ></path>
-                </svg>
-              </a>
-            </li>
-            <li title="Google" style="--accent-color: #000000">
-              <a href="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="100"
-                  height="100"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    fill="#FFC107"
-                    d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-                  ></path>
-                  <path
-                    fill="#FF3D00"
-                    d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-                  ></path>
-                  <path
-                    fill="#4CAF50"
-                    d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-                  ></path>
-                  <path
-                    fill="#1976D2"
-                    d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-                  ></path>
-                </svg>
-              </a>
-            </li>
-            <li title="Youtube" style="--accent-color: #fd3d00">
-              <a href="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="100"
-                  height="100"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    fill="#FF3D00"
-                    d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"
-                  ></path>
-                  <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
-                </svg>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="terms">
-        <small
-          >Copyright &copy; 2020 <span>Payyed</span>. All Rights Reserved</small
-        >
-        <div class="terms-of-service">
-          <ul>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-            <li><a href="#">Element</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="anchor">
-        <a
-          href="#top-anchor"
-          style="display: flex; align-items: center; justify-content: center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="black"
-          >
-            <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
-          </svg>
-        </a>
-      </div>
-    </footer>
+
+    <div th:replace="fragments/footer.html :: footer"></div>
+
+    <!-- <div th:replace="~{fragments/scripts.html :: scripts}"></div> -->
   </body>
 </html>

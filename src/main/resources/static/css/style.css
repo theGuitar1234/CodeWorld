@@ -177,6 +177,7 @@ header nav ul li.active {
 header nav ul li a {
   text-decoration: none;
   color: currentColor;
+  font-weight: 500;
 }
 
 header .mores {
