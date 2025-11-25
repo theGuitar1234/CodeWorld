@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
   </head>
   <body class="layout-auth">
     <div class="container1">
@@ -149,13 +149,18 @@
       </form>
     </div>
     <div class="container2">
-      <div class="logo auth" title="Website Logo">
-        <a href="#">Pa<span>yy</span>ed</a>
-      </div>
-      <div class="welcome">
-        <h1>Welcome back!</h1>
-        <p>We are glad to see you again! <br>
-            Please authenticate to access and manage your data!</p>
+      <div class="wrapper">
+        <div class="logo auth" title="Website Logo">
+          <div class="icon"></div>
+          <a th:href="@{/}"><span>Code</span> World</a>
+        </div>
+        <div class="welcome">
+          <h1>Welcome back!</h1>
+          <p>
+            We are glad to see you again! <br />
+            Please authenticate to access and manage your data!
+          </p>
+        </div>
       </div>
     </div>
   </body>

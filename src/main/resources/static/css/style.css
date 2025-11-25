@@ -10,20 +10,30 @@
   --secondary-text-color: #acb5b7;
   --base-color: #f1f5f6;
   --line-color: #eff3f4;
-  --accent-color: hsl(141, 62%, 46%);
   --accent-color: hsl(231, 100%, 26%);
   --secondary-color: #dee3e4;
   --primary-color: #0084ff;
-  --highlight-color: #28a745;
+  --highlight-color: #24a3f1;
   --warning-color: #dd3a51;
   --pending-color: #ffc108;
 
-  --scrollbar-thumb-color: #7fe1a1;
+  --scrollbar-thumb-color: #0887eb;
   --scrollbar-track-color: #eff4f5;
 
   --header-gap: 2.5em;
   --footer-gap: 1em;
   --panel-row-height: 49;
+
+  --border-radius-very-low: 2px;
+  --border-radius-low: 10px;
+  --border-radius-high: 15px;
+  --border-radius-very-high: 50px;
+
+  --shadow-soft: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  --shadow-hard: 0 0 10px rgba(0, 0, 0, .2);
+  --shadow-medium: 5px 0px 25px rgba(0, 0, 0, 0.1);
+  --inset-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2) inset;
+  --inset-shadow-inverse: -1px -1px 8px rgba(0, 0, 0, 0.2) inset;
 
   --jumpy-transition: cubic-bezier(0.42, 0, 0.44, 1.68);
 }
@@ -56,7 +66,6 @@ body.layout-dashboard {
     fit-content(100%)
     [page-end footer-end];
 }
-
 body::-webkit-scrollbar {
   width: 12px;
 }
@@ -86,7 +95,7 @@ header {
   flex-direction: row;
   color: var(--text-color);
 
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-soft);
 
   transition: 0.3s ease;
   position: sticky;
@@ -136,10 +145,16 @@ header .collapse-menu label .close-svg {
 }
 
 .logo {
-  height: 100%;
-  padding: 1em 0.5em;
+  height: fit-content;
+  padding: 0.5em 0;
   font-size: clamp(1rem, calc(1rem + 1vw), 2rem);
   margin-left: var(--header-gap);
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  /* text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: visible; */
 }
 
 .logo a {
@@ -152,6 +167,18 @@ header .collapse-menu label .close-svg {
 
 .logo a span {
   color: var(--accent-color);
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.logo .icon {
+  height: 50px;
+  aspect-ratio: 1;
+  background-image: url(/assets/sprites/logo.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 50%;
 }
 
 header nav {
@@ -172,7 +199,7 @@ header nav ul li {
 }
 
 header nav ul li.active {
-  color: var(--highlight-color);
+  color: var(--accent-color);
 }
 
 header nav ul li a {
@@ -200,7 +227,6 @@ details .expandable {
   bottom: 0;
   left: 0;
   transform: translate(-50%, 110%);
-  background-color: red;
 }
 
 header .mores .notifications .icon svg,
@@ -253,7 +279,7 @@ header .i18n select {
   border: none;
   transition: 0.3s ease;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: var(--border-radius-very-low);
   padding: 0.2em;
 }
 
@@ -280,20 +306,29 @@ main .wrapper {
   width: 100%;
   display: grid;
   gap: 1em;
-  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100vw), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   grid-auto-rows: auto;
   /* grid-template-rows: repeat(13, 1fr); */
 }
 
 main .wrapper > *,
 main .wrapper.account > * {
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  border-radius: var(--border-radius-low);
 }
 
+/* main .wrapper .profile-container,
+main .wrapper .balance-container,
+main .wrapper .support {
+  align-self: start;
+  height: fit-content;
+} */
+
 main .wrapper .profile-container {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+
   background-color: var(--background-color);
-  grid-area: 1 / 1 / span 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -376,12 +411,18 @@ main .wrapper .profile-container .edit svg path {
 }
 
 main .wrapper .profile-completeness,
-main .wrapper.student .students,
-main .wrapper .personal-details {
+main .wrapper.student .students {
   display: flex;
   flex-direction: column;
   background-color: var(--background-color);
   grid-area: 1 / 2 / span 4 / -1;
+}
+
+main .wrapper .personal-details-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  grid-area: 1 / 2 / span 9 / -1;
 }
 
 main .wrapper .students {
@@ -392,13 +433,25 @@ main .wrapper .students {
 main .wrapper .profile-completeness .title,
 main .wrapper.student .students .title,
 main .wrapper .personal-details .title {
-  height: 25%;
+  min-height: 3.25rem;
   border-bottom: 1px solid var(--line-color);
   display: flex;
   align-items: center;
-  padding: 1em 1.5em;
+  justify-content: space-between;
+  padding: 1em 1.5em !important;
   font-size: clamp(1rem, calc(0.7rem + 0.7vw), 1.5rem);
   font-weight: 500;
+}
+
+main .wrapper .personal-details .title .edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+main .wrapper .personal-details .title .edit svg path {
+  fill: black;
 }
 
 main .wrapper .profile-completeness .title h3,
@@ -412,7 +465,7 @@ main .wrapper .personal-details h3 {
 }
 
 main .wrapper .profile-completeness .title span {
-  border-radius: 15px;
+  border-radius: var(--border-radius-high);
   padding: 0.1em 1em;
   border: 1px solid var(--line-color);
   font-size: clamp(0.5rem, calc(0.5rem + 0.5vw), 1rem);
@@ -420,7 +473,8 @@ main .wrapper .profile-completeness .title span {
 }
 
 main .wrapper .profile-completeness .panel,
-main .wrapper .students .panel {
+main .wrapper .students .panel,
+main .wrapper .personal-details .panel {
   display: flex;
   flex-grow: 1;
   padding: 1.5em;
@@ -549,7 +603,7 @@ main
   .checked-unchecked.checked
   + .name::before {
   content: attr(added);
-  color: var(--accent-color);
+  color: #28a745;
 }
 
 main
@@ -567,7 +621,7 @@ main .wrapper .profile-completeness .checked-unchecked.checked .checkbox svg {
 }
 
 .checked-unchecked.checked .checkbox {
-  background-color: var(--highlight-color);
+  background-color: #28a745;
   border: none;
 }
 
@@ -598,6 +652,7 @@ main .wrapper .balance-container .icon {
 main .wrapper .balance-container .icon svg {
   flex-shrink: 0;
   max-width: 100%;
+  max-height: 7vh;
   width: 100%;
   height: 100%;
 }
@@ -989,8 +1044,9 @@ footer .reach .contact ul li a {
   font-size: inherit;
 }
 
-footer .reach .contact ul li a:hover {
-  color: var(--accent-color);
+footer .reach .contact ul li a:hover,
+footer .terms .terms-of-service ul li a:hover {
+  color: var(--highlight-color);
 }
 
 footer .reach .social-media-links {
@@ -1023,7 +1079,7 @@ footer .reach .social-media-links ul li::before {
   transform: translate(-50%, -100%);
   color: white;
   font-size: 100%;
-  border-radius: 15px;
+  border-radius: var(--border-radius-high);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1109,10 +1165,6 @@ footer .terms .terms-of-service ul li a {
   font-size: inherit;
 }
 
-footer .terms .terms-of-service ul li a:hover {
-  color: var(--accent-color);
-}
-
 .anchor {
   position: fixed;
   bottom: 2em;
@@ -1125,7 +1177,7 @@ footer .terms .terms-of-service ul li a:hover {
   display: none;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-hard);
   z-index: 9999;
 }
 .show {
@@ -1190,6 +1242,8 @@ body.layout-auth {
   background-size: cover;
 
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
 }
 
@@ -1208,12 +1262,12 @@ body.layout-auth {
 .form-login:focus-within {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-hard);
 }
 .form-login:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-hard);
 }
 fieldset {
   border: none;
@@ -1254,12 +1308,12 @@ input:not(:is(input[type="checkbox"], input[type="radio"])) {
   height: fit-content;
   caret-color: var(--accent-color);
   cursor: pointer;
-  border-radius: 7px;
-  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2) inset;
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--inset-shadow);
 }
 input:not(:is(input[type="checkbox"], input[type="radio"])):focus {
   outline: 1px solid var(--accent-color);
-  box-shadow: -1px -1px 8px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: var(--inset-shadow-inverse);
 }
 input[disabled] {
   padding: 0;
@@ -1370,7 +1424,7 @@ button[type="submit"] {
   width: fit-content;
   padding: 0.5em 0.5em;
   width: 80%;
-  border-radius: 15px;
+  border-radius: var(--border-radius-high);
   margin: 0 auto;
   font-weight: 500;
 }
@@ -1418,27 +1472,42 @@ button[type="submit"]:focus {
   color: var(--highlight-color);
 }
 
+.container2 .wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo.auth {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  height: fit-content;
+  width: fit-content;
+}
 .logo.auth {
   color: white;
   height: fit-content;
   width: 100%;
+  margin-bottom: 0.5em;
 }
 .logo.auth span {
   color: var(--text-color);
 }
-
+.logo.auth .icon {
+  border-radius: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
 .welcome {
-  margin: auto;
-  transform: translate(0%, -50%);
   color: white;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
 }
 .welcome h1 {
-  font-size: clamp(1.5rem, calc(1.5rem + 1.5vw), 3rem);
-  font-weight: 600;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.25em;
 }
-.welcome p {
-  line-height: 1em;
+.logo.auth a span {
+  color: var(--primary-color);
 }
 
 /* Account */
@@ -1463,7 +1532,7 @@ button[type="submit"]:focus {
 }
 .account-navigation nav ul li.current,
 .account-navigation nav ul li:hover {
-  background-color: var(--highlight-color);
+  background-color: #0887eb;
   color: white;
 }
 .account-navigation nav ul li a {
@@ -1472,9 +1541,83 @@ button[type="submit"]:focus {
 }
 
 main .wrapper.account .personal-details-container {
-  grid-area: 1 / 2 / span 9 / -1;
-  background-color: red;
-  height: fit-content;
+  background-color: transparent;
+  box-shadow: none;
+  gap: 1em;
+}
+
+main .wrapper.account .personal-details-container .personal-details {
+  background-color: var(--background-color);
+  box-shadow: var(--shadow-soft);
+  border-radius: var(--border-radius-low);
+}
+
+main .wrapper.account .personal-details-container .panel {
+  display: flex;
+  justify-content: center;
+}
+
+main .wrapper.account .personal-details-container .panel .vcard > span::before,
+main .wrapper.account .personal-details-container .panel .vcard > a::before {
+  content: attr(data-attr);
+  color: var(--secondary-text-color);
+  margin-right: 1em;
+}
+
+main .wrapper.account .personal-details-container .panel .vcard .adr {
+  display: flex;
+  flex-direction: column;
+}
+
+main .wrapper.account .personal-details-container .panel .vcard .email {
+  text-decoration: none;
+  color: var(--accent-color);
+  position: relative;
+}
+main .wrapper.account .personal-details-container .panel .vcard .email:hover {
+  text-decoration: underline;
+}
+main .wrapper.account .personal-details-container .panel .vcard .tel {
+  position: relative;
+}
+main
+  .wrapper.account
+  .personal-details-container
+  .panel
+  .vcard
+  .email.primary::after,
+main
+  .wrapper.account
+  .personal-details-container
+  .panel
+  .vcard
+  .tel.primary::after {
+  content: "Primary";
+  position: absolute;
+  top: 0;
+  right: -1em;
+  transform: translate(100%);
+  color: white;
+  background-color: var(--highlight-color);
+  border-radius: var(--border-radius-very-high);
+  padding: 0 .3em;
+  font-size: clamp(.5rem, calc(.5rem + .5vw), 1rem);
+}
+
+main
+  .wrapper.account
+  .personal-details-container
+  .panel
+  .vcard
+  .adr
+  > span::before {
+  content: attr(data-attr);
+  color: var(--secondary-text-color);
+  margin-right: 1em;
+}
+
+main .wrapper .personal-details-container .title {
+  background-color: transparent;
 }
 
 /* Students */
@@ -1482,6 +1625,7 @@ main .wrapper.account .personal-details-container {
 main .wrapper .students {
   grid-area: 1 / 2 / span 3 / -1;
   position: relative;
+  padding-bottom: 1em;
 }
 main .wrapper .activity.students {
   grid-area: 5 / 2 / span 9 / -1;
@@ -1500,7 +1644,7 @@ main .wrapper .students .panel input[type="date"] {
   width: clamp(min(250px, 100%), 30vw, 500px);
   box-shadow: none;
   border: 1px solid var(--line-color);
-  border-radius: 5px;
+  border-radius: var(--border-radius-medium);
   padding: 1em 1em;
   appearance: none;
   margin: 1em;
@@ -1528,11 +1672,7 @@ main
 }
 
 main .wrapper .students .panel {
-  justify-content: center;
-  max-height: fit-content;
-  flex-direction: column;
-  padding-top: 0;
-  padding-bottom: 0;
+ 
 }
 
 main .wrapper .students .panel .wrapper {
@@ -1544,7 +1684,7 @@ main .wrapper .students .panel .statements {
   right: 5%;
   bottom: 0;
   color: var(--secondary-text-color);
-  font-size: clamp(.5rem, calc(.5rem + .7vw), 1rem);
+  font-size: clamp(0.5rem, calc(0.5rem + 0.7vw), 1rem);
   box-shadow: none;
 }
 
@@ -1576,7 +1716,7 @@ main .wrapper .students .panel .statements details ul {
   flex-direction: column;
   list-style-type: none;
   z-index: 9999;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-hard);
   transform: translate(-25%, 15%);
 }
 main .wrapper .students .panel .statements details ul li {
@@ -1597,15 +1737,27 @@ main .wrapper .students .panel .statements details ul li a:hover {
 main .wrapper .students .panel.students {
   background-color: transparent;
 }
+
+main .wrapper .students .panel .drop-down {
+  position: relative;
+}
 main .wrapper .students .panel .drop-down .sub-menu {
-  transition: 1s ease;
-  list-style-type: none;
-  /* position: absolute;
+  position: absolute;
+  top: 100%;
   left: 0;
-  bottom: 0; */
+  z-index: 9999;
+  
+  list-style-type: none;
+  transition: 1s ease;
+
   max-height: 0px;
   width: 100%;
   overflow: hidden;
+
+  transform-origin: top;
+  background-color: var(--background-color);
+  box-shadow: var(--shadow-hard);
+  border-radius: var(--border-radius-low);
 }
 
 main .wrapper .students .panel .drop-down .sub-menu .wrapper {
@@ -1665,7 +1817,7 @@ main .wrapper .activity.students .pagination ul li {
   cursor: pointer;
   height: 25px;
   aspect-ratio: 1;
-  border-radius: 5px;
+  border-radius: var(--border-radius-medium);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1715,10 +1867,157 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
   background-color: transparent;
 }
 
+/* ERROR */
+body.layout-error {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+}
+body.layout-error h1 {
+  margin: 0;
+}
+body.layout-error main {
+  background-color: transparent;
+}
+body.layout-error main .link {
+  color: white;
+  text-decoration: none;
+  font-family: Poppins, sans-serif;
+  font-size: clamp(1rem, calc(1vw + 1rem), 2rem);
+  position: absolute;
+  bottom: 35%;
+  transform: translateY(100%);
+}
+
+.content {
+  isolation: isolate;
+}
+
+.text {
+  text-transform: uppercase;
+  font-size: clamp(1rem, calc(1vw + 6rem), 6rem);
+  position: relative;
+  color: transparent;
+  font-family: Poppins, system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-49%, -50%);
+  width: 100%;
+  height: 100%;
+  text-shadow: -3px 0 blue;
+  animation: glitch-1 0.5s linear infinite alternate;
+  color: white;
+}
+.text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  animation: glitch-2 0.8s linear infinite alternate-reverse;
+  color: white;
+}
+
+/* .link::before,
+.link::after {
+  animation-play-state: paused;
+}
+.link:hover::before,
+.link:hover::after {
+  animation-play-state: running;
+} */
+
+@keyframes glitch-1 {
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  }
+  50% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
+  }
+  75% {
+    clip-path: polygon(0% 100%, 100% 100%, 100% 50%, 0% 50%);
+  }
+  100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+@keyframes glitch-2 {
+  50% {
+    transform: translate(-50%, -50%);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  51% {
+    transform: translate(-51%, -50%);
+    text-shadow: -3px 0 red;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  }
+}
+
+@media (max-width: 1030px) {
+  header .mores,
+  .collapse-menu {
+    z-index: 9999;
+  }
+
+  header nav {
+    display: none;
+    position: fixed;
+    height: calc(100vh + var(--height));
+    width: clamp(min(250px, 100vw), 60vw, 500px);
+    backdrop-filter: blur(2px);
+    top: 0;
+    right: 0;
+    padding: 0;
+    box-shadow: var(--shadow-medium);
+    /*transform: translateX(100%);*/
+    transition: 0.5s ease;
+  }
+
+  .reveal-collapse {
+    transform: translateY(100%);
+  }
+
+  header nav ul li {
+    color: inherit;
+    padding: 0.5em 1em;
+  }
+
+  header nav ul li:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  header nav ul li:hover a {
+    color: white;
+  }
+
+  header nav ul {
+    flex-direction: column;
+    margin-top: 5em;
+  }
+
+  header .collapse-menu {
+    display: flex;
+  }
+  header .collapse-menu label {
+    display: flex;
+  }
+}
+
 @media (max-width: 1023px) {
   main .wrapper {
     gap: 0.5em;
-    grid-template-columns: repeat(3, minmax(min(100%, 200px), 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: none;
     grid-auto-rows: auto;
   }
@@ -1733,7 +2032,7 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
   main .wrapper .support {
     grid-area: 1 / 3 / span 1 / span 1;
   }
-  main .wrapper .profile-completeness, 
+  main .wrapper .profile-completeness,
   main .wrapper.student .students {
     grid-area: 2 / 1 / 3 / -1;
   }
@@ -1742,7 +2041,8 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
     grid-area: 3 / 1 / span 1 / -1;
   }
   main .wrapper.account .personal-details-container {
-    grid-area: 5 / 1 / span 1 / -1;
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 }
 
@@ -1781,53 +2081,6 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
 }
 
 @media (max-width: 821px) {
-  header .mores,
-  .collapse-menu {
-    z-index: 9999;
-  }
-
-  header nav {
-    display: none;
-    position: fixed;
-    height: calc(100vh + var(--height));
-    width: clamp(min(250px, 100vw), 60vw, 500px);
-    backdrop-filter: blur(2px);
-    top: 0;
-    right: 0;
-    padding: 0;
-    box-shadow: 5px 0px 25px rgba(0, 0, 0, 0.1);
-    /*transform: translateX(100%);*/
-    transition: 0.5s ease;
-  }
-
-  .reveal-collapse {
-    transform: translateY(100%);
-  }
-
-  header nav ul li {
-    padding: 0.5em 1em;
-  }
-
-  header nav ul li:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
-  header nav ul li:hover a {
-    color: white;
-  }
-
-  header nav ul {
-    flex-direction: column;
-    margin-top: 5em;
-  }
-
-  header .collapse-menu {
-    display: flex;
-  }
-  header .collapse-menu label {
-    display: flex;
-  }
-
   footer .reach {
     flex-direction: column;
   }
@@ -1883,21 +2136,8 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
   main .wrapper .activity.students {
     grid-area: 2 / 2 / span 3 / span 2;
   }
-  main .wrapper.account .personal-details-contianer {
+  main .wrapper.account .personal-details-container {
     grid-area: 2 / 2 / span 3 / span 2;
-  }
-}
-
-@supports not (backdrop-filter: blur(2px)) {
-  header nav {
-    background-color: white;
-  }
-}
-
-@supports not selector(:focus-visible) {
-  .selector:focus {
-    outline: 1px solid #222;
-    outline-offset: 4px;
   }
 }
 
@@ -1915,10 +2155,32 @@ main .wrapper .activity.students .pagination ul li.disabled:hover {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .content .text::before {
+    animation: none;
+  }
+  .content .text::after {
+    animation: none;
+  }
+}
+
 @supports not selector(:focus-visible) {
   form:focus {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-hard);
+  }
+}
+
+@supports not (backdrop-filter: blur(2px)) {
+  header nav {
+    background-color: white;
+  }
+}
+
+@supports not selector(:focus-visible) {
+  .selector:focus {
+    outline: 1px solid #222;
+    outline-offset: 4px;
   }
 }

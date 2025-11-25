@@ -8,14 +8,15 @@
     <header th:fragment="header">
       <input type="checkbox" id="collapse" />
       <div class="logo" title="Website Logo">
-        <a href="#">Pa<span>yy</span>ed</a>
+        <div class="icon"></div>
+        <a th:href="@{/}"><span>Code</span> World</a>
       </div>
       <nav>
         <ul>
           <li class="active"><a th:href="@{/}">DASHBOARD</a></li>
           <li><a th:href="@{/teachers/}">ACCOUNT</a></li>
           <li><a th:href="@{/students/}">STUDENTS</a></li>
-          <li><a href="#">Element</a></li>
+          <li><a th:href="@{/users/login}">LOGIN</a></li>
           <li><a href="#">Element</a></li>
           <li><a href="#">Element</a></li>
         </ul>

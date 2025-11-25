@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <title>404 Not Found</title>
+
+  <div th:replace="~{fragments/head.html :: head}"></div>
+
+  <body class="layout-error">
+    <div id="top-anchor"></div>
+
+    <!-- <div th:replace="~{fragments/header.html :: header}"></div> -->
+
+    <main>
+      <div class="content">
+        <h1 class="text" data-text="404 NOT FOUND">404 NOT FOUND</h1>
+      </div>
+      <a th:href="@{/}" class="text link" data-text="REDIRECT BACK TO HOME"
+        >REDIRECT BACK TO HOME</a
+      >
+    </main>
+
+    <!-- <div th:replace="fragments/footer.html :: footer"></div> -->
+  </body>
+</html>
