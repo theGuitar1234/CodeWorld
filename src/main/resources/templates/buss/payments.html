@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <title>Payment Methods</title>
+  </head>
+
+  <div th:replace="~{fragments/head.html :: head}"></div>
+
+  <body class="layout-dashboard">
+    <div id="top-anchor"></div>
+
+    <div th:replace="~{fragments/header.html :: header}"></div>
+
+    <div class="account-navigation">
+      <nav>
+        <ul>
+          <li><a th:href="@{/teachers/}">Account</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li class="current">
+            <a th:href="@{/buss/paymentMethods}">Payment Methods</a>
+          </li>
+          <li><a href="#">Element</a></li>
+        </ul>
+      </nav>
+    </div>
+    <main>
+      <div class="wrapper payment">
+        <div
+          th:replace="~{fragments/profile-container.html :: profile-container}"
+        ></div>
+        <div
+          th:replace="~{fragments/balance-container.html :: balance-container}"
+        ></div>
+        <div th:replace="~{fragments/support.html :: support}"></div>
+
+        <div class="payment-methods-container">
+          <div class="payment-methods">
+            <div class="title">
+              <h3>Credit or Debit Cards <small>(for payments)</small></h3>
+            </div>
+            <div class="panel">
+              <div class="cards">
+                <div class="card visa primary">
+                  <div class="card-inner">
+                    <div class="background"></div>
+                    <div class="foreground"></div>
+                  </div>
+                </div>
+                <div class="card visa">
+                  <div class="card-inner">
+                    <div class="background"></div>
+                    <div class="foreground"></div>
+                  </div>
+                </div>
+                <div class="card master primary">
+                  <div class="card-inner">
+                    <div class="background"></div>
+                    <div class="foreground"></div>
+                  </div>
+                </div>
+                <div class="card add">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                    />
+                  </svg>
+                  <p>Add New Card</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="payment-methods">
+            <div class="title">
+              <h3>Credit or Debit Cards <small>(for withdrawal)</small></h3>
+            </div>
+            <div class="panel">
+              <div class="cards account">
+                <div class="card primary">
+                  <div class="bank-account">
+                    <div class="icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e8eaed"
+                      >
+                        <path
+                          d="M200-280v-280h80v280h-80Zm240 0v-280h80v280h-80ZM80-120v-80h800v80H80Zm600-160v-280h80v280h-80ZM80-640v-80l400-200 400 200v80H80Zm178-80h444-444Zm0 0h444L480-830 258-720Z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="cntnts">
+                      <h1>HDFC Bank</h1>
+                      <div class="card-number">XXXXXXXXXXXX-9025</div>
+                      <div
+                        class="checked-unchecked checked"
+                        style="display: flex; gap: 0.5em; align-items: center"
+                      >
+                        <small id="data-status">Approved</small>
+                        <div class="checkbox" style="width: 16px; height: 16px">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#e8eaed"
+                          >
+                            <path
+                              d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                            />
+                          </svg>
+                        </div>
+                        <div class="rejected" style="width: 16px; height: 16px">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#e3e3e3"
+                          >
+                            <path
+                              d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+                            />
+                          </svg>
+                        </div>
+                        <div class="pending" style="width: 16px; height: 16px">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#e3e3e3"
+                          >
+                            <path
+                              d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card add">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                    />
+                  </svg>
+                  <p>Add New Bank Account</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="fragments/footer.html :: footer"></div>
+  </body>
+</html>

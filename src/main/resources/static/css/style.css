@@ -16,6 +16,7 @@
   --highlight-color: #24a3f1;
   --warning-color: #dd3a51;
   --pending-color: #ffc108;
+  --primary-item-color: #ffc107;
 
   --scrollbar-thumb-color: #0887eb;
   --scrollbar-track-color: #eff4f5;
@@ -30,7 +31,7 @@
   --border-radius-very-high: 50px;
 
   --shadow-soft: 0px 5px 15px rgba(0, 0, 0, 0.1);
-  --shadow-hard: 0 0 10px rgba(0, 0, 0, .2);
+  --shadow-hard: 0 0 10px rgba(0, 0, 0, 0.2);
   --shadow-medium: 5px 0px 25px rgba(0, 0, 0, 0.1);
   --inset-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2) inset;
   --inset-shadow-inverse: -1px -1px 8px rgba(0, 0, 0, 0.2) inset;
@@ -147,7 +148,7 @@ header .collapse-menu label .close-svg {
 .logo {
   height: fit-content;
   padding: 0.5em 0;
-  font-size: clamp(1rem, calc(1rem + 1vw), 2rem);
+  font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
   margin-left: var(--header-gap);
   display: flex;
   align-items: center;
@@ -303,16 +304,22 @@ main {
 }
 main .wrapper {
   height: 100%;
-  width: 100%;
+  width: min(100%, 1240px);
   display: grid;
   gap: 1em;
   grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   grid-auto-rows: auto;
   /* grid-template-rows: repeat(13, 1fr); */
 }
+main .wrapper.student {
+  grid-template-columns: 1fr;
+}
 
 main .wrapper > *,
-main .wrapper.account > * {
+main .wrapper.account > *,
+main .wrapper.student > *,
+main .wrapper.transaction > *,
+main .wrapper.payment > * {
   box-shadow: var(--shadow-soft);
   border-radius: var(--border-radius-low);
 }
@@ -323,6 +330,10 @@ main .wrapper .support {
   align-self: start;
   height: fit-content;
 } */
+
+main .wrapper.account {
+  justify-content: center;
+}
 
 main .wrapper .profile-container {
   grid-row: 1 / span 3;
@@ -411,34 +422,40 @@ main .wrapper .profile-container .edit svg path {
 }
 
 main .wrapper .profile-completeness,
-main .wrapper.student .students {
+main .wrapper.transaction .transactions {
   display: flex;
   flex-direction: column;
   background-color: var(--background-color);
   grid-area: 1 / 2 / span 4 / -1;
 }
+main .wrapper.student .students {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  grid-column: 1 / -1;
+  grid-row: auto;
+  padding: 0;
+}
 
-main .wrapper .personal-details-container {
+main .wrapper.account .personal-details-container,
+main .wrapper.payment .payment-methods-container {
   display: flex;
   flex-direction: column;
   background-color: var(--background-color);
   grid-area: 1 / 2 / span 9 / -1;
 }
 
-main .wrapper .students {
-  background-color: transparent;
-  box-shadow: none;
-}
-
 main .wrapper .profile-completeness .title,
 main .wrapper.student .students .title,
-main .wrapper .personal-details .title {
+main .wrapper.transaction .transactions .title,
+main .wrapper.account .personal-details .title,
+main .wrapper.payment .payment-methods .title {
   min-height: 3.25rem;
   border-bottom: 1px solid var(--line-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1em 1.5em !important;
+  padding: 1em 1.5em;
   font-size: clamp(1rem, calc(0.7rem + 0.7vw), 1.5rem);
   font-weight: 500;
 }
@@ -456,7 +473,9 @@ main .wrapper .personal-details .title .edit svg path {
 
 main .wrapper .profile-completeness .title h3,
 main .wrapper.student .students .title h3,
-main .wrapper .personal-details h3 {
+main .wrapper.transaction .transactions .title h3,
+main .wrapper.account .personal-details h3,
+main .wrapper.payment .payment-methods h3 {
   display: flex;
   align-items: center;
   font-weight: inherit;
@@ -473,8 +492,10 @@ main .wrapper .profile-completeness .title span {
 }
 
 main .wrapper .profile-completeness .panel,
-main .wrapper .students .panel,
-main .wrapper .personal-details .panel {
+main .wrapper.student .students .panel,
+main .wrapper.transaction .transactions .panel,
+main .wrapper.account .personal-details .panel,
+main .wrapper.payment .payment-methods .panel {
   display: flex;
   flex-grow: 1;
   padding: 1.5em;
@@ -572,7 +593,7 @@ main .wrapper .profile-completeness .panel .step .name {
 }
 
 main .wrapper .profile-completeness .panel .step .name:hover {
-  color: var(--accent-color);
+  color: #28a745;
   text-decoration: underline;
 }
 
@@ -582,7 +603,7 @@ main .wrapper .profile-completeness .panel .step .name::before {
 }
 
 main .wrapper .profile-completeness .panel .step .name:hover::before {
-  color: var(--accent-color);
+  color: #28a745;
 }
 
 main
@@ -616,7 +637,7 @@ main
   text-decoration: underline;
 }
 
-main .wrapper .profile-completeness .checked-unchecked.checked .checkbox svg {
+.checked-unchecked.checked .checkbox svg {
   display: block;
 }
 
@@ -627,6 +648,13 @@ main .wrapper .profile-completeness .checked-unchecked.checked .checkbox svg {
 
 main .wrapper .profile-completeness .checked-unchecked.checked .checkbox {
   display: block;
+}
+
+#dialog-status-icon {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
 }
 
 main .wrapper .balance-container {
@@ -652,7 +680,6 @@ main .wrapper .balance-container .icon {
 main .wrapper .balance-container .icon svg {
   flex-shrink: 0;
   max-width: 100%;
-  max-height: 7vh;
   width: 100%;
   height: 100%;
 }
@@ -1510,7 +1537,7 @@ button[type="submit"]:focus {
   color: var(--primary-color);
 }
 
-/* Account */
+/* Account / Payment Methods */
 
 .account-navigation {
   background-color: var(--accent-color);
@@ -1529,6 +1556,8 @@ button[type="submit"]:focus {
   color: var(--secondary-color);
   height: 100%;
   padding: 0.8em 1em;
+  text-wrap: nowrap;
+  white-space: nowrap;
 }
 .account-navigation nav ul li.current,
 .account-navigation nav ul li:hover {
@@ -1538,21 +1567,28 @@ button[type="submit"]:focus {
 .account-navigation nav ul li a {
   color: currentColor;
   text-decoration: none;
+  font-size: clamp(0.5rem, calc(0.6rem + 0.65vw), 1rem);
 }
 
-main .wrapper.account .personal-details-container {
+main .wrapper.account .personal-details-container,
+main .wrapper.payment .payment-methods-container {
   background-color: transparent;
   box-shadow: none;
   gap: 1em;
 }
 
-main .wrapper.account .personal-details-container .personal-details {
+main .wrapper.account .personal-details-container {
+}
+
+main .wrapper.account .personal-details-container .personal-details,
+main .wrapper.payment .payment-methods-container .payment-methods {
   background-color: var(--background-color);
   box-shadow: var(--shadow-soft);
   border-radius: var(--border-radius-low);
 }
 
-main .wrapper.account .personal-details-container .panel {
+main .wrapper.account .personal-details-container .panel,
+main .wrapper.payment .payment-methods-container .panel {
   display: flex;
   justify-content: center;
 }
@@ -1591,17 +1627,25 @@ main
   .personal-details-container
   .panel
   .vcard
-  .tel.primary::after {
+  .tel.primary::after,
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.primary::before {
   content: "Primary";
   position: absolute;
   top: 0;
   right: -1em;
-  transform: translate(100%);
+  transform: translateX(100%);
   color: white;
   background-color: var(--highlight-color);
   border-radius: var(--border-radius-very-high);
-  padding: 0 .3em;
-  font-size: clamp(.5rem, calc(.5rem + .5vw), 1rem);
+  padding: 0 0.3em;
+  font-size: clamp(0.5rem, calc(0.5rem + 0.5vw), 1rem);
+  z-index: 9999;
 }
 
 main
@@ -1616,42 +1660,402 @@ main
   margin-right: 1em;
 }
 
-main .wrapper .personal-details-container .title {
+main .wrapper.account .personal-details-container .title,
+main .wrapper.payment .payment-methods-container .title {
   background-color: transparent;
 }
 
-/* Students */
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  grid-auto-rows: auto;
+  grid-auto-flow: dense;
+  flex-grow: 1;
+  gap: 0.5em;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card {
+  aspect-ratio: 16/9;
+  cursor: pointer;
+  transition: 0.5s ease;
+  perspective: 900px;
+  position: relative;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.primary::before {
+  top: 0;
+  right: 0;
+  transform: translate(-50%, 50%);
+  color: black;
+  background-color: var(--primary-item-color);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .card-inner {
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  position: relative;
+}
+.card-inner .background,
+.card-inner .foreground {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.card-inner .foreground {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0.2));
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.visa,
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.master {
+  z-index: 9998;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.master:hover,
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.visa:hover {
+  transform-style: preserve-3d;
+  transform: rotateY(180deg);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.master:hover::before,
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.visa:hover::before {
+  display: none;
+}
 
-main .wrapper .students {
-  grid-area: 1 / 2 / span 3 / -1;
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.visa
+  .card-inner
+  .foreground {
+  background-image: url(/assets/sprites/card1.png);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.master
+  .card-inner
+  .foreground {
+  background-image: url(/assets/sprites/card2.png);
+  transform: scale(1.21);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.visa
+  .card-inner
+  .background {
+  background-image: url(/assets/sprites/card1-bf.png);
+  transform: rotateY(180deg);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.master
+  .card-inner
+  .background {
+  background-image: url(/assets/sprites/card2-bf.png);
+  transform: rotateY(180deg);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.add {
+  background-color: var(--base-color);
+  border: 1px solid var(--secondary-text-color);
+  transform: scale(0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(0.5rem, calc(0.5rem + 0.5vw), 1rem);
+  gap: 0;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.add
+  svg {
+  background-color: #28a745;
+  border-radius: 50%;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card.add
+  svg
+  path {
+  fill: white;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards.account
+  .card.add {
+  transform: scale(1);
+}
+
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  background-color: red;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 25%;
+  border-right: 1px solid var(--line-color);
+  background-color: blue;
+  padding: 0 0.7em;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .icon
+  svg {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .icon
+  svg
+  path {
+  fill: white;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .cntnts {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: red;
+  color: white;
+  gap: 0;
+  padding: 0 1em;
+  position: relative;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .cntnts
+  .checked-unchecked {
+  position: absolute;
+  bottom: 0.7em;
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .cntnts
+  h1 {
+  font-size: clamp(0.1rem, calc(0.5rem + 1vw), 2rem);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .cntnts
+  .card-number {
+  font-size: clamp(0.1rem, calc(0.5rem + 0.7vw), 1rem);
+}
+main
+  .wrapper.payment
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards
+  .card
+  .bank-account
+  .cntnts
+  small {
+  font-size: clamp(0.5rem, calc(0.2rem + 1vw), 1rem);
+  color: white;
+}
+
+/* Students/Transactions */
+
+main .wrapper.student .students {
+  grid-column: 1/-1;
+  grid-row: auto;
   position: relative;
   padding-bottom: 1em;
 }
-main .wrapper .activity.students {
+
+main .wrapper.transaction .transactions {
+  grid-area: 1 / 2 / span 4 / -1;
+  position: relative;
+}
+
+main .wrapper.student .activity.students {
+  grid-column: 1/-1;
+  grid-row: auto;
+}
+
+main .wrapper.transaction .activity.transactions {
   grid-area: 5 / 2 / span 9 / -1;
 }
 
-main .wrapper .activity.students .title {
+main .wrapper.student .activity.students .title,
+main .wrapper.transaction .activity.transactions .title {
   margin: 0;
   height: auto;
 }
 
-main .wrapper .activity.students .panel {
+main .wrapper.student .activity.students .panel,
+main .wrapper.transaction .activity.transactions .panel {
   padding: 0;
 }
 
-main .wrapper .students .panel input[type="date"] {
+main .wrapper.student .students .panel input[type="date"],
+main .wrapper.transaction .transactions .panel input[type="date"] {
   width: clamp(min(250px, 100%), 30vw, 500px);
   box-shadow: none;
   border: 1px solid var(--line-color);
   border-radius: var(--border-radius-medium);
-  padding: 1em 1em;
+  padding: 0.5em;
   appearance: none;
-  margin: 1em;
+  border-radius: var(--border-radius-high);
 }
 main
-  .wrapper
+  .wrapper.student
   .students
+  .panel
+  input[type="date"]::-webkit-calendar-picker-indicator,
+main
+  .wrapper.transaction
+  .transactions
   .panel
   input[type="date"]::-webkit-calendar-picker-indicator {
   background-image: url(/assets/icons/calendar_month_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg);
@@ -1671,15 +2075,17 @@ main
   transform: rotate(180deg);
 }
 
-main .wrapper .students .panel {
+/* main .wrapper .students .panel {
  
-}
+} */
 
-main .wrapper .students .panel .wrapper {
+main .wrapper.student .students .panel .wrapper,
+main .wrapper.transaction .transactions .panel .wrapper {
   position: relative;
 }
 
-main .wrapper .students .panel .statements {
+main .wrapper.student .students .panel .statements,
+main .wrapper.transaction .transactions .panel .statements {
   position: absolute;
   right: 5%;
   bottom: 0;
@@ -1688,28 +2094,58 @@ main .wrapper .students .panel .statements {
   box-shadow: none;
 }
 
-main .wrapper .students .panel .statements details {
+main .wrapper.student .students .panel .statements details,
+main .wrapper.transaction .transactions .panel .statements details {
   position: relative;
   cursor: pointer;
 }
 
-main .wrapper .students .panel .statements details summary {
+main .wrapper.student .students .panel .statements details summary,
+main .wrapper.transaction .transactions .panel .statements details summary {
   display: flex;
   align-items: center;
 }
-main .wrapper .students .panel .statements details summary:hover {
+
+main .wrapper.student .students .panel .statements details summary:hover,
+main
+  .wrapper.transaction
+  .transactions
+  .panel
+  .statements
+  details
+  summary:hover {
   color: var(--accent-color);
   text-decoration: underline;
 }
-main .wrapper .students .panel .statements details summary:hover svg path {
+
+main
+  .wrapper.student
+  .students
+  .panel
+  .statements
+  details
+  summary:hover
+  svg
+  path,
+main
+  .wrapper.transaction
+  .transactions
+  .panel
+  .statements
+  details
+  summary:hover
+  svg
+  path {
   fill: var(--accent-color);
 }
 
-main .wrapper .students .panel .statements details svg path {
+main .wrapper.student .students .panel .statements details svg path,
+main .wrapper.transaction .transactions .panel .statements details svg path {
   fill: var(--secondary-text-color);
 }
 
-main .wrapper .students .panel .statements details ul {
+main .wrapper.student .students .panel .statements details ul,
+main .wrapper.transaction .transactions .panel .statements details ul {
   position: absolute;
   background-color: white;
   display: flex;
@@ -1719,34 +2155,53 @@ main .wrapper .students .panel .statements details ul {
   box-shadow: var(--shadow-hard);
   transform: translate(-25%, 15%);
 }
-main .wrapper .students .panel .statements details ul li {
+
+main .wrapper.student .students .panel .statements details ul li,
+main .wrapper.transaction .transactions .panel .statements details ul li {
   padding: 0.25em 4em 0.25em 0.5em;
 }
-main .wrapper .students .panel .statements details ul li:hover {
+
+main .wrapper.student .students .panel .statements details ul li:hover,
+main .wrapper.transaction .transactions .panel .statements details ul li:hover {
   background-color: var(--base-color);
 }
 
-main .wrapper .students .panel .statements details ul li a {
+main .wrapper.student .students .panel .statements details ul li a,
+main .wrapper.transaction .transactions .panel .statements details ul li a {
   text-decoration: none;
   color: var(--text-color);
 }
-main .wrapper .students .panel .statements details ul li a:hover {
+
+main .wrapper.student .students .panel .statements details ul li a:hover,
+main
+  .wrapper.transaction
+  .transactions
+  .panel
+  .statements
+  details
+  ul
+  li
+  a:hover {
   text-decoration: underline;
 }
 
-main .wrapper .students .panel.students {
+main .wrapper.student .students .panel.students,
+main .wrapper.transaction .transactions .panel.transactions {
   background-color: transparent;
 }
 
-main .wrapper .students .panel .drop-down {
+main .wrapper.student .students .panel .drop-down,
+main .wrapper.transaction .transactions .panel .drop-down {
   position: relative;
 }
-main .wrapper .students .panel .drop-down .sub-menu {
-  position: absolute;
+
+main .wrapper.student .students .panel .drop-down .sub-menu,
+main .wrapper.transaction .transactions .panel .drop-down .sub-menu {
+  /* position: absolute;
   top: 100%;
   left: 0;
-  z-index: 9999;
-  
+  z-index: 9999; */
+
   list-style-type: none;
   transition: 1s ease;
 
@@ -1754,26 +2209,46 @@ main .wrapper .students .panel .drop-down .sub-menu {
   width: 100%;
   overflow: hidden;
 
-  transform-origin: top;
-  background-color: var(--background-color);
-  box-shadow: var(--shadow-hard);
+  /* transform-origin: top;
+  background-color: var(--background-color); */
+  /* box-shadow: var(--shadow-hard); */
   border-radius: var(--border-radius-low);
 }
 
-main .wrapper .students .panel .drop-down .sub-menu .wrapper {
+main .wrapper.student .students .panel .drop-down .sub-menu .wrapper,
+main .wrapper.transaction .transactions .panel .drop-down .sub-menu .wrapper {
   overflow: hidden;
   padding: 1.5em 0.5em;
   display: flex;
   flex-direction: column;
 }
-main .wrapper .students .panel .drop-down .sub-menu .wrapper li {
+
+main .wrapper.student .students .panel .drop-down .sub-menu .wrapper li,
+main
+  .wrapper.transaction
+  .transactions
+  .panel
+  .drop-down
+  .sub-menu
+  .wrapper
+  li {
   padding: 0 0.5em;
   box-shadow: none;
   display: flex;
   align-items: center;
   gap: 0.5em;
 }
-main .wrapper .students .panel .drop-down .sub-menu .wrapper li small {
+
+main .wrapper.student .students .panel .drop-down .sub-menu .wrapper li small,
+main
+  .wrapper.transaction
+  .transactions
+  .panel
+  .drop-down
+  .sub-menu
+  .wrapper
+  li
+  small {
   color: var(--text-color);
 }
 
@@ -1800,11 +2275,13 @@ label[for="create"] svg:nth-child(2) {
   margin-left: 2em;
 }
 
-main .wrapper .activity.students .pagination {
+main .wrapper.student .activity.students .pagination,
+main .wrapper.transaction .activity.transactions .pagination {
   padding: 1em 1.5em;
 }
 
-main .wrapper .activity.students .pagination ul {
+main .wrapper.student .activity.students .pagination ul,
+main .wrapper.transaction .activity.transactions .pagination ul {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1813,7 +2290,9 @@ main .wrapper .activity.students .pagination ul {
   margin: auto;
   gap: 1em;
 }
-main .wrapper .activity.students .pagination ul li {
+
+main .wrapper.student .activity.students .pagination ul li,
+main .wrapper.transaction .activity.transactions .pagination ul li {
   cursor: pointer;
   height: 25px;
   aspect-ratio: 1;
@@ -1822,48 +2301,86 @@ main .wrapper .activity.students .pagination ul li {
   align-items: center;
   justify-content: center;
 }
-main .wrapper .activity.students .pagination ul li.current {
+
+main .wrapper.student .activity.students .pagination ul li.current,
+main .wrapper.transaction .activity.transactions .pagination ul li.current {
   background-color: var(--accent-color);
 }
 
-main .wrapper .activity.students .pagination ul li.disabled {
+main .wrapper.student .activity.students .pagination ul li.disabled,
+main .wrapper.transaction .activity.transactions .pagination ul li.disabled {
   cursor: auto;
 }
-main .wrapper .activity.students .pagination ul li.disabled a {
+
+main .wrapper.student .activity.students .pagination ul li.disabled a,
+main .wrapper.transaction .activity.transactions .pagination ul li.disabled a {
   pointer-events: none;
 }
-main .wrapper .activity.students .pagination ul li.disabled a svg path {
+
+main .wrapper.student .activity.students .pagination ul li.disabled a svg path,
+main
+  .wrapper.transaction
+  .activity.transactions
+  .pagination
+  ul
+  li.disabled
+  a
+  svg
+  path {
   fill: var(--secondary-text-color);
 }
 
-main .wrapper .activity.students .pagination ul li a svg {
+main .wrapper.student .activity.students .pagination ul li a svg,
+main .wrapper.transaction .activity.transactions .pagination ul li a svg {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-main .wrapper .activity.students .pagination ul li a svg path {
+
+main .wrapper.student .activity.students .pagination ul li a svg path,
+main .wrapper.transaction .activity.transactions .pagination ul li a svg path {
   fill: var(--accent-color);
 }
 
-main .wrapper .activity.students .pagination ul li a {
+main .wrapper.student .activity.students .pagination ul li a,
+main .wrapper.transaction .activity.transactions .pagination ul li a {
   text-decoration: none;
   color: var(--accent-color);
 }
-main .wrapper .activity.students .pagination ul li.current a {
+
+main .wrapper.student .activity.students .pagination ul li.current a,
+main .wrapper.transaction .activity.transactions .pagination ul li.current a {
   color: white;
 }
 
-main .wrapper .activity.students .pagination ul li a:hover {
+main .wrapper.student .activity.students .pagination ul li a:hover,
+main .wrapper.transaction .activity.transactions .pagination ul li a:hover {
   color: var(--highlight-color);
   text-decoration: underline;
 }
-main .wrapper .activity.students .pagination ul li.current:hover {
+
+main .wrapper.student .activity.students .pagination ul li.current:hover,
+main
+  .wrapper.transaction
+  .activity.transactions
+  .pagination
+  ul
+  li.current:hover {
   background-color: var(--highlight-color);
 }
-main .wrapper .activity.students .pagination ul li:hover {
+
+main .wrapper.student .activity.students .pagination ul li:hover,
+main .wrapper.transaction .activity.transactions .pagination ul li:hover {
   background-color: var(--base-color);
 }
-main .wrapper .activity.students .pagination ul li.disabled:hover {
+
+main .wrapper.student .activity.students .pagination ul li.disabled:hover,
+main
+  .wrapper.transaction
+  .activity.transactions
+  .pagination
+  ul
+  li.disabled:hover {
   background-color: transparent;
 }
 
@@ -1885,7 +2402,7 @@ body.layout-error main .link {
   color: white;
   text-decoration: none;
   font-family: Poppins, sans-serif;
-  font-size: clamp(1rem, calc(1vw + 1rem), 2rem);
+  font-size: clamp(0.5rem, calc(1rem + 1vw), 2rem);
   position: absolute;
   bottom: 35%;
   transform: translateY(100%);
@@ -1897,13 +2414,14 @@ body.layout-error main .link {
 
 .text {
   text-transform: uppercase;
-  font-size: clamp(1rem, calc(1vw + 6rem), 6rem);
+  font-size: clamp(1rem, calc(1.5rem + 6vw), 12rem);
   position: relative;
   color: transparent;
-  font-family: Poppins, system-ui, sans-serif;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.02em;
+
+  font-family: "Times New Roman", Times, serif;
 }
 .text::before {
   content: attr(data-text);
@@ -1929,14 +2447,15 @@ body.layout-error main .link {
   color: white;
 }
 
-/* .link::before,
-.link::after {
-  animation-play-state: paused;
+.link {
+  font-family: "Times New Roman", Times, serif !important;
+  font-weight: normal;
 }
-.link:hover::before,
-.link:hover::after {
-  animation-play-state: running;
-} */
+
+.link::before,
+.link::after {
+  animation-delay: -0.5s;
+}
 
 @keyframes glitch-1 {
   0% {
@@ -1964,7 +2483,7 @@ body.layout-error main .link {
   }
 }
 
-@media (max-width: 1030px) {
+@media (max-width: 971px) {
   header .mores,
   .collapse-menu {
     z-index: 9999;
@@ -2033,14 +2552,23 @@ body.layout-error main .link {
     grid-area: 1 / 3 / span 1 / span 1;
   }
   main .wrapper .profile-completeness,
-  main .wrapper.student .students {
+  main .wrapper.transaction .transactions {
     grid-area: 2 / 1 / 3 / -1;
   }
+  main .wrapper.student .students {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
   main .wrapper .activity,
-  main .wrapper .activity.students {
+  main .wrapper.transaction .activity.transactions {
     grid-area: 3 / 1 / span 1 / -1;
   }
-  main .wrapper.account .personal-details-container {
+  main .wrapper .activity.students {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
+  main .wrapper.account .personal-details-container,
+  main .wrapper.payment .payment-methods-container {
     grid-column: 1 / -1;
     grid-row: auto;
   }
@@ -2057,17 +2585,14 @@ body.layout-error main .link {
 
   main .wrapper .profile-container,
   main .wrapper .balance-container,
-  main .wrapper .support {
-    grid-area: auto;
-    grid-row: auto;
-    grid-column: 1 / -1;
-    aspect-ratio: auto;
-  }
-
+  main .wrapper .support,
   main .wrapper .profile-completeness,
   main .wrapper .activity,
   main .wrapper.account .personal-details-container,
-  main .wrapper.student .students {
+  main .wrapper.payment .payment-methods-container,
+  main .wrapper.student .students,
+  main .wrapper.transaction .transactions,
+  main .wrapper.transaction .activity.transactions {
     grid-area: auto;
     grid-row: auto;
     grid-column: 1 / -1;
@@ -2112,7 +2637,7 @@ body.layout-error main .link {
 
 @media (min-width: 1240px) {
   main .wrapper {
-    gap: 0.5;
+    gap: 0.5em;
     grid-template-columns: max-content repeat(2, minmax(min(100%, 200px), 1fr));
     grid-template-rows: none;
     grid-auto-rows: auto;
@@ -2121,23 +2646,46 @@ body.layout-error main .link {
     grid-area: 2 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
+  main .wrapper.account .profile-container,
+  main .wrapper.payment .profile-container {
+    grid-area: 1 / 1 / span 1 / span 1;
+    aspect-ratio: unset;
+  }
   main .wrapper .balance-container {
     grid-area: 3 / 1 / span 1 / span 1;
+    aspect-ratio: unset;
+  }
+  main .wrapper.account .balance-container,
+  main .wrapper.payment .balance-container {
+    grid-area: 2 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
   main .wrapper .support {
     grid-area: 4 / 1 / span 1 / span 1;
   }
+  main .wrapper.account .support,
+  main .wrapper.payment .support {
+    grid-area: 3 / 1 / span 1 / span 1;
+  }
   main .wrapper .profile-completeness,
-  main .wrapper.student .students {
+  main .wrapper.transaction .transactions {
     grid-area: 1 / 1 / span 1 / -1;
   }
+  main .wrapper.student .students {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
   main .wrapper .activity,
-  main .wrapper .activity.students {
+  main .wrapper.transaction .activity.transactions {
     grid-area: 2 / 2 / span 3 / span 2;
   }
-  main .wrapper.account .personal-details-container {
-    grid-area: 2 / 2 / span 3 / span 2;
+  main .wrapper .activity.students {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
+  main .wrapper.account .personal-details-container,
+  main .wrapper.payment .payment-methods-container {
+    grid-area: 1 / 2 / span 3 / span 2;
   }
 }
 
@@ -2154,6 +2702,35 @@ body.layout-error main .link {
     width: auto;
   }
 }
+
+/* @media (max-width: 600px){
+  main 
+  .wrapper.payment 
+  .payment-methods-container
+  .payment-methods
+  .panel
+  .cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    grid-auto-flow:unset;             
+    grid-auto-columns:auto;
+    grid-template-columns: unset;        
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;       
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+    padding-bottom: .25em;   
+    width: auto;     
+    scrollbar-width: none;   
+  }
+
+  .cards > .card{
+    scroll-snap-align: start;   
+    will-change: transform;        
+  }
+} */
 
 @media (prefers-reduced-motion: reduce) {
   .content .text::before {

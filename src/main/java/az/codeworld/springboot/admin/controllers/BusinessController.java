@@ -3,14 +3,16 @@ package az.codeworld.springboot.admin.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
-@RequestMapping("/teachers")
-public class TeacherController {
+@RequestMapping("/buss")
+public class BusinessController {
 
-    @GetMapping("/")
-    public String teachers() {
-        return "user/teachers";
+    @GetMapping("/paymentMethods")
+    public String paymentMethods() {
+        return "buss/payments";
     }
     
 }

@@ -1,16 +1,35 @@
-let lastScrollY = window.scrollY;
-const header = document.querySelector("header");
-const nav = document.querySelector("header nav")
-const backToTop = document.querySelector(".anchor");
+let header,
+  nav,
+  backToTop,
+  lastScrollY = 0;
 
-window.addEventListener("scroll", () => {
-    const currentScrollY = window.scrollY;
-    if (currentScrollY > lastScrollY) {
-        header.classList.add("reveal");
-        backToTop.classList.add('show');
-    } else {
-        header.classList.remove('reveal');
-        backToTop.classList.remove('show');
-    }
-    lastScrollY = currentScrollY;
-}, { passive: true });
+function cacheElements() {
+  header = document.querySelector("header");
+  nav = document.querySelector("header nav");
+  backToTop = document.querySelector(".anchor");
+}
+
+function handleScroll() {
+  const currentScrollY = window.scrollY;
+  if (currentScrollY > lastScrollY) {
+    header.classList.add("reveal");
+    backToTop?.classList.add("show");
+  } else {
+    header.classList.remove("reveal");
+    backToTop?.classList.remove("show");
+  }
+  lastScrollY = currentScrollY;
+}
+
+function initScrollTop() {
+
+  cacheElements();
+
+  if (!header) return;
+
+  lastScrollY = window.scrollY;
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+}
+
+export { initScrollTop };
