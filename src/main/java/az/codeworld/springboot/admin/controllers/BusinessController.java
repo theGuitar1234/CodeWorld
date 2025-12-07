@@ -9,10 +9,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/buss")
 public class BusinessController {
-
-    @GetMapping("/paymentMethods")
-    public String paymentMethods() {
-        return "buss/payments";
-    }
-    
+  
 }

@@ -1,23 +1,39 @@
 package az.codeworld.springboot.admin.entities;
 
 import java.time.LocalDateTime;
-// import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-// import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.web.entities.Transaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-// import jakarta.persistence.FetchType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,24 +47,33 @@ import lombok.Setter;
 @Table(
     name = "USERS",
     indexes = {
-        @Index(name = "idx_first_last_name", columnList = "first_name, last_name")
+        @Index(name = "idx_user_name", columnList = "user_name")
     },
     uniqueConstraints = {
-        @UniqueConstraint(name = "uc_email", columnNames = { "email "}),
-        @UniqueConstraint(name = "uc_password", columnNames = { "password" })
+        @UniqueConstraint(name = "uc_email", columnNames = {"email"})
     }
 )
-@DiscriminatorColumn(name = "dtype")
+// @DiscriminatorColumn(name = "dtype")
+// @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Inheritance(strategy = InheritanceType.JOINED)
-abstract class User {
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @NotBlank
     @Column(nullable = false)
+    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]$")
+    private String username;
+
+    @NotBlank
+    @Column(nullable = false)
+    @Pattern(regexp = "^[A-Z]{1}[a-z]{1,14}$")
     private String firstName;
 
+    @NotBlank
     @Column(nullable = false)
+    @Pattern(regexp = "^[A-Z]{1}[a-z]{1,20}$")
     private String lastName; 
 
     @Column(unique = true)
@@ -57,13 +82,15 @@ abstract class User {
     @Column(nullable = false)
     private String password;
 
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column
-    @Pattern(regexp = "^[+994][[0-9]{3}]{2}[[0-9]{2}]{2}$")
+    //@Pattern(regexp = "^+\\d{3} \\d{3} \\d{2} \\d{2}$")
     private String phoneNumber;
 
+    @Past
     @Column
     private LocalDateTime lastActiveAt;
 
@@ -71,24 +98,29 @@ abstract class User {
         this.lastActiveAt = LocalDateTime.now();
     }
 
-    // @JsonIgnore
-    // @ManyToMany(fetch = FetchType.EAGER)
-    // @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    // private Set<Role> roles = new HashSet<>();
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USERS_ROLES", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    // public void addRoleToUser(Role role) {
-    //     this.roles.add(role);
-    //     role.addUser(this);
-    // }
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.addUser(this);
+    }
 
-    // public void removeRoleFromUser(Role role) {
-    //     this.roles.remove(role);
-    //     role.removeUser(this);
-    // }
+    public void removeRole(Role role) {
+        this.roles.remove(role);
+        role.removeUser(this);
+    }
 
-    // @JsonIgnore
-    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private LoginAudit loginAudit;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Transaction> transactions = new ArrayList<>();
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+        transaction.setUser(this);
+    }
 
     @Override
     public String toString() {

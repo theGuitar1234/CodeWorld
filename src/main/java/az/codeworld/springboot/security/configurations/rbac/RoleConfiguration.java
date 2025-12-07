@@ -1,0 +1,19 @@
+package az.codeworld.springboot.security.configurations.rbac;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+
+@Configuration
+public class RoleConfiguration {
+
+    @Bean
+    static RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("TEACHER")
+                .role("TEACHER").implies("STUDENT")
+                .build();
+    }
+
+}

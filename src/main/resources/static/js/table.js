@@ -6,7 +6,6 @@ const
   opt3 = "pending";
 
 let 
-  dialog,
   dialogStatusIcon,
 
   tableBody,
@@ -16,7 +15,7 @@ let
   dataTotalHeader,
   dataPaidBy,
   dataTransactionId,
-  dataDescription,
+  dataDetails,
   dataStatus,
   dataFee,
   dataAmount,
@@ -39,7 +38,7 @@ function cacheElements() {
   dataTotalHeader = document.getElementById("data-total-header");
   dataPaidBy = document.getElementById("data-paid-by");
   dataTransactionId = document.getElementById("data-transaction-id");
-  dataDescription = document.getElementById("data-description");
+  dataDetails = document.getElementById("data-details");
   dataStatus = document.getElementById("data-status");
   dataFee = document.getElementById("data-fee");
   dataAmount = document.getElementById("data-amount");
@@ -65,7 +64,7 @@ function populateDialog(row) {
   dataAmount.textContent = row.dataset.amount;
   dataFee.textContent = row.dataset.fee;
   dataTransactionId.textContent = row.dataset.transactionId;
-  dataDescription.textContent = row.dataset.description;
+  dataDetails.textContent = row.dataset.details;
   dataStatus.textContent = row.dataset.status;
 
   status = row.dataset.status?.toLowerCase();

@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import az.codeworld.springboot.admin.entities.Student;
-import az.codeworld.springboot.admin.entities.Teacher;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -32,10 +30,6 @@ public class Subject {
     @Column(name = "SUBJECT_BODY")
     private String subjectBodyString;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "subjects")
-    private List<Student> students = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "subjects")
-    private List<Teacher> teachers = new ArrayList<>();
+    @OneToMany
+    private List<ClassSection> classSections = new ArrayList<>();
 }
