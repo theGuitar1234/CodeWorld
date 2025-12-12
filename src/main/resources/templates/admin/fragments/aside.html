@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <body>
+    <aside th:fragment="aside">
+      <div class="logo">
+        <a href="#">
+          <!-- <div class="icon"></div> -->
+          ADMIN PANEL
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li>Entities</li>
+          <li><a href="#">Teachers</a></li>
+          <li><a href="#">Students</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+        </ul>
+        <ul>
+          <li>Business</li>
+          <li><a href="#">Transactions</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+        </ul>
+        <ul>
+          <li>Auth</li>
+          <li><a href="#">Requests</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+        </ul>
+        <ul>
+          <li>Media</li>
+          <li>
+            <div class="drop-down">
+              <input
+                type="checkbox"
+                id="create"
+                aria-hidden="true"
+                aria-checked="undefined"
+                focusable="false"
+              />
+              <label for="create">Assets</label>
+              <ul class="sub-menu">
+                <div class="wrapper">
+                  <li role="menuitem"><a href="#">Profiles</a></li>
+                  <li role="menuitem"><a href="#">Sprites</a></li>
+                  <li role="menuitem"><a href="#">Icons</a></li>
+                </div>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+          <li><a href="#">Element</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </body>
+</html>

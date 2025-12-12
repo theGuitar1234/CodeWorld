@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.dtos.transactions.UserTransactionDTO;
-import az.codeworld.springboot.web.entities.Transaction;
+import az.codeworld.springboot.admin.entities.Transaction;
 
 @Component
 public class UserTransactionMapper {

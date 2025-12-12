@@ -15,22 +15,30 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import az.codeworld.springboot.admin.entities.Student;
+import az.codeworld.springboot.admin.entities.Teacher;
+import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.admin.entities.User;
+import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
+
 import az.codeworld.springboot.security.controllers.SecurityController;
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.security.services.AuthorityService;
 import az.codeworld.springboot.security.services.JpaUserDetailsService;
 import az.codeworld.springboot.security.services.RoleService;
+
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.status;
-import az.codeworld.springboot.web.entities.Student;
-import az.codeworld.springboot.web.entities.Teacher;
-import az.codeworld.springboot.web.entities.Transaction;
-import az.codeworld.springboot.web.services.TransactionService;
+
+import az.codeworld.springboot.web.entities.ClassSection;
+import az.codeworld.springboot.web.entities.Enrollment;
+import az.codeworld.springboot.web.entities.Subject;
+import az.codeworld.springboot.web.entities.TeachingAssignment;
+import az.codeworld.springboot.web.services.GenericWebService;
 
 @Component
 public class SeedData implements CommandLineRunner {
@@ -44,13 +52,16 @@ public class SeedData implements CommandLineRunner {
     private final TransactionService transactionService;
     private final JpaUserDetailsService jpaUserDetailsService;
 
+    private final GenericWebService genericWebService;
+
     public SeedData(
         PasswordEncoder passwordEncoder,
         AuthorityService authorityService,
         RoleService roleService,
         UserService userService, 
         JpaUserDetailsService jpaUserDetailsService,
-        TransactionService transactionService
+        TransactionService transactionService,
+        GenericWebService genericWebService
     ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
@@ -58,6 +69,7 @@ public class SeedData implements CommandLineRunner {
         this.userService = userService;
         this.jpaUserDetailsService = jpaUserDetailsService;
         this.transactionService = transactionService;
+        this.genericWebService = genericWebService;
     }
 
     @Override
@@ -105,9 +117,44 @@ public class SeedData implements CommandLineRunner {
             roleService.saveRole(roleTemp);
         }
 
+        Random random = new Random();
+
+        Subject math = new Subject();
+        Subject physics = new Subject();
+        Subject computerScience = new Subject();
+
+        math.setSubjectTitleString("Mathematics");
+        math.setSubjectBodyString("Subject Body for Mathematics");
+
+        physics.setSubjectTitleString("Physics");
+        physics.setSubjectBodyString("Subject Body for Physics");
+
+        computerScience.setSubjectTitleString("Computer Science");
+        computerScience.setSubjectBodyString("Subject Body for Computer Science");
+
+        genericWebService.saveType(Subject.class, math);
+        genericWebService.saveType(Subject.class, physics);
+        genericWebService.saveType(Subject.class, computerScience);
+
+        ClassSection mathSection1 = new ClassSection();
+        ClassSection physicsSection1 = new ClassSection();
+        ClassSection computerScienceSection1 = new ClassSection();
+
+        mathSection1.setClassTitle("Math Section 1");
+        mathSection1.setSubject(math);
+        physicsSection1.setClassTitle("Physics Section 1");
+        physicsSection1.setSubject(physics);
+        computerScienceSection1.setClassTitle("Computer Science Section 1");
+        computerScienceSection1.setSubject(computerScience);
+
+        genericWebService.saveType(ClassSection.class, mathSection1);
+        genericWebService.saveType(ClassSection.class, physicsSection1);
+        genericWebService.saveType(ClassSection.class, computerScienceSection1);
+
         Transaction transaction;
 
         Teacher teacher;
+        TeachingAssignment teachingAssignment;
 
         for (int i = 0; i<5; i++) {
             teacher = new Teacher();
@@ -131,6 +178,27 @@ public class SeedData implements CommandLineRunner {
             roleService.addRolesToUser(teacher.getUsername(), Set.of(roles.TEACHER.getRoleId()));
             jpaUserDetailsService.loadUserByUsername(teacher.getUsername());
 
+            teachingAssignment = new TeachingAssignment();
+            teachingAssignment.setTeacher(teacher);
+
+            int clssctn = random.nextInt(3);
+
+            switch (clssctn) {
+                case 0:
+                    physicsSection1.addAssignment(teachingAssignment);
+                    break;
+                case 1:
+                    mathSection1.addAssignment(teachingAssignment);
+                    break;
+                case 2:
+                    computerScienceSection1.addAssignment(teachingAssignment);
+                    break;
+                default:
+                    break;
+            }
+
+            genericWebService.saveType(TeachingAssignment.class, teachingAssignment);
+
             for (int j = 0; j<20; j++) {
                 transaction = new Transaction();
                 transaction.setTransactionPaidBy("HDFC Bank");
@@ -148,6 +216,7 @@ public class SeedData implements CommandLineRunner {
         }
 
         Student student;
+        Enrollment enrollment;
         
         for (int i = 0; i<20; i++) {
             student = new Student();
@@ -171,6 +240,27 @@ public class SeedData implements CommandLineRunner {
             roleService.addRolesToUser(student.getUsername(), Set.of(roles.STUDENT.getRoleId()));
             jpaUserDetailsService.loadUserByUsername(student.getUsername());
 
+            enrollment = new Enrollment();
+            enrollment.setStudent(student);
+
+            int clssctn = random.nextInt(3);
+
+            switch (clssctn) {
+                case 0:
+                    physicsSection1.addEnrollment(enrollment);
+                    break;
+                case 1:
+                    mathSection1.addEnrollment(enrollment);
+                    break;
+                case 2:
+                    computerScienceSection1.addEnrollment(enrollment);
+                    break;
+                default:
+                    break;
+            }
+
+            genericWebService.saveType(Enrollment.class, enrollment);
+
             // for (int j = 0; j<20; j++) {
             //     transaction = new Transaction();
             //     transaction.setTransactionTitle("HDFC Bank");
@@ -184,6 +274,16 @@ public class SeedData implements CommandLineRunner {
             //     student.getTransactions().add(transaction);
             // }
         }
+
+        User admin = new User();
+        admin.setFirstName("Admin");
+        admin.setLastName("Admin");
+        admin.setUsername("A-AAAA-AAAA-A");
+        admin.setEmail("admin@admin.com");
+        admin.setPassword(passwordEncoder.encode("1234Aa@"));
+        
+        userService.saveUser(admin);
+        roleService.addRolesToUser(admin.getUsername(), Set.of(roles.ADMIN.getRoleId()));
     }
     
 }

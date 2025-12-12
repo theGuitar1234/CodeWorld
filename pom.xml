@@ -118,7 +118,15 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.7.8</version>
 		</dependency>
-		
+
+		<!--  H2 Database  -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-h2console -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-h2console</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
 		<!-- Spring Boot Mail Service -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

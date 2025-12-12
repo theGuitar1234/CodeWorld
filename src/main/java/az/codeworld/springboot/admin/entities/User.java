@@ -11,7 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.security.entities.Role;
-import az.codeworld.springboot.web.entities.Transaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -56,7 +55,7 @@ import lombok.Setter;
 // @DiscriminatorColumn(name = "dtype")
 // @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

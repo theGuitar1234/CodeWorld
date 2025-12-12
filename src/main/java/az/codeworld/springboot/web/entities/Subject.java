@@ -30,6 +30,6 @@ public class Subject {
     @Column(name = "SUBJECT_BODY")
     private String subjectBodyString;
 
-    @OneToMany
+    @OneToMany(mappedBy = "subject")
     private List<ClassSection> classSections = new ArrayList<>();
 }

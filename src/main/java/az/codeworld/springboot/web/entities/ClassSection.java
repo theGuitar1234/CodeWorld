@@ -30,4 +30,20 @@ public class ClassSection {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
+
+    @OneToMany(mappedBy = "classSection")
+    private List<TeachingAssignment> teachingAssignments = new ArrayList<>();
+
+    public void addAssignment(TeachingAssignment teachingAssignment) {
+        this.teachingAssignments.add(teachingAssignment);
+        teachingAssignment.setClassSection(this);
+    }
+
+    @OneToMany(mappedBy = "classSection")
+    private List<Enrollment> enrollments = new ArrayList<>();
+
+    public void addEnrollment(Enrollment enrollment) {
+        this.enrollments.add(enrollment);
+        enrollment.setClassSection(this);
+    }
 }

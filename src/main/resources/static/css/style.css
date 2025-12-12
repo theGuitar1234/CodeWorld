@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 :root {
-
   scroll-timeline: --scroll block;
 
   --header-gap: 2.5em;
@@ -122,6 +121,12 @@ small {
   color: var(--secondary-text-color);
 }
 
+img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
 /* Header Start */
 header {
   grid-area: header;
@@ -132,6 +137,7 @@ header {
 
   display: flex;
   align-items: center;
+  justify-content: space-around;
   flex-direction: row;
   color: var(--text-color);
 
@@ -156,7 +162,7 @@ header .collapse-menu {
   align-items: center;
   justify-content: center;
   padding: 0;
-  margin-right: var(--header-gap);
+  margin: 0;
 }
 
 header .collapse-menu label {
@@ -256,9 +262,9 @@ header nav ul li a {
 header .mores {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  margin-left: auto;
-  margin-right: var(--header-gap);
+  gap: .5em;
+  /* margin-left: auto; */
+  /* margin-right: var(--header-gap); */
 }
 
 details {
@@ -269,37 +275,82 @@ details summary {
 }
 details .expandable {
   position: absolute;
-  bottom: 0;
+  bottom: -.5em; 
   left: 0;
-  transform: translate(-50%, 110%);
+  padding: .5em;
+  aspect-ratio: 1;
+  transform: translate(-50%, 100%);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-low);
+  box-shadow: var(--shadow-medium);
+
+  display: flex;
+  flex-direction: column;
+
+  z-index: 9999;
+}
+.expandable::before {
+  content: "";
+  position: absolute;
+
+  height: 0;
+  width: 0;
+  background-color: transparent;
+
+  top: 0%;
+  right: 50%;
+
+  transform: translate(100%, -50%);
+
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid var(--background-color);
+
+  pointer-events: none;;
 }
 
-header .mores .notifications .icon svg,
-header .mores .profile .icon svg,
-header .mores .theme .icon svg {
+details .expandable.notifications ul {
+  list-style-type: none;
+}
+
+.notifications .icon svg,
+.theme .icon svg {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-header .mores .notifications .icon svg path,
-header .mores .profile .icon svg path,
-header .mores .theme .icon svg path {
+.notifications .icon svg path,
+.theme .icon svg path {
   fill: var(--svg-fill-color);
   transition: 0.2s ease;
 }
 
-header .mores .notifications:hover .icon svg path,
-header .mores .profile:hover .icon svg path,
-header .mores .theme:hover .icon svg path {
+.notifications:hover .icon svg path,
+.theme:hover .icon svg path {
   fill: var(--accent-color);
 }
 
-header .mores .notifications {
+.theme.auth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1em;
+}
+
+header .mores .profile .icon {
+  height: 5vh;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.notifications {
   position: relative;
 }
 
-header .mores .notifications.has-notifications details summary .icon::after {
+.notifications.has-notifications details summary .icon::after {
   position: absolute;
   content: attr(data-attr);
   top: 0;
@@ -345,7 +396,7 @@ header .i18n select:focus {
 #theme:checked ~ .layer {
   mix-blend-mode: normal;
 }
-header .theme #dark-mode {
+.theme #dark-mode {
   display: none;
 }
 
@@ -427,12 +478,6 @@ main .wrapper .profile-container .icon {
   overflow: hidden;
 }
 
-main .wrapper .profile-container img {
-  display: block;
-  width: 100%;
-  object-fit: cover;
-}
-
 main .wrapper .profile-container .upload-pfp {
   position: absolute;
   height: 32%;
@@ -502,11 +547,12 @@ main .wrapper.payment .payment-methods-container {
   grid-area: 1 / 2 / span 9 / -1;
 }
 
-main .wrapper .profile-completeness .title,
+/* main .wrapper .profile-completeness .title,
 main .wrapper.student .students .title,
 main .wrapper.transaction .transactions .title,
 main .wrapper.account .personal-details .title,
-main .wrapper.payment .payment-methods .title {
+main .wrapper.payment .payment-methods .title { */
+.title {
   min-height: 3.25rem;
   border-bottom: 1px solid var(--line-color);
   display: flex;
@@ -783,7 +829,7 @@ main .wrapper .activity {
 }
 
 main .wrapper .activity .title,
-main .wrapper .activity .view-all {
+.view-all {
   flex: 0 0 auto;
 }
 
@@ -875,19 +921,19 @@ main .wrapper .activity .panel table td.amount-downrise p:first-child::before {
   content: attr(data-date);
 }
 
-main .wrapper .activity .view-all {
+.view-all {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1em 1.5em;
 }
 
-main .wrapper .activity .view-all a {
+.view-all a {
   text-decoration: none;
   color: var(--accent-color);
 }
 
-main .wrapper .activity .view-all a:hover {
+.view-all a:hover {
   color: var(--highlight-color);
   text-decoration: underline;
 }
@@ -1210,7 +1256,7 @@ body.layout.landing main {
   display: flex;
   flex-direction: column;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 body.layout.landing main .carousel {
   perspective: 900px;
@@ -1226,7 +1272,7 @@ body.layout.landing main .carousel .panel {
   position: relative;
 
   animation: carousel both;
-  animation-timeline: view();
+  animation-timeline: view(50% 25%);
   transition: 1s ease;
 }
 .card {
@@ -1234,8 +1280,8 @@ body.layout.landing main .carousel .panel {
   opacity: 0;
   translate: 0px 0px 0px;
 
-  animation: panel;
-  animation-timeline: view();
+  animation: panel both;
+  animation-timeline: view(50% 25%);
   transition: 2s ease;
 }
 .card1 {
@@ -1269,6 +1315,14 @@ body.layout.landing main .carousel .panel {
   aspect-ratio: 2;
   background-color: orange;
 }
+
+/* body.layout.landing main .carousel .panel:hover {
+  transform: rotateX(35deg);
+}
+body.layout.landing main .carousel .panel:hover .card {
+  opacity: 1;
+  translate: 0px 0px 100px;
+} */
 
 /* Footer Start */
 footer {
@@ -1488,6 +1542,7 @@ body.layout.auth {
   background-color: var(--base-color);
   flex-grow: 1;
   max-width: 50vw;
+
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -1498,11 +1553,14 @@ body.layout.auth {
   scroll-behavior: smooth;
 
   scrollbar-width: thin;
+
+  position: relative;
 }
 .container2 {
   flex-grow: 1;
 
-  background-image: linear-gradient(
+  background-image: 
+    linear-gradient(
       to bottom,
       hsl(from var(--accent-color) h s l / 90%) 100%
     ),
@@ -1551,12 +1609,14 @@ legend {
   font-weight: 500;
   font-size: clamp(1rem, calc(1rem + 1vw), 2rem);
   margin-bottom: 1rem;
+  color: var(--text-color);
 }
 
 .remember-me {
   display: flex;
   align-items: center;
   gap: 0.7em;
+  color: var(--text-color);
 }
 
 input:not(
@@ -1615,6 +1675,7 @@ label {
   flex-direction: column;
   gap: 0.5rem;
   font-size: clamp(0.5rem, calc(0.5rem + 0.7vw), 1rem);
+  color: var(--text-color);
 }
 
 label:has(input:invalid) {
@@ -2433,13 +2494,11 @@ main .wrapper.transaction .transactions .panel.transactions {
   background-color: transparent;
 }
 
-main .wrapper.student .students .panel .drop-down,
-main .wrapper.transaction .transactions .panel .drop-down {
+.drop-down {
   position: relative;
 }
 
-main .wrapper.student .students .panel .drop-down .sub-menu,
-main .wrapper.transaction .transactions .panel .drop-down .sub-menu {
+.drop-down .sub-menu {
   /* position: absolute;
   top: 100%;
   left: 0;
@@ -2787,10 +2846,13 @@ body.layout.error main .link {
     transform: translateY(100%);
   }
 
+  header nav ul {
+    color: var(--text-color);
+  }
+
   header nav ul li {
     color: inherit;
     padding: 0.5em 1em;
-    color: white;
     position: relative;
     /* background-color: rgba(0, 0, 0, 0.2); */
   }
@@ -2811,8 +2873,7 @@ body.layout.error main .link {
   header nav ul li.active {
     color: inherit;
     padding: 0.5em 1em;
-    color: white;
-    background-color: black;
+    color: var(--accent-color);
   }
 
   header nav ul li:hover {
