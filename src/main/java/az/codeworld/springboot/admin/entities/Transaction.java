@@ -6,7 +6,8 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.utilities.constants.currency;
-import az.codeworld.springboot.utilities.constants.status;
+import az.codeworld.springboot.utilities.constants.roles;
+import az.codeworld.springboot.utilities.constants.transactionstatus;
 import az.codeworld.springboot.utilities.converters.StatusConverter;
 
 import jakarta.persistence.Column;
@@ -21,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +39,10 @@ import lombok.Setter;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_id_generator")
+    @SequenceGenerator(name = "transaction_id_generator", sequenceName = "transaction_id_sequence", allocationSize = 50, initialValue = 787648363)
+    // @TableGenerator(
     private Long transactionId;
 
     @Column
@@ -65,11 +70,15 @@ public class Transaction {
 
     @Column(nullable = false)
     @Convert(converter = StatusConverter.class)
-    private status status;
+    private transactionstatus status;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private currency currency;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private roles role;
 
     @JsonIgnore
     @ManyToOne

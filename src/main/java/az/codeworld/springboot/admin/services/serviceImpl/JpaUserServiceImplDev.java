@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,23 @@ import az.codeworld.springboot.admin.mappers.UserTransactionMapper;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.dtos.UserAuthDTO;
+import az.codeworld.springboot.security.services.rbacservices.RoleService;
+import az.codeworld.springboot.utilities.constants.roles;
 
 @Service
 @Profile("dev")
 public class JpaUserServiceImplDev implements UserService {
 
     private final UserRepository userRepository;
+
+    private final RoleService roleService;
     
     public JpaUserServiceImplDev(
-        UserRepository userRepository
+        UserRepository userRepository,
+        RoleService roleService
     ) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -87,6 +94,22 @@ public class JpaUserServiceImplDev implements UserService {
     public void removeUser(User user) {}
 
     @Override
-    public void createNewUser(UserAuthDTO userAuthDTO) {}
+    public void createNewUser(UserAuthDTO userAuthDTO) {
+        User user = new User();
+        user.setFirstName(userAuthDTO.getFirstName());
+        user.setLastName(userAuthDTO.getLastName());
+        user.setEmail(userAuthDTO.getEmail());
+        user.setPassword(userAuthDTO.getPassword());
+
+        saveUser(user);
+
+        roleService.addRolesToUser(user.getUsername(), Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
+    }
+
+    @Override
+    public void deleteUserByUsername(String username) {
+        userRepository.deleteByUsername(username);
+        userRepository.flush();
+    }
     
 }

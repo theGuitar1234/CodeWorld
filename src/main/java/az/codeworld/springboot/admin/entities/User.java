@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.security.entities.Role;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -86,7 +87,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @Column
-    //@Pattern(regexp = "^+\\d{3} \\d{3} \\d{2} \\d{2}$")
+    @Pattern(regexp = "^\\+\\d{3}\\d{2}\\d{3}\\d{2}\\d{2}$")
     private String phoneNumber;
 
     @Past
@@ -113,7 +114,7 @@ public class User {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Transaction> transactions = new ArrayList<>();
 
     public void addTransaction(Transaction transaction) {

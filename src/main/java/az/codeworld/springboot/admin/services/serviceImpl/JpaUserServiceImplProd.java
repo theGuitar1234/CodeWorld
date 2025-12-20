@@ -66,5 +66,11 @@ public class JpaUserServiceImplProd implements UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserByUsername'");
     }
+
+    @Override
+    public void deleteUserByUsername(String username) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteUserByUsername'");
+    }
     
 }

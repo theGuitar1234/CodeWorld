@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import az.codeworld.springboot.admin.entities.User;
-import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -26,6 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
     void deleteByEmail(String email);
+
+    @Modifying
+    @Transactional
+    void deleteByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.createdAt = :createdAt ORDER BY u.createdAt DESC")
     List<User> findNewestUsers(@Param("createdAt") LocalDateTime createdAt);

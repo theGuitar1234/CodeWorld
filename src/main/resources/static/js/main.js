@@ -1,18 +1,16 @@
-import { initTable, populateTable} from "./table.js";
-import { initStickyHeader } from "./sticky-header.js";
-import { initScrollTop } from "./scroll-top.js";
-import { initDialog } from "./dialog.js";
-import { initShowPassword } from "./show-password.js";
-import { initHero } from "./hero.js";
-import { initTheme } from "./theme.js";
+import { initTable, populateTable} from "./table/table.js";
+import { initStickyHeader } from "./layout/sticky-header.js";
+import { initScrollTop } from "./layout/scroll-top.js";
+import { initDialog } from "./table/dialog.js";
+import { initTheme } from "./layout/theme.js";
+import { initFragment } from "./table/fragment.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initDialog();
     populateTable();
     initTable();
+    initFragment();
     initStickyHeader();
     initScrollTop();
-    initHero();
-    initShowPassword();
 });

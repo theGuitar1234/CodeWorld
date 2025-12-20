@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.repositories.AuthorityRepository;
-import az.codeworld.springboot.security.services.AuthorityService;
+import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
 
 @Service
 public class AuthorityServiceImpl implements AuthorityService {

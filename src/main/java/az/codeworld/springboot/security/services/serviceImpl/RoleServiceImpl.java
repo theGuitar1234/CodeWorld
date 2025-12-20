@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.security.repositories.RoleRepository;
-import az.codeworld.springboot.security.services.RoleService;
-import az.codeworld.springboot.utilities.constants.roles;
+import az.codeworld.springboot.security.services.rbacservices.RoleService;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import jakarta.transaction.Transactional;

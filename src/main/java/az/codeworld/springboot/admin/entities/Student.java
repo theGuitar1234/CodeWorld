@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.web.entities.Enrollment;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -51,6 +52,6 @@ public class Student extends User {
     @Column
     private double gpa;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Enrollment> enrollments = new ArrayList<>();
 }

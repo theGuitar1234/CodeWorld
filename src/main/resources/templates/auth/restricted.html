@@ -4,11 +4,28 @@
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-  <title>Authenticate</title>
 
-  <div th:replace="~{fragments/head.html :: head}"></div>
+  <head th:fragment="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authenticate</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script type="module" th:src="@{/js/auth-main.js}"></script>
+  </head>
 
   <body class="layout auth">
+
+    <style>
+      .error {
+        position: fixed;
+        top: 0;
+        left: 10%;
+        z-index: 9999;
+        color: red;
+      }
+    </style>
+    <div class="error" th:text="${error}"></div>
+
     <div class="container1">
       <div class="theme auth">
         <input id="theme" type="checkbox" />
@@ -115,7 +132,7 @@
       </form>
 
       <form
-        th:action="@{/}"
+        th:action="@{/restricted/request}"
         class="form-signIn"
         method="POST"
         id="sign-in-anchor"
@@ -183,6 +200,13 @@
               name="email"
               autocomplete="email"
             />
+          </label>
+          <label for="role">
+            Who are you claiming to be?
+            <select name="role" id="role">
+              <option value="TEACHER">Teacher</option>
+              <option value="STUDENT">Student</option>
+            </select>
           </label>
         </fieldset>
         <button type="submit">Request</button>

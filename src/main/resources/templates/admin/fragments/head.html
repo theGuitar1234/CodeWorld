@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout}"
->
-  <body>
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Admin</title>
-      <link rel="stylesheet" th:href="@{/admin/css/style.css}" />
-      <script type="module" th:src="@{/admin/js/main.js}" defer></script>
-    </head>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>Admin</title>
+  <link rel="stylesheet" th:href="@{/admin/css/style.css}" />
+  <script type="module" th:src="@{/admin/js/main.js}" defer></script>
+</head>

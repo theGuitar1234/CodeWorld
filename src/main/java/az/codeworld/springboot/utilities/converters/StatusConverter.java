@@ -1,36 +1,36 @@
 package az.codeworld.springboot.utilities.converters;
 
-import az.codeworld.springboot.utilities.constants.status;
+import az.codeworld.springboot.utilities.constants.transactionstatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class StatusConverter implements AttributeConverter<status, String> {
+public class StatusConverter implements AttributeConverter<transactionstatus, String> {
 
     @Override
-    public String convertToDatabaseColumn(status attribute) {
+    public String convertToDatabaseColumn(transactionstatus attribute) {
 
         if (attribute == null) 
             return null;
 
         return switch (attribute) {
-            case status.CHECKED -> "Checked";
-            case status.PENDING -> "Pending";
-            case status.REJECTED -> "Rejected";
+            case transactionstatus.CHECKED -> "Checked";
+            case transactionstatus.PENDING -> "Pending";
+            case transactionstatus.REJECTED -> "Rejected";
             default -> throw new IllegalArgumentException("Unknown value: " + attribute);
         };
     }
 
     @Override
-    public status convertToEntityAttribute(String dbData) {
+    public transactionstatus convertToEntityAttribute(String dbData) {
         
         if (dbData == null) 
             return null;
 
         return switch (dbData) {
-            case "Checked" -> status.CHECKED;
-            case "Pending" -> status.PENDING;
-            case "Rejected" -> status.REJECTED;
+            case "Checked" -> transactionstatus.CHECKED;
+            case "Pending" -> transactionstatus.PENDING;
+            case "Rejected" -> transactionstatus.REJECTED;
             default -> throw new IllegalArgumentException("Unknown value: " + dbData);
         };
     }

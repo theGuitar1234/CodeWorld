@@ -16,8 +16,6 @@ function handleExpandAside() {
 
 function initExpand() {
 
-    console.log("Expand initialized");
-
     cacheElements();
 
     if (!body || !collapse || !aside) return;

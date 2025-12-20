@@ -4,7 +4,7 @@ let
   height;
 
 function cacheElements() {
-  headerSticky = document.querySelector("header");
+  headerSticky = document.querySelector("#header");
   navSticky = document.querySelector("nav");
 }
 

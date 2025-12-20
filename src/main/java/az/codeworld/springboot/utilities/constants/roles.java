@@ -2,8 +2,9 @@ package az.codeworld.springboot.utilities.constants;
 
 public enum roles {
     ADMIN(1L, "ADMIN"),
-    TEACHER(2L, "TEACHER"),
-    STUDENT(3L, "STUDENT");
+    USER(2L, "USER"),
+    TEACHER(3L, "TEACHER"),
+    STUDENT(4L, "STUDENT");
 
     private Long roleId;
     private String roleNameString;

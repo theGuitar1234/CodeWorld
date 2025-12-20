@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.web.entities.TeachingAssignment;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -55,6 +56,6 @@ public class Teacher extends User{
     @Column
     private double salary;
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<TeachingAssignment> teachingAssignments = new ArrayList<>();
 }

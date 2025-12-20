@@ -10,29 +10,36 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import az.codeworld.springboot.admin.entities.Request;
 import az.codeworld.springboot.admin.entities.Student;
 import az.codeworld.springboot.admin.entities.Teacher;
 import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.admin.entities.User;
+import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
 
 import az.codeworld.springboot.security.controllers.SecurityController;
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.Role;
-import az.codeworld.springboot.security.services.AuthorityService;
-import az.codeworld.springboot.security.services.JpaUserDetailsService;
-import az.codeworld.springboot.security.services.RoleService;
-
+import az.codeworld.springboot.security.services.authservices.RegistrationService;
+import az.codeworld.springboot.security.services.authservices.authservicesImpl.RegistrationServiceImplDev;
+import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
+import az.codeworld.springboot.security.services.rbacservices.JpaUserDetailsService;
+import az.codeworld.springboot.security.services.rbacservices.RoleService;
+import az.codeworld.springboot.utilities.TokenGenerator;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.roles;
-import az.codeworld.springboot.utilities.constants.status;
+import az.codeworld.springboot.utilities.constants.transactionstatus;
 
 import az.codeworld.springboot.web.entities.ClassSection;
 import az.codeworld.springboot.web.entities.Enrollment;
@@ -41,7 +48,8 @@ import az.codeworld.springboot.web.entities.TeachingAssignment;
 import az.codeworld.springboot.web.services.GenericWebService;
 
 @Component
-public class SeedData implements CommandLineRunner {
+@Profile("dev")
+public class SeedData implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityController.class);
 
@@ -52,17 +60,23 @@ public class SeedData implements CommandLineRunner {
     private final TransactionService transactionService;
     private final JpaUserDetailsService jpaUserDetailsService;
 
+    private final RequestService requestService;
+
     private final GenericWebService genericWebService;
 
+    private final RegistrationServiceImplDev registrationService;
+
     public SeedData(
-        PasswordEncoder passwordEncoder,
-        AuthorityService authorityService,
-        RoleService roleService,
-        UserService userService, 
-        JpaUserDetailsService jpaUserDetailsService,
-        TransactionService transactionService,
-        GenericWebService genericWebService
-    ) {
+            PasswordEncoder passwordEncoder,
+            AuthorityService authorityService,
+            RoleService roleService,
+            UserService userService,
+            JpaUserDetailsService jpaUserDetailsService,
+            TransactionService transactionService,
+            GenericWebService genericWebService,
+            RequestService requestService,
+            RegistrationServiceImplDev registrationService
+        ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
         this.roleService = roleService;
@@ -70,11 +84,18 @@ public class SeedData implements CommandLineRunner {
         this.jpaUserDetailsService = jpaUserDetailsService;
         this.transactionService = transactionService;
         this.genericWebService = genericWebService;
+        this.requestService = requestService;
+        this.registrationService = registrationService;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(ApplicationArguments args) throws Exception {
         log.info("Seeding Data...");
+
+        // try {
+        //     if (authorityService.getAuthorityById(authorities.ACCESS_ADMIN_PANEL.getAuthorityId()) != null)
+        //         return;
+        // } catch (RuntimeException e) {}
 
         for (authorities auth : authorities.values()) {
             Authority authority = new Authority();
@@ -98,13 +119,16 @@ public class SeedData implements CommandLineRunner {
                             authorities.DELETE_ANY_USER.getAuthorityId(),
                             authorities.SET_ANY_ROLE.getAuthorityId());
                     break;
+                case "USER":
+                    authorityIds = Set.of(authorities.READ_ANY_CONTENT.getAuthorityId());
+                    break;
                 case "STUDENT":
                     authorityIds = Set.of(
-                        authorities.READ_ANY_CONTENT.getAuthorityId());
+                            authorities.READ_ANY_CONTENT.getAuthorityId());
                     break;
                 case "TEACHER":
                     authorityIds = Set.of(
-                        authorities.READ_ANY_CONTENT.getAuthorityId());
+                            authorities.READ_ANY_CONTENT.getAuthorityId());
                     break;
                 default:
                     throw new RuntimeException("Invalid roleString");
@@ -113,7 +137,7 @@ public class SeedData implements CommandLineRunner {
                 Authority authority = authorityService.getAuthorityById(authorityId);
                 roleTemp.getAuthorities().add(authority);
                 authority.getRoles().add(roleTemp);
-            } 
+            }
             roleService.saveRole(roleTemp);
         }
 
@@ -156,7 +180,7 @@ public class SeedData implements CommandLineRunner {
         Teacher teacher;
         TeachingAssignment teachingAssignment;
 
-        for (int i = 0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             teacher = new Teacher();
             teacher.setUsername("T-AAAA-AAAA-" + i);
             teacher.setFirstName("Thomas");
@@ -164,8 +188,8 @@ public class SeedData implements CommandLineRunner {
             teacher.setEmail("example" + i + "@email.com");
             teacher.setPassword(passwordEncoder.encode("1234@Aa"));
             teacher.setCreatedAt(LocalDateTime.now());
-            teacher.setPhoneNumber("+994 051 999 99 99");
-            
+            teacher.setPhoneNumber("+994519889192");
+
             teacher.setDepartment("Biology");
             teacher.setTitle("Biology");
             teacher.setHiredAt(LocalDate.of(2005, 12, 4));
@@ -199,16 +223,17 @@ public class SeedData implements CommandLineRunner {
 
             genericWebService.saveType(TeachingAssignment.class, teachingAssignment);
 
-            for (int j = 0; j<20; j++) {
+            for (int j = 0; j < 20; j++) {
                 transaction = new Transaction();
-                transaction.setTransactionPaidBy("HDFC Bank");
-                transaction.setTransactionDescription("Withdraw to Bank account");
+                transaction.setTransactionPaidBy("HDFC TEACHER Bank");
+                transaction.setTransactionDescription("Withdraw to TEACHER Bank account");
                 transaction.setTransactionDetails("Transfer to HDFC Bank via Secure3D");
-                transaction.setStatus(status.PENDING);
+                transaction.setStatus(transactionstatus.PENDING);
                 transaction.setTransactionFee(BigDecimal.valueOf(4.82));
-                transaction.setTransactionAmount(BigDecimal.valueOf(62));
+                transaction.setTransactionAmount(BigDecimal.valueOf(62).add(BigDecimal.valueOf(j)));
                 transaction.setTransactionTotal(BigDecimal.valueOf(562));
                 transaction.setCurrency(currency.USD);
+                transaction.setRole(roles.TEACHER);
 
                 transactionService.saveTransaction(transaction);
                 transactionService.addTransactionsToUser(teacher.getUsername(), Set.of(transaction.getTransactionId()));
@@ -217,17 +242,17 @@ public class SeedData implements CommandLineRunner {
 
         Student student;
         Enrollment enrollment;
-        
-        for (int i = 0; i<20; i++) {
+
+        for (int i = 0; i < 20; i++) {
             student = new Student();
-            int key = i+5;
+            int key = i + 5;
             student.setUsername("S-AAAA-AAAA-" + key);
             student.setFirstName("James");
             student.setLastName("Dhones");
             student.setEmail("example" + i + 5 + "@email.com");
             student.setPassword(passwordEncoder.encode("1234@Aa"));
             student.setCreatedAt(LocalDateTime.now());
-            student.setPhoneNumber("+9940519999999");
+            student.setPhoneNumber("+994519889192");
 
             student.setGroupName("684.23e");
             student.setYear(2);
@@ -261,18 +286,21 @@ public class SeedData implements CommandLineRunner {
 
             genericWebService.saveType(Enrollment.class, enrollment);
 
-            // for (int j = 0; j<20; j++) {
-            //     transaction = new Transaction();
-            //     transaction.setTransactionTitle("HDFC Bank");
-            //     transaction.setTransactionDescription("Withdraw to Bank account");
-            //     transaction.setStatus(status.PENDING);
-            //     transaction.setTransactionAmount(BigDecimal.valueOf(62));
-            //     transaction.setCurrency(currency.USD);
+            for (int j = 0; j < 2; j++) {
+                transaction = new Transaction();
+                transaction.setTransactionPaidBy("HDFC STUDENT Bank");
+                transaction.setTransactionDescription("Withdraw to STUDENT Bank account");
+                transaction.setTransactionDetails("Transfer to HDFC STUDENT Bank via Secure3D");
+                transaction.setStatus(transactionstatus.PENDING);
+                transaction.setTransactionFee(BigDecimal.valueOf(4.82));
+                transaction.setTransactionAmount(BigDecimal.valueOf(62));
+                transaction.setTransactionTotal(BigDecimal.valueOf(562));
+                transaction.setCurrency(currency.USD);
+                transaction.setRole(roles.STUDENT);
 
-            //     transaction.setUser(student);
-            //     transactionService.saveTransaction(transaction);
-            //     student.getTransactions().add(transaction);
-            // }
+                transactionService.saveTransaction(transaction);
+                transactionService.addTransactionsToUser(student.getUsername(), Set.of(transaction.getTransactionId()));
+            }
         }
 
         User admin = new User();
@@ -281,9 +309,42 @@ public class SeedData implements CommandLineRunner {
         admin.setUsername("A-AAAA-AAAA-A");
         admin.setEmail("admin@admin.com");
         admin.setPassword(passwordEncoder.encode("1234Aa@"));
-        
+
         userService.saveUser(admin);
         roleService.addRolesToUser(admin.getUsername(), Set.of(roles.ADMIN.getRoleId()));
+
+        for (int j = 0; j < 2; j++) {
+            transaction = new Transaction();
+            transaction.setTransactionPaidBy("HDFC ADMIN Bank");
+            transaction.setTransactionDescription("Withdraw to ADMIN Bank account");
+            transaction.setTransactionDetails("Transfer to HDFC ADMIN Bank via Secure3D");
+            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setTransactionFee(BigDecimal.valueOf(4.82));
+            transaction.setTransactionAmount(BigDecimal.valueOf(62));
+            transaction.setTransactionTotal(BigDecimal.valueOf(562));
+            transaction.setCurrency(currency.USD);
+            transaction.setRole(roles.ADMIN);
+
+            transactionService.saveTransaction(transaction);
+            transactionService.addTransactionsToUser(admin.getUsername(), Set.of(transaction.getTransactionId()));
+        }
+
+        Request request;
+
+        for (int i = 0; i < 50; i++) {
+            request = new Request();
+
+            request.setEmail("example" + i + "@gmail.com");
+            request.setFirstname("Thomas");
+            request.setLastname("Billy");
+
+            request.setRole(roles.STUDENT);
+            request.setRequestToken(TokenGenerator.generateToken());
+
+            requestService.saveRequest(request);
+        }
+
+        System.out.println("\n\n\n\n\n\n\n\n\n" + registrationService.getPort() + "\n\n\n\n\n\n\n\n\n");
     }
-    
+
 }

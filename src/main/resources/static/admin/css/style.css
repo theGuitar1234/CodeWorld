@@ -131,6 +131,8 @@ body::-webkit-scrollbar-thumb {
 header {
   grid-area: header;
   padding: 0 1rem;
+  position: sticky;
+  top: 0;
 }
 svg {
   flex-shrink: 0;
@@ -381,7 +383,7 @@ aside svg path {
   height: fit-content;
   padding: 0.5em 0;
   font-size: clamp(0.5rem, calc(1rem + 1vw), 1.5rem);
-  margin-left: var(--header-gap);
+  /* margin-left: var(--header-gap); */
   display: flex;
   align-items: center;
   /* text-wrap: nowrap;
@@ -401,7 +403,7 @@ aside svg path {
   justify-content: center;
   gap: 0.2em;
 
-  color: white;
+  color: var(--accent-color);
 }
 
 .logo a span {
@@ -480,8 +482,10 @@ main {
 }
 
 main .wrapper {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   background-color: greenyellow;
+  width: min(100%, 1240px);
+  margin: auto;
 }
 
 main header {
@@ -498,40 +502,140 @@ main header {
   display: grid;
   grid-template-columns: repeat(3, minmax(min(100vw, 200px), 1fr));
   grid-auto-rows: auto;
-  gap: 1em;
+  /* align-items: stretch;
+  justify-items: stretch; */
+  gap: 2em;
 }
 .container {
   background-color: red;
+  box-shadow: var(--shadow-hard);
 }
 
 #container1 {
   background: linear-gradient(to right, #ffc400, #ffe600);
-  grid-column: 1 / -1;
+  grid-column: 1 / -2;
   grid-row: 1 / span 3;
   display: flex;
-  gap: 1em;
 }
+
+#container2,
+#container3,
+#container4 {
+  display: flex;
+  padding: 0.5em;
+}
+
+.container .see-all {
+  background-color: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container .see-all svg {
+  background-color: var(--accent-color);
+  padding: 0.5em;
+  box-sizing: content-box;
+  border-radius: var(--border-radius-low);
+}
+.container .see-all svg path {
+  fill: white;
+}
+
+.container .wrapper {
+  background-color: white;
+}
+.container .wrapper .data {
+  display: flex;
+}
+.container .wrapper .data .total {
+  color: var(--accent-color);
+}
+
 .activity {
   flex-grow: 1;
 }
 
 #container5 {
-  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: none;
+  /* background-color: transparent; */
 }
+
 #container6,
-#container7,
+#container7 {
+  max-height: 250px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+/* #container6 .title,
+#container7 .title {
+  position: sticky;
+  top: 0;
+  background-color: yellow;
+} */
+
 #container8 {
-  grid-row: span 2;
+  grid-column: 1 / -1;
 }
 
 #container9 {
   grid-column: 1 / -1;
-  grid-row: span 5;
+  /* grid-row: span 100; */
   background-color: green;
   display: flex;
+  gap: 2em;
+  /* overflow-x: scroll;
+  scrollbar-width: thin; */
+  overflow: hidden;
 }
 
-main .wrapper .activity {
+.chartCard {
+  width: 100%;
+  /* width: min(900px, 100%); */
+  /* aspect-ratio: 16 / 9;    */
+  /* border-radius: 16px; */
+  padding: 16px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chartCard canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.pie-chart {
+  width: min(200px, 50%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--start-angle),
+    var(--element1-color) 0% var(--element1),
+    var(--element2-color) var(--element1)
+      calc(var(--element1) + var(--element2)),
+    var(--element3-color) calc(var(--element1) + var(--element2))
+      calc(var(--element1) + var(--element2) + var(--element3)),
+    var(--element4-color)
+      calc(var(--element1) + var(--element2) + var(--element3))
+      calc(
+        var(--element1) + var(--element2) + var(--element3) + var(--element4)
+      ),
+    var(--element5-color)
+      calc(
+        var(--element1) + var(--element2) + var(--element3) + var(--element4)
+      )
+      100%
+  );
+  position: relative;
+}
+
+.activity {
   display: flex;
   flex-direction: column;
   background-color: var(--background-color);
@@ -540,29 +644,33 @@ main .wrapper .activity {
   min-height: 0;
 }
 
-main .wrapper .activity .title,
+.activity.requests {
+  max-height: 50vh;
+}
+
+.activity .title,
 .view-all {
   flex: 0 0 auto;
 }
 
-main .wrapper .activity .title {
+.activity .title {
   font-size: clamp(1rem, calc(0.7rem + 0.7vw), 1.5rem);
   font-weight: 500;
   padding: 1em 1.5em;
 }
 
-main .wrapper .activity .title h1 {
+.activity .title h1 {
   font-size: inherit;
   font-weight: inherit;
 }
 
-main .wrapper .activity .panel {
+.activity .panel {
   flex-grow: 1;
   overflow: auto;
   scrollbar-width: none;
 }
 
-main .wrapper .activity .panel table {
+.activity .panel table {
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -572,26 +680,26 @@ main .wrapper .activity .panel table {
   border-spacing: 0;
 }
 
-main .wrapper .activity .panel table thead {
+.activity .panel table thead {
   background-color: var(--base-color);
   position: sticky;
   top: 0;
 }
 
-main .wrapper .activity .panel table th {
+.activity .panel table th {
   font-weight: normal;
 }
 
-main .wrapper .activity .panel table tr {
+.activity .panel table tr {
   border-bottom: 1px solid var(--line-color);
   cursor: pointer;
 }
 
-main .wrapper .activity .panel table tr:hover {
+.activity .panel table tr:hover {
   background-color: var(--base-color);
 }
 
-main .wrapper .activity .panel table td {
+.activity .panel table td {
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
@@ -600,33 +708,54 @@ main .wrapper .activity .panel table td {
   padding: 0.7em 2em;
 }
 
-main .wrapper .activity .panel table td .checkbox {
+.activity .panel table td .checkbox {
   margin: auto;
 }
 
-main .wrapper .activity .panel table td.description {
+.activity .panel table td.description {
   text-align: left;
   width: auto;
   padding: 0;
 }
 
-main .wrapper .activity .panel table td.description h2 {
+.activity .panel table td.description h2 {
   font-size: clamp(1rem, calc(0.7rem + 0.7vw), 1.5rem);
   font-weight: 500;
 }
 
-main .wrapper .activity .panel table td.amount-uprise p {
+.activity .panel table td.amount-uprise p {
   color: var(--accent-color);
 }
-main .wrapper .activity .panel table td.amount-uprise p:first-child::before {
+.activity .panel table td.amount-uprise p:first-child::before {
   content: "+";
 }
 
-main .wrapper .activity .panel table td.amount-downrise p {
+.activity .panel table td.amount-downrise p {
   color: var(--warning-color);
 }
-main .wrapper .activity .panel table td.amount-downrise p:first-child::before {
+.activity .panel table td.amount-downrise p:first-child::before {
   content: "-";
+}
+
+.activity .panel table td button {
+  border: none;
+  color: white;
+  padding: .5em 1em;
+  border-radius: var(--border-radius-very-high);
+  cursor: pointer;
+}
+.activity .panel table td .js-accept {
+  background-color: green;
+}
+.activity .panel table td .js-reject {
+  background-color: red;
+}
+.activity .panel table td button:active {
+  transform: scale(.8);
+}
+
+button:disabled {
+  background-color: grey;
 }
 
 #date-cell::before {
@@ -650,38 +779,99 @@ main .wrapper .activity .panel table td.amount-downrise p:first-child::before {
   text-decoration: underline;
 }
 
-main .wrapper .activity .checked-unchecked.checked .checkbox {
-  display: block;
-}
-main .wrapper .activity .checked-unchecked.checked .checkbox svg {
-  display: block;
-}
-
 .checked-unchecked .rejected {
   display: none;
 }
 .checked-unchecked .pending {
   display: none;
 }
-main .wrapper .activity .checked-unchecked .checkbox {
+.activity .checked-unchecked .checkbox {
   display: none;
 }
 
-.checked-unchecked.pending .pending {
-  display: flex;
-  align-items: center;
-}
 .checked-unchecked .pending svg path {
   fill: var(--pending-color);
 }
 
+.activity .checked-unchecked.checked .checkbox {
+  display: block;
+}
+.activity .checked-unchecked.checked .checkbox svg {
+  display: block;
+}
+.checked-unchecked.pending .pending {
+  display: flex;
+  align-items: center;
+}
 .checked-unchecked.rejected .rejected {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#transaction-dialog {
+.checkbox {
+  flex-shrink: 0;
+  height: min(20px, 7vh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  caret-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--secondary-text-color);
+}
+
+.rejected {
+  flex-shrink: 0;
+  height: min(20px, 7vh);
+  width: auto;
+  aspect-ratio: 1;
+  caret-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox svg {
+  display: none;
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rejected svg {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--warning-color);
+  border-radius: 50%;
+}
+
+.checkbox svg path {
+  fill: white;
+}
+
+.rejected svg path {
+  fill: white;
+}
+
+.checked-unchecked.checked .checkbox svg {
+  display: block;
+}
+
+.checked-unchecked.checked .checkbox {
+  background-color: #28a745;
+  border: none;
+}
+
+#dialog-status-icon {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+dialog[transaction-dialog] {
   border: none;
   padding: 0;
   margin: auto;
@@ -690,19 +880,19 @@ main .wrapper .activity .checked-unchecked .checkbox {
   opacity: 0;
   transition: transform 0.4s ease-out, opacity 0.4s ease-out;
 }
-#transaction-dialog::backdrop {
+dialog[transaction-dialog]::backdrop {
   backdrop-filter: blur(2px);
 }
-#transaction-dialog .wrapper {
+dialog[transaction-dialog] .wrapper {
   display: flex;
   height: 100%;
   width: 100%;
   gap: 0;
 }
-#transaction-dialog .wrapper > * {
+dialog[transaction-dialog] .wrapper > * {
   border-radius: 0px;
 }
-#transaction-dialog .wrapper .transaction {
+dialog[transaction-dialog] .wrapper .transaction {
   background-color: var(--accent-color);
   flex-grow: 1;
   padding: 2em 5em;
@@ -712,27 +902,27 @@ main .wrapper .activity .checked-unchecked .checkbox {
   justify-content: center;
   gap: 1.5em;
 }
-#transaction-dialog .wrapper .transaction svg {
+dialog[transaction-dialog] .wrapper .transaction svg {
   height: 25%;
   width: 100%;
   aspect-ratio: 1;
 }
-#transaction-dialog .wrapper .transaction svg path {
+dialog[transaction-dialog] .wrapper .transaction svg path {
   fill: white;
 }
-#transaction-dialog .wrapper .transaction h3 {
+dialog[transaction-dialog] .wrapper .transaction h3 {
   font-weight: 400;
   color: var(--base-color);
 }
-#transaction-dialog .wrapper .transaction h1 {
+dialog[transaction-dialog] .wrapper .transaction h1 {
   font-weight: 600;
   color: white;
 }
-#transaction-dialog .wrapper .transaction small {
+dialog[transaction-dialog] .wrapper .transaction small {
   color: white;
 }
 
-#transaction-dialog .wrapper .transaction-details {
+dialog[transaction-dialog] .wrapper .transaction-details {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -741,24 +931,24 @@ main .wrapper .activity .checked-unchecked .checkbox {
   padding: 0 0.5em;
 }
 
-#transaction-dialog .wrapper .transaction-details .others {
+dialog[transaction-dialog] .wrapper .transaction-details .others {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 0.5em 0;
 }
 
-#transaction-dialog .transaction-details .header {
+dialog[transaction-dialog] .transaction-details .header {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   border-bottom: 1px solid var(--line-color);
 }
-#transaction-dialog .wrapper .transaction-details .header h1 {
+dialog[transaction-dialog] .wrapper .transaction-details .header h1 {
   flex-grow: 1;
 }
-#transaction-dialog .transaction-details .header button {
+dialog[transaction-dialog] .transaction-details .header button {
   height: fit-content;
   width: fit-content;
   background-color: transparent;
@@ -768,11 +958,11 @@ main .wrapper .activity .checked-unchecked .checkbox {
   box-shadow: none;
   padding: 0 1em;
 }
-#transaction-dialog .transaction-details .header button svg path {
+dialog[transaction-dialog] .transaction-details .header button svg path {
   fill: var(--svg-fill-color);
 }
 
-#transaction-dialog .transaction-details .amount-details {
+dialog[transaction-dialog] .transaction-details .amount-details {
   border-bottom: 1px solid var(--line-color);
   display: flex;
   flex-direction: column;
@@ -790,17 +980,17 @@ main .wrapper .activity .checked-unchecked .checkbox {
   justify-content: space-between;
 }
 
-#transaction-dialog .transfer-details .data {
+dialog[transaction-dialog] .transfer-details .data {
   border-bottom: 1px solid var(--line-color);
   padding: 0.5em 0;
 }
 
-#transaction-dialog .transaction-details h3 {
+dialog[transaction-dialog] .transaction-details h3 {
   font-size: clamp(0.5rem, calc(0.5rem + 0.7vw), 1rem);
   font-weight: 500;
 }
 
-#transaction-dialog.is-open {
+dialog[transaction-dialog].is-open {
   transform: translateY(0%);
   opacity: 1;
 }
@@ -1007,7 +1197,15 @@ footer .terms .terms-of-service ul li a {
   .container {
     grid-column: 1 / -1 !important;
   }
+  #container2 {
+    grid-row: auto;
+    aspect-ratio: unset;
+  }
   #container1 {
+    grid-column: auto;
+    flex-direction: column;
+  }
+  #container9 {
     flex-direction: column;
   }
   .left-wrapper .collapse-menu {
@@ -1016,7 +1214,16 @@ footer .terms .terms-of-service ul li a {
 }
 
 @media (width < 1240px) {
+  #container9 {
+    flex-direction: column;
+  }
+  #container2 {
+    grid-row: auto;
+    aspect-ratio: unset;
+  }
   #container1 {
+    grid-column: 1 / -1;
+    grid-row: auto;
     flex-direction: column;
   }
 }

@@ -28,6 +28,7 @@ public interface UserService {
 
     void deleteUserById(Long id);
     void deleteUserByEmail(String email);
+    void deleteUserByUsername(String username);
     void removeUser(User user);
 
     void createNewUser(UserAuthDTO userAuthDTO);

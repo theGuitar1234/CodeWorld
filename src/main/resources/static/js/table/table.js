@@ -29,6 +29,7 @@ let
   status;
 
 function cacheElements() {
+ 
   dialogStatusIcon = document.getElementById("dialog-status-icon");
 
   tableBody = document.querySelector("tbody");
@@ -85,7 +86,7 @@ function populateDialog(row) {
 function populateTable() {
   if (!table) cacheElements();
   if (!table) return;
-
+ 
   rows = table.querySelectorAll("tr");
 
   rows.forEach((r) => {
@@ -110,7 +111,7 @@ function populateTable() {
 
 function initTable() {
   cacheElements();
-
+  
   if (!tableBody) return;
 
   tableBody.addEventListener("click", (e) => {

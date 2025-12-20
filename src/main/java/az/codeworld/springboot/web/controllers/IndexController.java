@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserTransactionDTO;
+import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
+import az.codeworld.springboot.utilities.constants.roles;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -18,34 +21,19 @@ public class IndexController {
 
     private UserService userService;
 
+    private TransactionService transactionService;
+
     public IndexController(
-        UserService userService
+        UserService userService,
+        TransactionService transactionService
     ) {
         this.userService = userService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping("/")
     public String home() {
         return "index";
-    }
-
-    @GetMapping("/dashboard")
-    public String dashboard(Model model, Principal principal) {
-        try {
-            model.addAttribute("user", userService.getUserByUsername(principal.getName()));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            model.addAllAttributes(Map.of(
-                "user", new UserTransactionDTO(), 
-                "error", e.getLocalizedMessage())
-            );
-        }
-        return "dashboard/dashboard.html";
-    }
-    
-    @GetMapping("/transactions")
-    public String transactions() {
-        return "buss/transactions";
     }
 
     @GetMapping("/paymentMethods")
