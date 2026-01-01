@@ -53,6 +53,7 @@ public class JpaUserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User not Found By ID"));
         return UserMapper.toUserDTO(
+            user.getUsername(),
             user.getFirstName(), 
             user.getLastName(), 
             user.getEmail(),
@@ -94,7 +95,7 @@ public class JpaUserServiceImpl implements UserService {
     public void removeUser(User user) {}
 
     @Override
-    public void createNewUser(UserAuthDTO userAuthDTO) {
+    public UserDTO createNewUser(UserAuthDTO userAuthDTO) {
         User user = new User();
         user.setFirstName(userAuthDTO.getFirstName());
         user.setLastName(userAuthDTO.getLastName());
@@ -104,6 +105,14 @@ public class JpaUserServiceImpl implements UserService {
         saveUser(user);
 
         roleService.addRolesToUser(user.getUsername(), Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
+
+        return UserMapper.toUserDTO(
+            user.getUsername(), 
+            user.getFirstName(), 
+            user.getLastName(), 
+            user.getEmail(), 
+            user.getCreatedAt()
+        );
     }
 
     @Override

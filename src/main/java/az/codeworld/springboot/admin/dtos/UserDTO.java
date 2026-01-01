@@ -17,17 +17,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
     private String createdAt;
 
     public UserDTO(
+        String username,
         String firstname,
         String lastName,
         String email,
         LocalDateTime createdAt
     ) {
+        this.username = username;
         this.createdAt = createdAt.toString();
         this.email = email;
         this.firstName = firstname;

@@ -1,5 +1,7 @@
 package az.codeworld.springboot.security.services.authservices.authservicesImpl;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
+import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImpl;
 import az.codeworld.springboot.security.dtos.UserAuthDTO;
@@ -51,7 +54,8 @@ public class RegistrationServiceImplDev implements RegistrationService {
             "auth/registration/accept-request", 
             Map.of(
                 "name", requestDTO.getFirstName(),
-                "verifyUrl", "http://localhost:" + port + "/user/register?token=" + requestDTO.getRequestToken() 
+                "verifyUrl", "http://localhost:" + port + "/user/register?token=" + requestDTO.getRequestToken(),
+                "date", LocalDate.now().plusDays(1)
             )
         );
 
@@ -94,19 +98,23 @@ public class RegistrationServiceImplDev implements RegistrationService {
     @Transactional
     public void registerUser(UserAuthDTO userAuthDTO) {
 
+        UserDTO userDTO = userService.createNewUser(userAuthDTO);
+
+        String url = "http://localhost:" + port + "/";
+
         String html = thymeleafService.render(
-            "auth/registration/accept-request",
+            "auth/registration/registration-success", 
             Map.of(
                 "name", userAuthDTO.getFirstName(),
-                "verifyURL", "BOZO WAIT! COMING SOON!!!"
-            )    
+                "url", url,
+                "username", userDTO.getUsername()
+            )
         );
-        userService.createNewUser(userAuthDTO);
 
         EmailOutbox emailOutbox = EmailOutbox
             .pending(
                 userAuthDTO.getEmail(), 
-                "Your Request has been Accepted :)", 
+                "Your have been successfully registered as a new user! :)", 
                 html
             );
 

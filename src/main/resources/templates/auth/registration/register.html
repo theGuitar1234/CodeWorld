@@ -8,7 +8,7 @@
   <head th:fragment="head">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Authenticate</title>
+    <title>Register</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <script type="module" th:src="@{/js/auth-main.js}"></script>
   </head>
@@ -24,6 +24,7 @@
       }
     </style>
     <div class="error" th:text="${error}"></div>
+
     <div class="help" id="password-help">
       At least 1 uppercase, lowercase character, number and a special character
       is required
@@ -60,7 +61,7 @@
         </label>
       </div>
       <form
-        th:action="@{/restricted/authenticate}"
+        th:action="@{/user/register}"
         class="form-login"
         method="POST"
         id="login-anchor"
@@ -68,6 +69,7 @@
         <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
         <fieldset>
           <legend>Register</legend>
+          <input type="hidden" name="token" th:value="${request.requestToken}" />
           <label
             for="password"
             data-invalid="Invalid Password"
@@ -80,7 +82,7 @@
               id="password"
               aria-describedby="password-help"
               placeholder="password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$"
+              pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
               name="password"
               required
               autocomplete="new-password"
@@ -98,12 +100,19 @@
               id="password2"
               aria-describedby="password-help"
               placeholder="password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$"
+              pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
               name="password2"
               required
               autocomplete="new-password"
             />
           </label>
+          <div class="remember-me">
+            <input
+              type="checkbox"
+              aria-checked="false"
+              id="show-password"
+            /><span>Show Password</span>
+          </div>
         </fieldset>
         <button type="submit">Submit</button>
       </form>

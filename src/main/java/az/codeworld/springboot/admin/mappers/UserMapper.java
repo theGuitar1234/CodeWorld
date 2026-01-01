@@ -9,6 +9,7 @@ import az.codeworld.springboot.admin.dtos.UserDTO;
 @Component
 public class UserMapper {
     public static UserDTO toUserDTO(
+        String username,
         String firstName,
         String lastName,
         String email,
@@ -16,6 +17,7 @@ public class UserMapper {
     ) {
         return UserDTO
             .builder()
+            .username(username)
             .firstName(firstName)
             .lastName(lastName)
             .email(email)

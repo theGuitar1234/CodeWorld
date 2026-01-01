@@ -59,7 +59,7 @@ public class JpaUserServiceImplProd implements UserService {
     public void removeUser(User user) {}
 
     @Override
-    public void createNewUser(UserAuthDTO userAuthDTO) {}
+    public UserDTO createNewUser(UserAuthDTO userAuthDTO) { return null; }
 
     @Override
     public UserTransactionDTO getUserByUsername(String username) {

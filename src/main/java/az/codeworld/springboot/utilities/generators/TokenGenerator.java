@@ -1,4 +1,4 @@
-package az.codeworld.springboot.utilities;
+package az.codeworld.springboot.utilities.generators;
 
 import java.security.SecureRandom;
 import java.util.Base64;

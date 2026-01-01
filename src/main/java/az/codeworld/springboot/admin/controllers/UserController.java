@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,18 +16,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.records.LinkRecord;
 import az.codeworld.springboot.admin.services.LogoutService;
 import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
+import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
+import az.codeworld.springboot.security.dtos.UserAuthDTO;
+import az.codeworld.springboot.security.services.authservices.RegistrationService;
 import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,6 +41,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    private Logger log = LoggerFactory.getLogger(UserController.class);
+
+    private final RegistrationService registrationService;
 
     private final TransactionService transactionService;
     private final RequestService requestService;
@@ -42,10 +54,11 @@ public class UserController {
         TransactionService transactionService,
         RequestService requestService,
         LogoutService logoutService
-    ) {
+    , RegistrationService registrationService) {
         this.transactionService = transactionService;
         this.requestService = requestService;
         this.logoutService = logoutService;
+        this.registrationService = registrationService;
     }
 
     @GetMapping("/login")
@@ -66,14 +79,56 @@ public class UserController {
             required = true,
             name = "token"
         ) String token,
-        HttpServletResponse response
+        HttpServletResponse response,
+        Model model
     ) throws IOException {
-        if (!requestService.validateRequest(token)) {
-            response.getWriter().write("Token Invalid or missing");
+        try {
+            RequestDTO requestDTO = requestService.validateRequest(token);
+            model.addAllAttributes(Map.of("request", requestDTO));
+            return "auth/registration/register";
+        } catch (InvalidRequestTokenException e) {
+            response.getWriter().write(e.getMessage());
+            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
+            // return "error/invalid-token";
             return null;
         }
-        return "auth/registration/register";
     }
+
+    @PostMapping("/register")
+    public String register(
+        @RequestParam(
+            required = true,
+            name = "token"
+        ) String token,
+        @RequestParam(
+            required = true,
+            name = "password"
+        ) String password,
+        HttpServletResponse response
+    ) throws IOException {
+        try {
+            RequestDTO requestDTO = requestService.validateRequest(token);
+            registrationService.registerUser(UserAuthDTO
+                .builder()
+                .firstName(requestDTO.getFirstName())
+                .lastName(requestDTO.getLastName())
+                .email(requestDTO.getEmail())
+                .role(requestDTO.getRole())
+                .password(password)
+                .build()
+            );
+            requestService.deleteRequestByRequestId(requestDTO.getRequestId());
+        } catch (InvalidRequestTokenException e) {
+            response.getWriter().write(e.getMessage());
+            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
+            return null;
+            // return "error/invalid-token";
+        }
+        return "redirect:/restricted/";
+    }
+    
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {

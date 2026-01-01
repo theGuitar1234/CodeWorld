@@ -18,10 +18,11 @@ public interface RequestService {
 
     List<RequestDTO> getAllRequests();
     List<RequestDTO> getRecentRequests();
-    
+
+    RequestDTO getRequestByRequestToken(String token);
     RequestDTO getRequestById(Long requestId);
 
     void deleteRequestByRequestId(Long requestId);
 
-    boolean validateRequest(String token);
+    RequestDTO validateRequest(String token);
 }

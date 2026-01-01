@@ -15,7 +15,8 @@ import az.codeworld.springboot.admin.entities.Request;
 import az.codeworld.springboot.admin.mappers.RequestMapper;
 import az.codeworld.springboot.admin.repositories.RequestRepository;
 import az.codeworld.springboot.admin.services.RequestService;
-import az.codeworld.springboot.utilities.TokenGenerator;
+import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
+import az.codeworld.springboot.utilities.generators.TokenGenerator;
 import az.codeworld.springboot.admin.records.RequestRecord;
 
 @Service
@@ -36,7 +37,7 @@ public class RequestServiceImplDev implements RequestService {
     @Override
     public void saveRequest(Request request) {
         if (request.getExpiresAt() == 0L) {
-            request.setExpiresAt(Instant.now().plus(Duration.ofMillis(15000)).toEpochMilli());
+            request.setExpiresAt(Instant.now().plus(Duration.ofDays(1L)).toEpochMilli());
         }
         requestRepository.save(request);
         requestRepository.flush();
@@ -121,10 +122,33 @@ public class RequestServiceImplDev implements RequestService {
     }
 
     @Override
-    public boolean validateRequest(String token) {
-        Optional<Request> requestOptional = requestRepository.findByRequestToken(token);    
-        System.out.println("\n\n\n\n\n\n\n\n" + requestOptional.get().getExpiresAt() + "\n\n\n\n\n\n\n\n" + System.currentTimeMillis());
-        return requestOptional.isPresent() && requestOptional.get().getExpiresAt() > System.currentTimeMillis();
+    public RequestDTO getRequestByRequestToken(String token) {
+        Request request = requestRepository.findByRequestToken(token).orElseThrow(() -> new RuntimeException("Request Not Found"));
+        return RequestMapper.toRequestDTO(
+            request.getRequestId(), 
+            request.getFirstname(), 
+            request.getLastname(), 
+            request.getEmail(), 
+            request.getRole(), 
+            request.getRequestToken()
+        ); 
+    }
+
+    @Override
+    public RequestDTO validateRequest(String token) {
+        Optional<Request> requestOptional = requestRepository.findByRequestToken(token);   
+        if (!(requestOptional.isPresent() && requestOptional.get().getExpiresAt() > System.currentTimeMillis()))
+            throw new InvalidRequestTokenException("token: " + token);
+        Request request = requestOptional.get();
+        RequestDTO requestDTO = RequestMapper.toRequestDTO(
+            request.getRequestId(), 
+            request.getFirstname(), 
+            request.getLastname(), 
+            request.getEmail(), 
+            request.getRole(), 
+            request.getRequestToken()
+        );
+        return requestDTO; 
     }
 
 }

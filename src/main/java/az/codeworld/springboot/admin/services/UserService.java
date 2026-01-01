@@ -31,5 +31,5 @@ public interface UserService {
     void deleteUserByUsername(String username);
     void removeUser(User user);
 
-    void createNewUser(UserAuthDTO userAuthDTO);
+    UserDTO createNewUser(UserAuthDTO userAuthDTO);
 }

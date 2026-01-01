@@ -1,5 +1,6 @@
 package az.codeworld.springboot.admin.services.serviceImpl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.dtos.UserAuthDTO;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
 import az.codeworld.springboot.utilities.constants.roles;
+import az.codeworld.springboot.utilities.generators.UsernameGenerator;
+import jakarta.transaction.Transactional;
 
 @Service
 @Profile("dev")
@@ -53,6 +56,7 @@ public class JpaUserServiceImplDev implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User not Found By ID"));
         return UserMapper.toUserDTO(
+            user.getUsername(),
             user.getFirstName(), 
             user.getLastName(), 
             user.getEmail(),
@@ -94,8 +98,10 @@ public class JpaUserServiceImplDev implements UserService {
     public void removeUser(User user) {}
 
     @Override
-    public void createNewUser(UserAuthDTO userAuthDTO) {
+    @Transactional
+    public UserDTO createNewUser(UserAuthDTO userAuthDTO) {
         User user = new User();
+        user.setUsername(UsernameGenerator.generateUsername(userAuthDTO.getRole().getRoleNameString()));
         user.setFirstName(userAuthDTO.getFirstName());
         user.setLastName(userAuthDTO.getLastName());
         user.setEmail(userAuthDTO.getEmail());
@@ -104,6 +110,14 @@ public class JpaUserServiceImplDev implements UserService {
         saveUser(user);
 
         roleService.addRolesToUser(user.getUsername(), Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
+
+        return UserMapper.toUserDTO(
+            user.getUsername(),
+            user.getFirstName(), 
+            user.getLastName(), 
+            user.getEmail(),
+            user.getCreatedAt() 
+        );
     }
 
     @Override

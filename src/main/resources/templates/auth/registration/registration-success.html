@@ -47,12 +47,11 @@
                 </h2>
 
                 <p style="margin: 0 0 16px 0; color: #000000">
-                  Hi <b th:text="${name}">Name</b>! 
-                  You can register till <b th:text="${date}"></b>
+                  "Congrats! <b th:text="${name}"></b> Welcome as a new Member! <a th:href="${url}">Please Enter this link to start your journey!</a>" 
                 </p>
 
                 <p style="margin: 0 0 16px 0; color: #000000">
-                  Please Enter <a th:href="${verifyUrl}">this link to register your account</a>
+                  This is your Username : <b th:text="${username}"></b>
                 </p>
 
                 <p style="margin: 16px 0 0 0; color: #666; font-size: 12px">

@@ -63,7 +63,7 @@ public class User {
 
     @NotBlank
     @Column(nullable = false)
-    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]$")
+    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\d{1,}$")
     private String username;
 
     @NotBlank
@@ -124,7 +124,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [userId=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", password="
+        return "User [userId=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", username=" + username + ", password="
                 + "[PROTECTED]" + ", email=" + email + ", createdAt=" + createdAt + ", phoneNumber=" + phoneNumber + "]";
     }
 }

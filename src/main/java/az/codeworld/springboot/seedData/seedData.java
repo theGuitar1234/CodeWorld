@@ -35,12 +35,12 @@ import az.codeworld.springboot.security.services.authservices.authservicesImpl.R
 import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
 import az.codeworld.springboot.security.services.rbacservices.JpaUserDetailsService;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
-import az.codeworld.springboot.utilities.TokenGenerator;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
-
+import az.codeworld.springboot.utilities.generators.TokenGenerator;
+import az.codeworld.springboot.utilities.generators.UsernameGenerator;
 import az.codeworld.springboot.web.entities.ClassSection;
 import az.codeworld.springboot.web.entities.Enrollment;
 import az.codeworld.springboot.web.entities.Subject;
@@ -92,10 +92,10 @@ public class SeedData implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         log.info("Seeding Data...");
 
-        // try {
-        //     if (authorityService.getAuthorityById(authorities.ACCESS_ADMIN_PANEL.getAuthorityId()) != null)
-        //         return;
-        // } catch (RuntimeException e) {}
+        try {
+            if (authorityService.getAuthorityById(authorities.ACCESS_ADMIN_PANEL.getAuthorityId()) != null)
+                return;
+        } catch (RuntimeException e) {}
 
         for (authorities auth : authorities.values()) {
             Authority authority = new Authority();
@@ -182,7 +182,8 @@ public class SeedData implements ApplicationRunner {
 
         for (int i = 0; i < 5; i++) {
             teacher = new Teacher();
-            teacher.setUsername("T-AAAA-AAAA-" + i);
+            if (teacher.getUsername() == null) teacher.setUsername(UsernameGenerator.generateUsername(roles.TEACHER.getRoleNameString()));
+            System.out.println(teacher.getUsername());
             teacher.setFirstName("Thomas");
             teacher.setLastName("Dhones");
             teacher.setEmail("example" + i + "@email.com");
@@ -245,8 +246,7 @@ public class SeedData implements ApplicationRunner {
 
         for (int i = 0; i < 20; i++) {
             student = new Student();
-            int key = i + 5;
-            student.setUsername("S-AAAA-AAAA-" + key);
+            if (student.getUsername() == null) student.setUsername(UsernameGenerator.generateUsername(roles.STUDENT.getRoleNameString()));
             student.setFirstName("James");
             student.setLastName("Dhones");
             student.setEmail("example" + i + 5 + "@email.com");
@@ -334,7 +334,7 @@ public class SeedData implements ApplicationRunner {
         for (int i = 0; i < 50; i++) {
             request = new Request();
 
-            request.setEmail("example" + i + "@gmail.com");
+            request.setEmail("example" + i + 1000 + "@gmail.com");
             request.setFirstname("Thomas");
             request.setLastname("Billy");
 
@@ -344,7 +344,6 @@ public class SeedData implements ApplicationRunner {
             requestService.saveRequest(request);
         }
 
-        System.out.println("\n\n\n\n\n\n\n\n\n" + registrationService.getPort() + "\n\n\n\n\n\n\n\n\n");
     }
 
 }

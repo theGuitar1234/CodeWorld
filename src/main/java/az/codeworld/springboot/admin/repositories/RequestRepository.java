@@ -18,7 +18,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("SELECT r FROM Request r")
     List<Optional<Request>> findAllRequests();
 
-    Optional<Request> findByRequestToken(String token);
+    Optional<Request> findByRequestToken(String requestToken);
 
     @Query("SELECT r FROM Request r ORDER BY r.expiresAt ASC LIMIT 10")
     List<Optional<Request>> findRecentRequests();

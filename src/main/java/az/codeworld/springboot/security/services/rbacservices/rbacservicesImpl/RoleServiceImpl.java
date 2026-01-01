@@ -1,5 +1,11 @@
-package az.codeworld.springboot.security.services.serviceImpl;
+package az.codeworld.springboot.security.services.rbacservices.rbacservicesImpl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,6 +47,13 @@ public class RoleServiceImpl implements RoleService {
         
         Optional<User> userOptional = userRepository.findByUsername(username);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Foumd"));
+
+        // File file = new File("D:\\Payyed\\BOOGER_AIDS");
+        // try {
+        //     Files.write(Paths.get(file.getAbsolutePath()), Arrays.asList(user.toString()), StandardOpenOption.APPEND);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
 
         for (Long roleId : roleIds) {
             Role role = getRoleByRoleId(roleId);

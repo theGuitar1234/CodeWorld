@@ -1,23 +1,23 @@
-let showPassword, password;
+let showPassword, passwords;
 
 function cacheElements() {
   showPassword = document.getElementById("show-password");
-  password = document.getElementById("password");
+  passwords = document.querySelectorAll("input[type='password']");
 }
 
 function showPasswordFunc() {
-    password.setAttribute("type", "text");
+  passwords.forEach(p => p.setAttribute("type", "text"));
 }
 
 function hidePasswordFunc() {
-    password.setAttribute("type", "password");
+  passwords.forEach(p => p.setAttribute("type", "password"));
 }
 
 function initShowPassword() {
 
   cacheElements();
 
-  if (!showPassword || !password) return;
+  if (!showPassword || !passwords) return;
 
   showPassword.addEventListener("mousedown", showPasswordFunc);
   showPassword.addEventListener("mouseup", hidePasswordFunc);

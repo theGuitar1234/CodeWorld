@@ -1,1 +1,1 @@
-System.out.println("\n\n\n\n\n\n\n\n" + requestService.validateRequest(token) + "\n\n\n\n\n\n\n\n");
+System.out.println("\n\n\n\n\n\n\n\n" + stringBuilder.toString() + "\n\n\n\n\n\n\n\n");
