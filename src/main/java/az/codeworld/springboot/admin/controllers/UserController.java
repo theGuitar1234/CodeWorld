@@ -87,10 +87,8 @@ public class UserController {
             model.addAllAttributes(Map.of("request", requestDTO));
             return "auth/registration/register";
         } catch (InvalidRequestTokenException e) {
-            response.getWriter().write(e.getMessage());
             e.printStackTrace();
             log.error(e.getLocalizedMessage());
-            // return "error/invalid-token";
             return null;
         }
     }
@@ -120,11 +118,9 @@ public class UserController {
             );
             requestService.deleteRequestByRequestId(requestDTO.getRequestId());
         } catch (InvalidRequestTokenException e) {
-            response.getWriter().write(e.getMessage());
             e.printStackTrace();
             log.error(e.getLocalizedMessage());
             return null;
-            // return "error/invalid-token";
         }
         return "redirect:/restricted/";
     }

@@ -7,13 +7,21 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingServletRequestParameterException.class) 
-    public void handleGlobalMissingServletRequestParameterException(MissingServletRequestParameterException e, Model model, HttpServletResponse response) throws IOException {
-        response.getWriter().write("Token Invalid or missing");
+    public String handleGlobalMissingServletRequestParameterException(MissingServletRequestParameterException e, Model model, HttpServletResponse response) throws IOException {
+        model.addAttribute("error", e.getStackTrace());
+        return "error/InvalidRequestToken";
+    }
+
+    @ExceptionHandler(InvalidRequestTokenException.class)
+    public String handleInvalidRequestTokenException(InvalidRequestTokenException e, Model model) {
+        model.addAttribute("error", e.getStackTrace());
+        return "error/InvalidRequestToken";
     }
 }

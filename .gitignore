@@ -34,3 +34,12 @@ build/
 
 ### .env ###
 .env
+
+### logs ###
+logs/
+
+### db ###
+db/
+
+### BOOGER_AIDS ###
+BOOGER_AIDS
