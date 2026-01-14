@@ -1,0 +1,56 @@
+<div class="activity requests" th:fragment="requests">
+  <div class="title">
+    <h1>Requests</h1>
+  </div>
+  <div class="panel">
+    <table requests-table>
+      <thead>
+        <tr>
+          <th>firstName</th>
+          <th>lastName</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Decide</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="request : ${requests}">
+          <td>
+            <p th:text="${request.firstName}"></p>
+          </td>
+          <td>
+            <p th:text="${request.lastName}"></p>
+          </td>
+          <td>
+            <p th:text="${request.email}"></p>
+          </td>
+          <td>
+            <p th:text="${request.role}"></p>
+          </td>
+          <td>
+            <button
+              th:data-url="@{/admin/acceptRequest/{requestId}(requestId=${request.requestId})}"
+              class="js-accept"
+            >
+              ✓
+            </button>
+            <button
+              th:data-url="@{/admin/rejectRequest/{requestId}(requestId=${request.requestId})}"
+              class="js-reject"
+            >
+              🗙
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="pagination-container">
+    <div
+      th:replace="~{admin/fragments/tables/transaction-pagination.html :: view-all-requests}"
+    ></div>
+    <nav
+      th:replace="~{admin/fragments/tables/transaction-pagination.html :: pagination('/admin/requests')}"
+    ></nav>
+  </div>
+</div>

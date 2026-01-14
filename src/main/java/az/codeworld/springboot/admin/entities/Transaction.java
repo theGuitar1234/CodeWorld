@@ -8,10 +8,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
-import az.codeworld.springboot.utilities.converters.StatusConverter;
-
+import az.codeworld.springboot.utilities.converters.TransactionStatusConverter;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,6 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -68,17 +72,17 @@ public class Transaction {
     @Column
     private BigDecimal transactionTotal;
 
-    @Column(nullable = false)
-    @Convert(converter = StatusConverter.class)
-    private transactionstatus status;
-
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private currency currency;
 
+    @Column(nullable = false)
+    @Convert(converter = TransactionStatusConverter.class)
+    private transactionstatus status;
+
     @Column
     @Enumerated(EnumType.STRING)
-    private roles role;
+    private roles belongsTo;
 
     @JsonIgnore
     @ManyToOne

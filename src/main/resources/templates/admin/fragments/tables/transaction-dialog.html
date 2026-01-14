@@ -1,0 +1,105 @@
+<dialog transaction-dialog th:fragment="transaction-dialog">
+  <div class="wrapper">
+    <div class="transaction">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#e8eaed"
+      >
+        <path
+          d="M120-120v-560h160v-160h400v320h160v400H520v-160h-80v160H120Zm80-80h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm160 160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm160 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm160 480h80v-80h-80v80Zm0-160h80v-80h-80v80Z"
+        />
+      </svg>
+      <h3 data-paid-by-header></h3>
+      <h1 data-total-header></h1>
+      <small data-date></small>
+    </div>
+    <div class="transaction-details">
+      <div class="header">
+        <h1 class="title">Transaction Details</h1>
+        <button id="dialog-button" clsBttn>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path
+              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="amount-details">
+        <div class="data">
+          <small>Payment Amount</small
+          ><small data-amount style="color: var(--text-color)"></small>
+        </div>
+        <div class="data">
+          <small>Fee</small
+          ><small data-fee style="color: var(--text-color)"></small>
+        </div>
+      </div>
+      <div class="transfer-details">
+        <div class="data">
+          <h3>Total Amount</h3>
+          <h3 data-total></h3>
+        </div>
+        <div class="others">
+          <h3>Paid By:</h3>
+          <small data-paid-by></small>
+          <h3>Transaction ID:</h3>
+          <small data-transaction-id></small>
+          <h3>Description:</h3>
+          <small data-details></small>
+          <h3>Status</h3>
+          <div class="checked-unchecked" dialog-status-icon>
+            <small data-status></small>
+            <div class="checkbox" style="width: 16px; height: 16px">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e8eaed"
+              >
+                <path
+                  d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                />
+              </svg>
+            </div>
+            <div class="rejected" style="width: 16px; height: 16px">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+                />
+              </svg>
+            </div>
+            <div class="pending" style="width: 16px; height: 16px">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

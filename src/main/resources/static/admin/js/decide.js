@@ -1,4 +1,6 @@
-let requestsTable;
+let 
+  requestsTable,
+  isBound = false;
 
 function cacheElements() {
   requestsTable = document.querySelector("[requests-table]");
@@ -13,7 +15,7 @@ async function handleDecide(e) {
   btn.disabled = true;
 
   const url = btn.dataset.url;
-  console.log(url);
+  if (!url) return;
 
   try {
     const token = document.querySelector('meta[name="_csrf"]').content;
@@ -40,6 +42,10 @@ async function handleDecide(e) {
 }
 
 function initDecide() {
+
+  if (isBound) return;
+  isBound = true;
+  
   cacheElements();
 
   if (!requestsTable) return;

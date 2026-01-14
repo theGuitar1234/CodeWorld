@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        p {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 69px;
+        }
+    </style>
+</head>
+<body>
+    <p id="timer"></p>
+
+    <script>
+        const timer = document.getElementById("timer");
+
+        function startCountDown(durationSeconds) {
+            const  endTime = Date.now() + durationSeconds * 1000;
+
+            const interval = setInterval(() => {
+                const remainingMs = endTime - Date.now();
+
+                if (remainingMs <= 0) {
+                    clearInterval(interval);
+                    timer.textContent = "0:00";
+                    return;
+                }
+
+                const totalSeconds = Math.floor(remainingMs / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+
+                timer.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
+            }, 250);
+        }
+
+        startCountDown(120);
+    </script>
+</body>
+</html>

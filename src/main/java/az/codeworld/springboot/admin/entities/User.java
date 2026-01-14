@@ -1,20 +1,42 @@
 package az.codeworld.springboot.admin.entities;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import az.codeworld.springboot.aop.validations.EmailValidation;
+import az.codeworld.springboot.aop.validations.PasswordValidation;
+import az.codeworld.springboot.aop.validations.UsernameValidation;
+import az.codeworld.springboot.security.entities.AuditedEntity;
+import az.codeworld.springboot.security.entities.LoginAudit;
+import az.codeworld.springboot.security.entities.OtpCode;
+import az.codeworld.springboot.security.entities.PasswordResetToken;
 import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.utilities.constants.accountstatus;
+import az.codeworld.springboot.web.entities.ProfilePicture;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
+// import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,13 +49,20 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,29 +71,30 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Audited(withModifiedFlag = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-    name = "USERS",
-    indexes = {
+@Table(name = "USERS", indexes = {
         @Index(name = "idx_user_name", columnList = "user_name")
-    },
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uc_email", columnNames = {"email"})
-    }
-)
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "uc_email", columnNames = { "email" })
+})
 // @DiscriminatorColumn(name = "dtype")
 // @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public class User extends AuditedEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_sequence", allocationSize = 50, initialValue = 1000)
     private Long id;
 
+    @NotNull
     @NotBlank
+    // @Length(min = 13, max = 13)
     @Column(nullable = false)
-    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\d{1,}$")
-    private String username;
+    //@UsernameValidation
+    private String userName;
 
     @NotBlank
     @Column(nullable = false)
@@ -74,31 +104,161 @@ public class User {
     @NotBlank
     @Column(nullable = false)
     @Pattern(regexp = "^[A-Z]{1}[a-z]{1,20}$")
-    private String lastName; 
+    private String lastName;
 
     @Column(unique = true)
+    @EmailValidation
     private String email;
 
     @Column(nullable = false)
+    @PasswordValidation
     private String password;
 
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(nullable = true)
     @Pattern(regexp = "^\\+\\d{3}\\d{2}\\d{3}\\d{2}\\d{2}$")
     private String phoneNumber;
+
+    @Column(nullable = true)
+    @Min(0)
+    @Max(150)
+    private Integer age;
+
+    @Past
+    @Column
+    private LocalDate birthDate;
+
+    @Column
+    private String street;
+
+    @Column
+    private String city;
+
+    @Column
+    private String region;
+
+    @Column
+    private int postalCode;
+
+    @Column
+    private String country;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private accountstatus accountStatus;
+
+    @Column
+    private String language;
+
+    @Column
+    private String zoneId;
+
+    @Column(nullable = true)
+    @Pattern(regexp = "^\\d{4}\\d{4}\\d{4}\\d{4}")
+    private String cardNumber;
+
+    @Column(nullable = true)
+    private String bankAccount;
+
+    @Column
+    private byte nextDate;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "salary_amount")),
+            @AttributeOverride(name = "currency", column = @Column(name = "salary_currency"))
+    })
+    private Money payment;
+
+    @Column
+    private boolean isBanned;
 
     @Past
     @Column
     private LocalDateTime lastActiveAt;
 
+    //https://imagedelivery.net/<ACCOUNT_HASH>/<IMAGE_ID>/<VARIANT>
+    @Column
+    private String profileImageId;
+    
+    @Column
+    private Instant profileImageUpdatedAt;
+
+    @NotAudited
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ProfilePicture profilePicture;
+
     public void updateLastActiveAt() {
         this.lastActiveAt = LocalDateTime.now();
     }
 
+    public boolean isOnline() {
+        if (this.lastActiveAt == null)
+            return false;
+        return this.lastActiveAt.isAfter(LocalDateTime.now().minusMinutes(5));
+    }
+
+    public String getTimeZone() {
+        ZoneId zone = ZoneId.of(this.zoneId);
+        ZoneOffset zoneOffset = zone.getRules().getOffset(Instant.now());
+
+        String city = zone.getId().contains("/")
+                ? zone.getId().substring(zone.getId().lastIndexOf('/') + 1).replace('_', ' ')
+                : zone.getId();
+
+        boolean isUtc = zoneOffset.equals(ZoneOffset.UTC);
+
+        String prefix = isUtc ? "UTC" : "GMT";
+        String offText = isUtc ? "+00:00" : zoneOffset.getId();
+
+        return "(" + prefix + offText + ") " + city;
+    }
+
+    public boolean hasPhoneNumber() {
+        return this.phoneNumber != null && !this.phoneNumber.isBlank();
+    }
+
+    public boolean hasEmail() {
+        return this.email != null && !this.email.isBlank();
+    }
+
+    public boolean hasCardNumber() {
+        return this.cardNumber != null && !this.cardNumber.isBlank();
+    }
+
+    public boolean hasBankAccount() {
+        return this.bankAccount != null && !this.cardNumber.isBlank();
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void normalize() {
+        this.phoneNumber = normalizeToNull(phoneNumber);
+        this.email = normalizeToNull(email);
+        this.cardNumber = normalizeToNull(cardNumber);
+        this.bankAccount = normalizeToNull(bankAccount);
+    }
+
+    private String normalizeToNull(String s) {
+        if (s == null)
+            return null;
+        s = s.trim();
+        return s.isEmpty() ? null : s;
+    }
+
+    public byte getCompleteness() {
+        return (byte) ((((this.hasEmail() ? 1 : 0) + (this.hasPhoneNumber() ? 1 : 0) + (this.hasCardNumber() ? 1 : 0)
+                + (this.hasBankAccount() ? 1 : 0)) / 4.0) * 100.0);
+    }
+
+    // @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @NotAudited
     @JsonIgnore
+    // @NotEmpty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USERS_ROLES", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -113,6 +273,7 @@ public class User {
         role.removeUser(this);
     }
 
+    @NotAudited
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Transaction> transactions = new ArrayList<>();
@@ -122,9 +283,25 @@ public class User {
         transaction.setUser(this);
     }
 
+    @NotAudited
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private PasswordResetToken passwordResetToken;
+
+    @NotAudited
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private OtpCode otpCode;
+
+    @NotAudited
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private LoginAudit loginAudit;
+
     @Override
     public String toString() {
-        return "User [userId=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", username=" + username + ", password="
-                + "[PROTECTED]" + ", email=" + email + ", createdAt=" + createdAt + ", phoneNumber=" + phoneNumber + "]";
+        return "User [userId=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName
+                + ", password="
+                + "[PROTECTED]" + ", email=" + email + ", createdAt=" + createdAt + ", phoneNumber=" + phoneNumber
+                + "]";
     }
 }

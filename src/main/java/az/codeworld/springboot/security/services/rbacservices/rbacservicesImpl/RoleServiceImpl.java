@@ -45,7 +45,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void addRolesToUser(String username, Set<Long> roleIds) {
         
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByUserName(username);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Foumd"));
 
         // File file = new File("D:\\Payyed\\BOOGER_AIDS");

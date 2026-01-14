@@ -1,5 +1,6 @@
 package az.codeworld.springboot.admin.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,10 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Transactional
     @Query("DELETE FROM Request r WHERE r.requestId = :requestId")
     void deleteRequestByRequestId(@Param("requestId") Long requestId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Request r WHERE r.expiresAt < :cutoff")
+    int deleteExpiredRequests(@Param("cutoff") long cutoff);
+
 }

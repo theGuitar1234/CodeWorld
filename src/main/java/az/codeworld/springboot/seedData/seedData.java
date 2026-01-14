@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.admin.entities.Request;
 import az.codeworld.springboot.admin.entities.Student;
 import az.codeworld.springboot.admin.entities.Teacher;
@@ -30,11 +31,12 @@ import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.controllers.SecurityController;
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.security.services.JpaUserDetailsService;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
-import az.codeworld.springboot.security.services.authservices.authservicesImpl.RegistrationServiceImplDev;
+import az.codeworld.springboot.security.services.authservices.authservicesImpl.RegistrationServiceImpl;
 import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
-import az.codeworld.springboot.security.services.rbacservices.JpaUserDetailsService;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
+import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.roles;
@@ -64,7 +66,7 @@ public class SeedData implements ApplicationRunner {
 
     private final GenericWebService genericWebService;
 
-    private final RegistrationServiceImplDev registrationService;
+    private final RegistrationServiceImpl registrationService;
 
     public SeedData(
             PasswordEncoder passwordEncoder,
@@ -75,8 +77,8 @@ public class SeedData implements ApplicationRunner {
             TransactionService transactionService,
             GenericWebService genericWebService,
             RequestService requestService,
-            RegistrationServiceImplDev registrationService
-        ) {
+            RegistrationServiceImpl registrationService
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
         this.roleService = roleService;
@@ -95,7 +97,8 @@ public class SeedData implements ApplicationRunner {
         try {
             if (authorityService.getAuthorityById(authorities.ACCESS_ADMIN_PANEL.getAuthorityId()) != null)
                 return;
-        } catch (RuntimeException e) {}
+        } catch (RuntimeException e) {
+        }
 
         for (authorities auth : authorities.values()) {
             Authority authority = new Authority();
@@ -180,14 +183,83 @@ public class SeedData implements ApplicationRunner {
         Teacher teacher;
         TeachingAssignment teachingAssignment;
 
+        teacher = new Teacher();
+        teacher.setUserName("T-TTTT-TTTT-T");
+
+        teacher.setFirstName("Thomas");
+        teacher.setLastName("Dhones");
+        teacher.setEmail("exampleTEACHER@email.com");
+        teacher.setPassword(passwordEncoder.encode("1234Aa@"));
+        teacher.setCreatedAt(LocalDateTime.now());
+        teacher.setPhoneNumber("+994519889192");
+
+        teacher.setDepartment("Biology");
+        teacher.setTitle("Biology");
+        teacher.setHiredAt(LocalDate.of(2005, 12, 4));
+        teacher.setOfficeRoom("457-Jackson");
+        teacher.setPayment(new Money(new BigDecimal("200.00"), currency.AZN));
+        teacher.setNextDate((byte) 18);
+
+        teacher.setBirthDate(LocalDate.of(1969, 1, 1));
+        teacher.setStreet("Example st.");
+        teacher.setCity("Example");
+        teacher.setRegion("CA");
+        teacher.setPostalCode(99999);
+        teacher.setCountry("Example");
+        teacher.setLanguage("English (United States)");
+        teacher.setZoneId("America/Guatemala");
+
+        userService.saveUser(teacher);
+
+        roleService.addRolesToUser(teacher.getUserName(), Set.of(roles.TEACHER.getRoleId()));
+        jpaUserDetailsService.loadUserByUsername(teacher.getUserName());
+
+        teachingAssignment = new TeachingAssignment();
+        teachingAssignment.setTeacher(teacher);
+
+        int clssctn = random.nextInt(3);
+
+        switch (clssctn) {
+            case 0:
+                physicsSection1.addAssignment(teachingAssignment);
+                break;
+            case 1:
+                mathSection1.addAssignment(teachingAssignment);
+                break;
+            case 2:
+                computerScienceSection1.addAssignment(teachingAssignment);
+                break;
+            default:
+                break;
+        }
+
+        genericWebService.saveType(TeachingAssignment.class, teachingAssignment);
+
+        for (int j = 0; j < 20; j++) {
+            transaction = new Transaction();
+            transaction.setTransactionPaidBy("HDFC TEACHER Bank");
+            transaction.setTransactionDescription("Withdraw to TEACHER Bank account");
+            transaction.setTransactionDetails("Transfer to HDFC Bank via Secure3D");
+            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setTransactionFee(new BigDecimal("4.82"));
+            transaction.setTransactionAmount(new BigDecimal("62").add(BigDecimal.valueOf(j)));
+            transaction.setTransactionTotal(new BigDecimal("562"));
+            transaction.setCurrency(currency.USD);
+            transaction.setBelongsTo(roles.TEACHER);
+
+            transactionService.saveTransaction(transaction);
+            transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
+        }
+
         for (int i = 0; i < 5; i++) {
             teacher = new Teacher();
-            if (teacher.getUsername() == null) teacher.setUsername(UsernameGenerator.generateUsername(roles.TEACHER.getRoleNameString()));
-            System.out.println(teacher.getUsername());
+            if (teacher.getUserName() == null)
+                teacher.setUserName(UsernameGenerator.generateUsername(roles.TEACHER.getRoleNameString()));
+
             teacher.setFirstName("Thomas");
             teacher.setLastName("Dhones");
             teacher.setEmail("example" + i + "@email.com");
-            teacher.setPassword(passwordEncoder.encode("1234@Aa"));
+            teacher.setPassword(passwordEncoder.encode("1234Aa@"));
             teacher.setCreatedAt(LocalDateTime.now());
             teacher.setPhoneNumber("+994519889192");
 
@@ -195,18 +267,27 @@ public class SeedData implements ApplicationRunner {
             teacher.setTitle("Biology");
             teacher.setHiredAt(LocalDate.of(2005, 12, 4));
             teacher.setOfficeRoom("457-Jackson");
-            teacher.setWage(20.53);
-            teacher.setSalary(0.0);
+            teacher.setPayment(new Money(new BigDecimal("200.00"), currency.AZN));
+            teacher.setNextDate((byte) 18);
+
+            teacher.setBirthDate(LocalDate.of(1969, 1, 1));
+            teacher.setStreet("Example st.");
+            teacher.setCity("Example");
+            teacher.setRegion("CA");
+            teacher.setPostalCode(99999);
+            teacher.setCountry("Example");
+            teacher.setLanguage("English (United States)");
+            teacher.setZoneId("America/Guatemala");
 
             userService.saveUser(teacher);
 
-            roleService.addRolesToUser(teacher.getUsername(), Set.of(roles.TEACHER.getRoleId()));
-            jpaUserDetailsService.loadUserByUsername(teacher.getUsername());
+            roleService.addRolesToUser(teacher.getUserName(), Set.of(roles.TEACHER.getRoleId()));
+            jpaUserDetailsService.loadUserByUsername(teacher.getUserName());
 
             teachingAssignment = new TeachingAssignment();
             teachingAssignment.setTeacher(teacher);
 
-            int clssctn = random.nextInt(3);
+            clssctn = random.nextInt(3);
 
             switch (clssctn) {
                 case 0:
@@ -230,27 +311,96 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionDescription("Withdraw to TEACHER Bank account");
                 transaction.setTransactionDetails("Transfer to HDFC Bank via Secure3D");
                 transaction.setStatus(transactionstatus.PENDING);
-                transaction.setTransactionFee(BigDecimal.valueOf(4.82));
-                transaction.setTransactionAmount(BigDecimal.valueOf(62).add(BigDecimal.valueOf(j)));
-                transaction.setTransactionTotal(BigDecimal.valueOf(562));
+                transaction.setTransactionFee(new BigDecimal("4.82"));
+                transaction.setTransactionAmount(new BigDecimal("62").add(BigDecimal.valueOf(j)));
+                transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
-                transaction.setRole(roles.TEACHER);
+                transaction.setBelongsTo(roles.TEACHER);
 
                 transactionService.saveTransaction(transaction);
-                transactionService.addTransactionsToUser(teacher.getUsername(), Set.of(transaction.getTransactionId()));
+                transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
             }
         }
 
         Student student;
         Enrollment enrollment;
 
+        student = new Student();
+        student.setUserName("S-SSSS-SSSS-S");
+        student.setFirstName("James");
+        student.setLastName("Dhones");
+        student.setEmail("exampleSTUDENT@email.com");
+        student.setPassword(passwordEncoder.encode("1234Aa@"));
+        student.setCreatedAt(LocalDateTime.now());
+        student.setPhoneNumber("+994519889192");
+
+        student.setGroupName("684.23e");
+        student.setYear(2);
+        student.setMajor("IT");
+        student.setEnrollmentDate(LocalDate.now());
+        student.setGpa(89.99);
+        student.setPayment(new Money(new BigDecimal("200.89"), currency.EURO));
+        student.setNextDate((byte) 17);
+
+        student.setBirthDate(LocalDate.of(2000, 1, 1));
+        student.setStreet("Example st.");
+        student.setCity("Example");
+        student.setRegion("CA");
+        student.setPostalCode(99999);
+        student.setCountry("Example");
+        student.setLanguage("English (United States)");
+        student.setZoneId("America/Guatemala");
+
+        userService.saveUser(student);
+
+        roleService.addRolesToUser(student.getUserName(), Set.of(roles.STUDENT.getRoleId()));
+        jpaUserDetailsService.loadUserByUsername(student.getUserName());
+
+        enrollment = new Enrollment();
+        enrollment.setStudent(student);
+
+        clssctn = random.nextInt(3);
+
+        switch (clssctn) {
+            case 0:
+                physicsSection1.addEnrollment(enrollment);
+                break;
+            case 1:
+                mathSection1.addEnrollment(enrollment);
+                break;
+            case 2:
+                computerScienceSection1.addEnrollment(enrollment);
+                break;
+            default:
+                break;
+        }
+
+        genericWebService.saveType(Enrollment.class, enrollment);
+
+        for (int j = 0; j < 2; j++) {
+            transaction = new Transaction();
+            transaction.setTransactionPaidBy("HDFC STUDENT Bank");
+            transaction.setTransactionDescription("Withdraw to STUDENT Bank account");
+            transaction.setTransactionDetails("Transfer to HDFC STUDENT Bank via Secure3D");
+            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setTransactionFee(new BigDecimal("4.82"));
+            transaction.setTransactionAmount(new BigDecimal("62").add(BigDecimal.valueOf(j)));
+            transaction.setTransactionTotal(new BigDecimal("562"));
+            transaction.setCurrency(currency.USD);
+            transaction.setBelongsTo(roles.STUDENT);
+
+            transactionService.saveTransaction(transaction);
+            transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
+        }
+
         for (int i = 0; i < 20; i++) {
             student = new Student();
-            if (student.getUsername() == null) student.setUsername(UsernameGenerator.generateUsername(roles.STUDENT.getRoleNameString()));
+            if (student.getUserName() == null)
+                student.setUserName(UsernameGenerator.generateUsername(roles.STUDENT.getRoleNameString()));
             student.setFirstName("James");
             student.setLastName("Dhones");
             student.setEmail("example" + i + 5 + "@email.com");
-            student.setPassword(passwordEncoder.encode("1234@Aa"));
+            student.setPassword(passwordEncoder.encode("1234Aa@"));
             student.setCreatedAt(LocalDateTime.now());
             student.setPhoneNumber("+994519889192");
 
@@ -259,16 +409,27 @@ public class SeedData implements ApplicationRunner {
             student.setMajor("IT");
             student.setEnrollmentDate(LocalDate.now());
             student.setGpa(89.99);
+            student.setPayment(new Money(new BigDecimal("200.89"), currency.EURO));
+            student.setNextDate((byte) 17);
+
+            student.setBirthDate(LocalDate.of(2000, 1, 1));
+            student.setStreet("Example st.");
+            student.setCity("Example");
+            student.setRegion("CA");
+            student.setPostalCode(99999);
+            student.setCountry("Example");
+            student.setLanguage("English (United States)");
+            student.setZoneId("America/Guatemala");
 
             userService.saveUser(student);
 
-            roleService.addRolesToUser(student.getUsername(), Set.of(roles.STUDENT.getRoleId()));
-            jpaUserDetailsService.loadUserByUsername(student.getUsername());
+            roleService.addRolesToUser(student.getUserName(), Set.of(roles.STUDENT.getRoleId()));
+            jpaUserDetailsService.loadUserByUsername(student.getUserName());
 
             enrollment = new Enrollment();
             enrollment.setStudent(student);
 
-            int clssctn = random.nextInt(3);
+            clssctn = random.nextInt(3);
 
             switch (clssctn) {
                 case 0:
@@ -292,26 +453,26 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionDescription("Withdraw to STUDENT Bank account");
                 transaction.setTransactionDetails("Transfer to HDFC STUDENT Bank via Secure3D");
                 transaction.setStatus(transactionstatus.PENDING);
-                transaction.setTransactionFee(BigDecimal.valueOf(4.82));
-                transaction.setTransactionAmount(BigDecimal.valueOf(62));
-                transaction.setTransactionTotal(BigDecimal.valueOf(562));
+                transaction.setTransactionFee(new BigDecimal("4.82"));
+                transaction.setTransactionAmount(new BigDecimal("62").add(BigDecimal.valueOf(j)));
+                transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
-                transaction.setRole(roles.STUDENT);
+                transaction.setBelongsTo(roles.STUDENT);
 
                 transactionService.saveTransaction(transaction);
-                transactionService.addTransactionsToUser(student.getUsername(), Set.of(transaction.getTransactionId()));
+                transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
             }
         }
 
         User admin = new User();
         admin.setFirstName("Admin");
         admin.setLastName("Admin");
-        admin.setUsername("A-AAAA-AAAA-A");
+        admin.setUserName("A-AAAA-AAAA-A");
         admin.setEmail("admin@admin.com");
         admin.setPassword(passwordEncoder.encode("1234Aa@"));
 
         userService.saveUser(admin);
-        roleService.addRolesToUser(admin.getUsername(), Set.of(roles.ADMIN.getRoleId()));
+        roleService.addRolesToUser(admin.getUserName(), Set.of(roles.ADMIN.getRoleId()));
 
         for (int j = 0; j < 2; j++) {
             transaction = new Transaction();
@@ -319,14 +480,14 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionDescription("Withdraw to ADMIN Bank account");
             transaction.setTransactionDetails("Transfer to HDFC ADMIN Bank via Secure3D");
             transaction.setStatus(transactionstatus.PENDING);
-            transaction.setTransactionFee(BigDecimal.valueOf(4.82));
-            transaction.setTransactionAmount(BigDecimal.valueOf(62));
-            transaction.setTransactionTotal(BigDecimal.valueOf(562));
+            transaction.setTransactionFee(new BigDecimal("4.82"));
+            transaction.setTransactionAmount(new BigDecimal("62").add(BigDecimal.valueOf(j)));
+            transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
-            transaction.setRole(roles.ADMIN);
+            transaction.setBelongsTo(roles.ADMIN);
 
             transactionService.saveTransaction(transaction);
-            transactionService.addTransactionsToUser(admin.getUsername(), Set.of(transaction.getTransactionId()));
+            transactionService.addTransactionsToUser(admin.getUserName(), Set.of(transaction.getTransactionId()));
         }
 
         Request request;
@@ -335,8 +496,8 @@ public class SeedData implements ApplicationRunner {
             request = new Request();
 
             request.setEmail("example" + i + 1000 + "@gmail.com");
-            request.setFirstname("Thomas");
-            request.setLastname("Billy");
+            request.setFirstName("Thomas");
+            request.setLastName("Billy");
 
             request.setRole(roles.STUDENT);
             request.setRequestToken(TokenGenerator.generateToken());

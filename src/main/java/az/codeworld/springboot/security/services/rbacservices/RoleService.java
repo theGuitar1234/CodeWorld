@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.security.entities.Role;
 
-@Component
 public interface RoleService {
     void saveRole(Role role);
     Role getRoleByRoleId(Long roleId);

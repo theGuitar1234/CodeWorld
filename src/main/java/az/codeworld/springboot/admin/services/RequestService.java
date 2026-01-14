@@ -8,7 +8,6 @@ import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.entities.Request;
 import az.codeworld.springboot.admin.records.RequestRecord;
 
-@Component
 public interface RequestService {
 
     void defaultMethod();

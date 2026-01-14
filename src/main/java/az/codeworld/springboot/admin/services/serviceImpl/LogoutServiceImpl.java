@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import az.codeworld.springboot.admin.services.LogoutService;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.services.sessionservices.SessionKiller;
+import az.codeworld.springboot.utilities.constants.accountstatus;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,9 +29,7 @@ public class LogoutServiceImpl implements LogoutService {
     }
 
     @Override
-    public void exterminate(Principal principal, HttpServletRequest request, HttpServletResponse response) {
-
-        String username = principal.getName();
+    public void exterminate(String username, HttpServletRequest request, HttpServletResponse response) {
         
         SecurityContextHolder.clearContext();
 
@@ -51,7 +50,7 @@ public class LogoutServiceImpl implements LogoutService {
             }
         }
 
-        userService.deleteUserByUsername(username);
+        //userService.deleteUserByUsername(username);
     }
 
 }

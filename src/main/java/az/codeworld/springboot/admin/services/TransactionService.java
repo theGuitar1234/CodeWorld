@@ -11,7 +11,6 @@ import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.utilities.constants.roles;
 
-@Component
 public interface TransactionService {
     
     void defaultMethod();

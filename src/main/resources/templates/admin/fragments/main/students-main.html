@@ -1,0 +1,14 @@
+<div 
+  class="wrapper" 
+  data-spa-root 
+  th:fragment="students-main"
+  th:if="${spa == 'STUDENTS'}"
+>
+  <div class="containers">
+    <div class="container" id="container9">
+      <div
+        th:replace="~{admin/fragments/tables/students.html :: students}"
+      ></div>
+    </div>
+  </div>
+</div>

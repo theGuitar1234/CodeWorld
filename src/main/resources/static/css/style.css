@@ -434,8 +434,8 @@ main .wrapper.payment > * {
 }
 
 /* main .wrapper .profile-container,
-main .wrapper .balance-container,
-main .wrapper .support {
+main .wrapper .salary-container,
+main .wrapper .payment {
   align-self: start;
   height: fit-content;
 } */
@@ -570,6 +570,8 @@ main .wrapper .personal-details .title .edit {
   align-items: center;
   justify-content: center;
   gap: 0.5em;
+  text-decoration: none;
+  color: currentColor;
 }
 
 main .wrapper .personal-details .title .edit svg path {
@@ -595,6 +597,11 @@ main .wrapper .profile-completeness .title span {
   border: 1px solid var(--line-color);
   font-size: clamp(0.5rem, calc(0.5rem + 0.5vw), 1rem);
   color: var(--accent-color);
+}
+
+.complete {
+  color: green !important;
+  border-color: green !important;
 }
 
 main .wrapper .profile-completeness .panel,
@@ -763,7 +770,7 @@ main .wrapper .profile-completeness .checked-unchecked.checked .checkbox {
   gap: 0.3em;
 }
 
-main .wrapper .balance-container {
+main .wrapper .salary-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -774,7 +781,7 @@ main .wrapper .balance-container {
   grid-row: span 4;
 }
 
-main .wrapper .balance-container .icon {
+main .wrapper .salary-container .icon {
   min-height: 7vh;
   height: 50%;
   aspect-ratio: 1;
@@ -783,25 +790,25 @@ main .wrapper .balance-container .icon {
   justify-content: center;
 }
 
-main .wrapper .balance-container .icon svg {
+main .wrapper .salary-container .icon svg {
   flex-shrink: 0;
   max-width: 100%;
   width: 100%;
   height: 100%;
 }
 
-main .wrapper .balance-container .icon svg path {
+main .wrapper .salary-container .icon svg path {
   fill: var(--secondary-color);
 }
 
-main .wrapper .balance-container .deposit-withdraw {
+main .wrapper .salary-container .deposit-withdraw {
   width: 100%;
   display: flex;
   align-items: center;
   padding: 0 1em;
 }
 
-main .wrapper .balance-container .deposit-withdraw ul {
+main .wrapper .salary-container .deposit-withdraw ul {
   display: flex;
   /* gap: 1em; */
   justify-content: space-between;
@@ -812,12 +819,12 @@ main .wrapper .balance-container .deposit-withdraw ul {
   padding: 0.5em;
 }
 
-main .wrapper .balance-container .deposit-withdraw ul li a {
+main .wrapper .salary-container .deposit-withdraw ul li a {
   text-decoration: none;
   color: var(--accent-color);
 }
 
-main .wrapper .balance-container .deposit-withdraw ul li a:hover {
+main .wrapper .salary-container .deposit-withdraw ul li a:hover {
   color: var(--highlight-color);
   text-decoration: underline;
 }
@@ -1100,7 +1107,7 @@ main .wrapper .activity .checked-unchecked .checkbox {
   display: flex;
 }
 
-main .wrapper .support {
+main .wrapper .payment {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1111,7 +1118,7 @@ main .wrapper .support {
   padding: 1em 0.5em;
 }
 
-main .wrapper .support .icon {
+main .wrapper .payment .icon {
   height: 30%;
   aspect-ratio: 1;
   display: flex;
@@ -1119,7 +1126,7 @@ main .wrapper .support .icon {
   justify-content: center;
 }
 
-main .wrapper .support .icon svg {
+main .wrapper .payment .icon svg {
   flex-shrink: 0;
   max-width: 100%;
   max-height: 100%;
@@ -1128,16 +1135,16 @@ main .wrapper .support .icon svg {
   min-height: 7vh;
 }
 
-main .wrapper .support .icon svg path {
+main .wrapper .payment .icon svg path {
   fill: var(--secondary-color);
 }
 
-main .wrapper .support .support-text {
+main .wrapper .payment .payment-text {
   text-align: center;
   font-size: clamp(0.7rem, calc(0.7rem + 0.7vw), 1rem);
 }
 
-main .wrapper .support .chat-with-us {
+main .wrapper .payment .chat-with-us {
   width: 85%;
   display: flex;
   align-items: center;
@@ -1161,7 +1168,7 @@ body.layout.landing {
     [header-end hero-start]
     1fr
     [hero-end main-start]
-    1fr
+    fit-content(100%)
     [main-end footer-start]
     fit-content(100%)
     [footer-end page-end];
@@ -2937,10 +2944,10 @@ body.layout.error main .link {
     grid-area: 1 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
-  main .wrapper .balance-container {
+  main .wrapper .salary-container {
     grid-area: 1 / 2 / span 1 / span 1;
   }
-  main .wrapper .support {
+  main .wrapper .payment {
     grid-area: 1 / 3 / span 1 / span 1;
   }
   main .wrapper .profile-completeness,
@@ -2976,8 +2983,8 @@ body.layout.error main .link {
   }
 
   main .wrapper .profile-container,
-  main .wrapper .balance-container,
-  main .wrapper .support,
+  main .wrapper .salary-container,
+  main .wrapper .payment,
   main .wrapper .profile-completeness,
   main .wrapper .activity,
   main .wrapper.account .personal-details-container,
@@ -2991,8 +2998,8 @@ body.layout.error main .link {
     aspect-ratio: auto;
   }
 
-  main .wrapper .support,
-  main .wrapper .balance-container {
+  main .wrapper .payment,
+  main .wrapper .salary-container {
     grid-row: unset;
   }
 }
@@ -3043,20 +3050,20 @@ body.layout.error main .link {
     grid-area: 1 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
-  main .wrapper .balance-container {
+  main .wrapper .salary-container {
     grid-area: 3 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
-  main .wrapper.account .balance-container,
-  main .wrapper.payment .balance-container {
+  main .wrapper.account .salary-container,
+  main .wrapper.payment .salary-container {
     grid-area: 2 / 1 / span 1 / span 1;
     aspect-ratio: unset;
   }
-  main .wrapper .support {
+  main .wrapper .payment {
     grid-area: 4 / 1 / span 1 / span 1;
   }
-  main .wrapper.account .support,
-  main .wrapper.payment .support {
+  main .wrapper.account .payment,
+  main .wrapper.payment .payment {
     grid-area: 3 / 1 / span 1 / span 1;
   }
   main .wrapper .profile-completeness,

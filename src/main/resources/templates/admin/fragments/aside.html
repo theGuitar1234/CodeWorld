@@ -1,6 +1,6 @@
 <aside th:fragment="aside">
   <div class="logo">
-    <a href="#">
+    <a th:href="@{/admin/}">
       <!-- <div class="icon"></div> -->
       ADMIN PANEL
     </a>
@@ -8,27 +8,16 @@
   <nav>
     <ul>
       <li>Entities</li>
-      <li><a href="#">Teachers</a></li>
-      <li><a href="#">Students</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
+      <li><a data-spa th:href="@{/admin/teachers}">Teachers</a></li>
+      <li><a data-spa th:href="@{/admin/students}">Students</a></li>
     </ul>
     <ul>
       <li>Business</li>
-      <li><a href="#">Transactions</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
+      <li><a data-spa th:href="@{/admin/transactions}">Transactions</a></li>
     </ul>
     <ul>
       <li>Auth</li>
-      <li><a href="#">Requests</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
+      <li><a data-spa th:href="@{/admin/requests}">Requests</a></li>
     </ul>
     <ul>
       <li>Media</li>
@@ -51,9 +40,6 @@
           </ul>
         </div>
       </li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
-      <li><a href="#">Element</a></li>
     </ul>
   </nav>
 </aside>

@@ -23,7 +23,6 @@ import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.transaction.Transactional;
 
 @Service
-@Profile("dev")
 public class TransactionServiceImplDev implements TransactionService {
     
     private final TransactionRepository transactionRepository;
@@ -59,7 +58,7 @@ public class TransactionServiceImplDev implements TransactionService {
     @Override
     @Transactional
     public void addTransactionsToUser(String username, Set<Long> transactionIds) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByUserName(username);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Foumd By Username"));
 
         for (Long transactionId : transactionIds) {
@@ -71,7 +70,7 @@ public class TransactionServiceImplDev implements TransactionService {
     @Override
     public List<TransactionDTO> getAllTransactions(roles role) {
         return transactionRepository
-            .findTop10ByRoleOrderByTransactionDateDesc(role)
+            .findAllTransactionsByBelongsTo(role)
             .stream()
             .map(transaction -> {
                 return TransactionMapper.toTransactionDTO(
@@ -93,7 +92,7 @@ public class TransactionServiceImplDev implements TransactionService {
     @Override
     public List<TransactionDTO> getRecentTransactions(roles role) {
         return transactionRepository   
-            .findTop10ByRoleOrderByTransactionDateDesc(role)
+            .findTop10ByBelongsToOrderByTransactionDateDesc(role)
             .stream()
             .map(transaction -> {
                 return TransactionMapper.toTransactionDTO(
@@ -121,7 +120,7 @@ public class TransactionServiceImplDev implements TransactionService {
         Direction direction
     ) {
         return transactionRepository
-            .findByRole(
+            .findByBelongsTo(
                 role,
                 PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
             )

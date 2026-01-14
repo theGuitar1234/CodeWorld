@@ -1,0 +1,62 @@
+<div th:fragment="phone" style="display: contents">
+  <div 
+    th:if="${phone == 'DISPLAY'}"
+    class="personal-details phone"
+    fragment="phone"
+  >
+    <div class="title">
+      <h3>Phone</h3>
+      <a class="edit" href="/user/account" section="phone">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#e8eaed"
+        >
+          <path
+            d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+          />
+        </svg>
+        EDIT
+      </a>
+    </div>
+    <div class="panel">
+      <address class="vcard">
+        <span
+          data-attr="Phone : "
+          class="tel primary"
+          th:text="${user.phoneNumber}"
+          >+1-555-123-4567</span
+        >
+        <!-- <br />
+                <span data-attr="Phone : " class="tel">+1-555-123-4567</span> -->
+      </address>
+    </div>
+  </div>
+  <form 
+    th:if="${phone == 'EDIT'}"
+    class="personal-details phone"
+    action="/user/updateUser"
+    th:object="${user}"
+    fragment="phone"
+  >
+    <div class="title">
+      <h3>Phone</h3>
+      <button type="submit">Submit</button>
+    </div>
+    <div class="panel">
+      <input class="vcard">
+        <input
+          data-attr="Phone : "
+          class="tel primary"
+          th:text="${user.phoneNumber}"
+        >
+          +1-555-123-4567 
+        </input>
+        <!-- <br />
+                <span data-attr="Phone : " class="tel">+1-555-123-4567</span> -->
+      </address>
+    </div>
+  </form>
+</div>

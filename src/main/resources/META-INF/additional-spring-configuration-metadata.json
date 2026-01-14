@@ -1,0 +1,53 @@
+{
+  "groups": [
+    { "name": "application", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties" },
+    { "name": "application.presence", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Presence" },
+    { "name": "application.login", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Login" },
+    { "name": "application.otp", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Otp" },
+    { "name": "application.remember-me", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$RememberMe" }
+  ],
+  "properties": [
+    {
+      "name": "application.presence.touch-throttle",
+      "type": "java.time.Duration",
+      "description": "Minimum time between DB updates of lastActiveAt for a user.",
+      "defaultValue": "30s"
+    },
+    {
+      "name": "application.presence.online-window",
+      "type": "java.time.Duration",
+      "description": "How recent lastActiveAt must be to consider a user online.",
+      "defaultValue": "5m"
+    },
+    {
+      "name": "application.login.attempts.threshold",
+      "type": "java.lang.Integer",
+      "description": "Failed login attempts before blocking the user.",
+      "defaultValue": 3
+    },
+    {
+      "name": "application.login.block.expiry",
+      "type": "java.time.Duration",
+      "description": "How long the user remains blocked after too many failed attempts.",
+      "defaultValue": "20m"
+    },
+    {
+      "name": "application.login.password.placeholder",
+      "type": "java.lang.String",
+      "description": "String used when masking passwords in logs or DTOs.",
+      "defaultValue": "[PROTECTED]"
+    },
+    {
+      "name": "application.otp.expiry",
+      "type": "java.time.Duration",
+      "description": "OTP lifetime.",
+      "defaultValue": "2m"
+    },
+    {
+      "name": "application.remember-me.expiry",
+      "type": "java.time.Duration",
+      "description": "Remember Me Cookie TTL.",
+      "defaultValue": "7d"
+    }
+  ]
+}

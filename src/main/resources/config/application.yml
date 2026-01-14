@@ -1,0 +1,26 @@
+application:
+  presence:
+    touch-throttle-seconds: 30     
+    online-window-minutes: 5  
+
+  login:
+    attempts:
+      threshold: 3         
+    block:
+      expiry-minutes: 20         
+    password:
+      placeholder: "[PROTECTED]"
+
+  otp:
+    expiry-minutes: 2    
+
+  remember-me:
+    expiry-seconds: 1209600    
+
+cloudflare:
+  images:
+    account-id: "YOUR_ACCOUNT_ID"
+    api-token: "<TOKEN>"
+    account-hash: "<ACCOUNT-HASH>"
+    default-variant: "avatar_md"
+    

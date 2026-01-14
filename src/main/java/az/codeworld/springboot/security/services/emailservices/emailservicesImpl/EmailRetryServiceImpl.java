@@ -70,7 +70,7 @@ public class EmailRetryServiceImpl {
         mimeMessageHelper.setTo(emailOutbox.getRecipient());
         mimeMessageHelper.setSubject(emailOutbox.getSubject());
         mimeMessageHelper.setText(emailOutbox.getHtml(), true);
-        //mimeMessageHelper.setFrom("BOOO! YOU THOUGH I AM GONNA TELL YOU WHO AM I? F*CK OFF!");
+        //mimeMessageHelper.setFrom("BOOO! YOU THOUGHT I AM GONNA TELL YOU WHO AM I? F*CK OFF!");
         mimeMessageHelper.addInline("logo", new ClassPathResource("static/assets/sprites/logo.png"));
 
         System.out.println("\n\n\n\n\n\n\nI AM JUST ABOUT TO SEND IT!!!!\n\n\n\n\n");

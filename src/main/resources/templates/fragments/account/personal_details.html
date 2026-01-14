@@ -1,0 +1,119 @@
+<div th:fragment="personal-details" style="display: contents">
+  <div
+    th:if="${personalDetails == 'DISPLAY'}" 
+    class="personal-details"
+    fragment="personalDetails"
+  >
+    <div class="title">
+      <h3>Personal Details</h3>
+      <a class="edit" href="/user/account" section="personalDetails">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#e8eaed"
+        >
+          <path
+            d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+          />
+        </svg>
+        EDIT
+      </a>
+    </div>
+    <div class="panel">
+      <address class="vcard">
+        <span
+          data-attr="Full name :"
+          class="fn"
+          th:text="${user.firstName + ' ' + user.lastName}"
+          >Firstname Lastname</span
+        ><br />
+        <span data-attr="Birth Date :" class="dt" th:text="${user.birthDate}"
+          >12-09-1982</span
+        >
+        <span class="adr">
+          <span
+            data-attr="Street :"
+            class="street-address"
+            th:text="${user.street}"
+            >456 Market St</span
+          ><br />
+          <span data-attr="City :" class="locality" th:text="${user.city}"
+            >San Francisco,</span
+          >
+          <span data-attr="Region :" class="region" th:text="${user.region}"
+            >CA</span
+          >
+          <span
+            data-attr="Postal Code :"
+            class="postal-code"
+            th:text="${user.postalCode}"
+            >94103,</span
+          >
+          <span
+            data-attr="Country :"
+            class="country-name"
+            th:text="${user.country}"
+            >USA</span
+          >
+        </span>
+      </address>
+    </div>
+  </div>
+  <form
+    action="/user/udpateUser"
+    th:object="${userUpdateDTO}"
+    th:if="${personalDetails == 'EDIT'}" 
+    class="personal-details"
+    fragment="personalDetails"
+  >
+    <div class="title">
+      <h3>Personal Details</h3>
+      <button type="submit">Submit</button>
+    </div>
+    <div class="panel">
+      <input class="vcard">
+        <input
+          type="text"
+          data-attr="Full name :"
+          class="fn"
+          th:text="${user.firstName + ' ' + user.lastName}"
+        />
+        <br />
+        <input 
+          data-attr="Birth Date :" 
+          class="dt" 
+          th:field="*{birthDate}"
+        />
+        <input 
+          class="adr">
+          <span
+            data-attr="Street :"
+            class="street-address"
+            th:text="${user.street}"
+            >456 Market St</span
+          ><br />
+          <span data-attr="City :" class="locality" th:text="${user.city}"
+            >San Francisco,</span
+          >
+          <span data-attr="Region :" class="region" th:text="${user.region}"
+            >CA</span
+          >
+          <span
+            data-attr="Postal Code :"
+            class="postal-code"
+            th:text="${user.postalCode}"
+            >94103,</span
+          >
+          <span
+            data-attr="Country :"
+            class="country-name"
+            th:text="${user.country}"
+            >USA</span
+          >
+        </input>
+      </address>
+    </div>
+  </form>
+</div>

@@ -1,5 +1,7 @@
 package az.codeworld.springboot.security.services.authservices.authservicesImpl;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -8,18 +10,21 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
+import az.codeworld.springboot.admin.dtos.UserDTO;
+import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImpl;
+import az.codeworld.springboot.aop.LogExecutionTime;
 import az.codeworld.springboot.security.dtos.UserAuthDTO;
 import az.codeworld.springboot.security.entities.EmailOutbox;
 import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
 import az.codeworld.springboot.security.services.emailservices.EmailOutboxService;
+import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.web.services.ThymeleafService;
 import jakarta.transaction.Transactional;
 
 @Service
-@Profile("default")
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final EmailOutboxService emailOutboxService;
@@ -43,6 +48,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.port = getPort;
     }
 
+    @LogExecutionTime("sendAcceptanceEmail")
     @Override
     @Transactional
     public void sendAcceptanceEmail(RequestDTO requestDTO) {
@@ -51,7 +57,8 @@ public class RegistrationServiceImpl implements RegistrationService {
             "auth/registration/accept-request", 
             Map.of(
                 "name", requestDTO.getFirstName(),
-                "verifyUrl", "http://localhost:" + port + "/user/register?token=" + requestDTO.getRequestToken() 
+                "verifyUrl", "http://localhost:" + port + "/user/register?token=" + requestDTO.getRequestToken(),
+                "date", LocalDate.now().plusDays(1)
             )
         );
 
@@ -67,6 +74,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         applicationEventPublisher.publishEvent(new EmailRequestedEvent(emailOutbox.getOutBoxId()));
     }
 
+    @LogExecutionTime("sendRejectionEmail")
     @Override
     @Transactional
     public void sendRejectionEmail(RequestDTO requestDTO) {
@@ -90,23 +98,28 @@ public class RegistrationServiceImpl implements RegistrationService {
         applicationEventPublisher.publishEvent(new EmailRequestedEvent(emailOutbox.getOutBoxId()));
     }
 
+    @LogExecutionTime("registerUser")
     @Override
     @Transactional
     public void registerUser(UserAuthDTO userAuthDTO) {
 
+        UserCreateDTO userCreateDTO = (UserCreateDTO) userService.createNewUser(userAuthDTO, dtotype.CREATE);
+
+        String url = "http://localhost:" + port + "/";
+
         String html = thymeleafService.render(
-            "auth/registration/accept-request",
+            "auth/registration/registration-success", 
             Map.of(
                 "name", userAuthDTO.getFirstName(),
-                "verifyURL", "BOZO WAIT! COMING SOON!!!"
-            )    
+                "url", url,
+                "username", userCreateDTO.getUsername()
+            )
         );
-        userService.createNewUser(userAuthDTO);
 
         EmailOutbox emailOutbox = EmailOutbox
             .pending(
                 userAuthDTO.getEmail(), 
-                "Your Request has been Accepted :)", 
+                "Your have been successfully registered as a new user! :)", 
                 html
             );
 

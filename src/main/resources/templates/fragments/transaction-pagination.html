@@ -6,7 +6,7 @@
     th:fragment="profile-completeness"
   >
     <div class="title">
-      <h3>Profile Completeness <span>50%</span></h3>
+      <h3>Profile Completeness <span th:text="${user.completeness + '%'}" th:class="${user.completeness} == 100 ? 'complete' : ''"></span></h3>
     </div>
     <div class="panel">
       <div class="step">
@@ -23,7 +23,9 @@
             />
           </svg>
         </div>
-        <div class="checked-unchecked checked">
+        <div 
+          th:class="${user.isPhoneAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
+        >
           <div class="checkbox">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +54,9 @@
             />
           </svg>
         </div>
-        <div class="checked-unchecked unchecked">
+        <div 
+          th:class="${user.isEmailAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
+        >
           <div class="checkbox">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +85,9 @@
             />
           </svg>
         </div>
-        <div class="checked-unchecked checked">
+        <div
+          th:class="${user.isCardAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
+        >
           <div class="checkbox">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +116,9 @@
             />
           </svg>
         </div>
-        <div class="checked-unchecked checked">
+        <div
+          th:class="${user.isBankAccountAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
+        >
           <div class="checkbox">
             <svg
               xmlns="http://www.w3.org/2000/svg"

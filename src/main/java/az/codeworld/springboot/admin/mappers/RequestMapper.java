@@ -9,8 +9,8 @@ import az.codeworld.springboot.utilities.constants.roles;
 public class RequestMapper {
     public static RequestDTO toRequestDTO(
         Long requestId,
-        String firstname,
-        String lastname,
+        String firstName,
+        String lastName,
         String email,
         roles role,
         String requestToken
@@ -18,8 +18,8 @@ public class RequestMapper {
         return RequestDTO
             .builder()
             .requestId(requestId)
-            .firstName(firstname)
-            .lastName(lastname)
+            .firstName(firstName)
+            .lastName(lastName)
             .email(email)
             .role(role)
             .requestToken(requestToken)

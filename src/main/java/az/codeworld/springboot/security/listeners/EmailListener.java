@@ -21,7 +21,6 @@ public class EmailListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onAfterCommit(EmailRequestedEvent emailRequestedEvent) throws MessagingException {
-        System.out.println("\n\n\n\n\nLISTENER LISTENED\n\n\n\n\n");
         emailService.sendEmail(emailRequestedEvent.outBoxId());
     }
 }

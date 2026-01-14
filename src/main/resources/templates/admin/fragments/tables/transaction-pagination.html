@@ -1,0 +1,152 @@
+<div th:fragment="transaction-pagination">
+  <table>
+    <tbody th:fragment="tableBody(dataObj)">
+      <tr
+        th:each="teacherTransaction : ${dataObj}"
+        th:data-amount="${teacherTransaction.transactionAmount}"
+        th:data-fee="${teacherTransaction.transactionFee}"
+        th:data-total="${teacherTransaction.transactionTotal}"
+        th:data-paid-by="${teacherTransaction.transactionPaidBy}"
+        th:data-date="${teacherTransaction.transactionDate}"
+        th:data-transaction-id="${teacherTransaction.transactionId}"
+        th:data-details="${teacherTransaction.transactionDetails}"
+        th:data-status="${teacherTransaction.status}"
+      >
+        <td>
+          <p th:text="${teacherTransaction.transactionDate}"></p>
+        </td>
+        <td class="description">
+          <h2 th:text="${teacherTransaction.transactionPaidBy}"></h2>
+          <small th:text="${teacherTransaction.transactionDescription}"></small>
+        </td>
+        <td status-icon>
+          <div class="checked-unchecked">
+            <div class="pending">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
+                />
+              </svg>
+            </div>
+            <div class="checkbox">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e8eaed"
+              >
+                <path
+                  d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                />
+              </svg>
+            </div>
+            <div class="rejected">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </td>
+        <td class="amount-uprise">
+          <p th:text="${teacherTransaction.transactionAmount}"></p>
+          <p th:text="${teacherTransaction.currency}"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div 
+    th:if="${teacherTransactions.size() >= 10 && mode == 'PREVIEW'}"
+    class="view-all" 
+    id="view-all" 
+    th:fragment="view-all-teachers"
+  >
+    <a data-spa th:href="@{/admin/teachers}"> View all &gt; </a>
+  </div>
+  <div 
+    th:if="${studentTransactions.size() >= 10 && mode == 'PREVIEW'}"
+    class="view-all" 
+    id="view-all" 
+    th:fragment="view-all-students"
+  >
+    <a data-spa th:href="@{/admin/students}"> View all &gt; </a>
+  </div>
+  <div 
+    th:if="${requests.size() >= 10 && mode == 'PREVIEW'}"
+    class="view-all" 
+    id="view-all" 
+    th:fragment="view-all-requests"
+  >
+    <a data-spa th:href="@{/admin/requests}"> View all &gt; </a>
+  </div>
+  <nav
+    id="pagination"
+    th:fragment="pagination(basePath)"
+    class="pagination"
+    th:if="${transactionsOnPage.totalPages > 1 && mode == 'VIEW_ALL'}"
+  >
+    <ul>
+      <!-- class="disabled" -->
+      <li>
+        <a
+          data-spa
+          tabindex="-1"
+          th:if="${transactionsOnPage.hasPrevious()}"
+          th:href="@{${basePath}(pageIndex=${transactionsOnPage.number})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
+          </svg>
+        </a>
+      </li>
+      <li th:each="page : ${pages}" th:class="${page.isActive}">
+        <a
+          data-spa
+          th:href="@{${basePath}(perPage=${page.perPage}, pageIndex=${page.pageIndex}, direction=${page.direction}, role=${page.role})}"
+          th:text="${page.pageIndex}"
+          class="js-page"
+        ></a>
+      </li>
+      <li>
+        <a
+          data-spa
+          th:if="${transactionsOnPage.hasNext()}"
+          th:href="@{${basePath}(pageIndex=${transactionsOnPage.number+2})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
+          </svg>
+        </a>
+      </li>
+    </ul>
+    <!-- <a th:href="@{/user/dashboard}"> View less &lt; </a> -->
+  </nav>
+</div>

@@ -4,7 +4,6 @@
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-
   <head th:fragment="head">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +13,6 @@
   </head>
 
   <body class="layout auth">
-
     <style>
       .error {
         position: fixed;
@@ -127,7 +125,7 @@
         <button type="submit">Authenticate</button>
         <div class="opts">
           <a href="#sign-in-anchor">Register</a>
-          <a href="#">Forgot Password?</a>
+          <a th:href="@{/restricted/forgotPassword}">Forgot Password?</a>
         </div>
       </form>
 
@@ -156,7 +154,7 @@
               placeholder="John"
               pattern="^[A-Z]{1}[a-z]{1,14}$"
               maxlength="15"
-              name="firstname"
+              name="firstName"
               autocomplete="name"
             />
           </label>
@@ -177,7 +175,7 @@
               placeholder="Doe"
               pattern="^[A-Z]{1}[a-z]{1,19}$"
               maxlength="20"
-              name="lastname"
+              name="lastName"
               autocomplete="family-name"
             />
           </label>
@@ -196,7 +194,7 @@
               id="email"
               aria-describedby="email-help-request"
               placeholder="example@mail.com"
-              pattern="^[A-Za-z0-9\.+-_]+@[A-Za-z]{3,6}\.[A-Za-z]{1,3}"
+              pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9._%+-]+\\.[A-Za-z]{2,6}$"
               name="email"
               autocomplete="email"
             />

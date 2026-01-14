@@ -30,10 +30,10 @@ public class Request {
     private Long requestId;
 
     @Column
-    private String firstname;
+    private String firstName;
 
     @Column
-    private String lastname;
+    private String lastName;
 
     @Column(unique = true)
     private String email;

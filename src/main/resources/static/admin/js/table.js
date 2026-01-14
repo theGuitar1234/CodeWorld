@@ -4,8 +4,7 @@ const opt1 = "checked",
   opt2 = "rejected",
   opt3 = "pending";
 
-let 
-  dialogStatusIcon,
+let dialogStatusIcon,
   dialogStatusIcons,
   tableBody,
   tables,
@@ -36,7 +35,9 @@ function cacheElements() {
 function resetDialogStatusClasses() {
   if (!dialogStatusIcons) return;
 
-  dialogStatusIcons.forEach(dialogStatusIcon => dialogStatusIcon.classList.remove(opt1, opt2, opt3));
+  dialogStatusIcons.forEach((dialogStatusIcon) =>
+    dialogStatusIcon.classList.remove(opt1, opt2, opt3)
+  );
 }
 
 function populateDialog(row) {
@@ -69,7 +70,7 @@ function populateDialog(row) {
   dataStatus.textContent = row.dataset.status;
 
   status = row.dataset.status?.toLowerCase();
-  dialogStatusIcon = dialog.querySelector("[dialog-status-icon");
+  dialogStatusIcon = dialog.querySelector("[dialog-status-icon]");
 
   switch (status) {
     case opt1:
@@ -120,7 +121,6 @@ function initTable() {
   tables.forEach((table) => {
     tableBody = table.querySelector("tbody");
     tableBody.addEventListener("click", (e) => {
-
       row = e.target.closest("tr");
 
       if (!row) return;
@@ -132,7 +132,6 @@ function initTable() {
       } catch (e) {
         console.error("Table doesn't support dialog view: " + e.message);
       }
-
     });
   });
 }

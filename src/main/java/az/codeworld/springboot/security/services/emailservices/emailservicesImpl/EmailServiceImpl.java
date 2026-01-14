@@ -19,7 +19,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Async("mailExecutor")
     public void sendEmail(Long outBoxId) throws MessagingException {
-        System.out.println("\n\n\n\n\n\nOH MY GOD\n\n\n\n\n\n");
         emailRetryServiceImpl.sendWithRetry(outBoxId); 
     }
 }
