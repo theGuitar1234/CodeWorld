@@ -23,6 +23,13 @@ async function handleFragment(fetchUrl, { push = true } = {}) {
 
     const html = await res.text();
 
+    const loading = document.createElement("div");
+    loading.classList.add("loading");
+    loading.textContent = 'loading';
+    document.body.appendChild(loading);
+
+    await new Promise(r => setTimeout(r, 10000));
+
     console.log(html);
 
     const doc = new DOMParser().parseFromString(html, "text/html");
@@ -51,6 +58,9 @@ async function handleFragment(fetchUrl, { push = true } = {}) {
     oldPaginationLinkRoot
       ? oldPaginationLinkRoot.replaceWith(newPaginationLinkRoot)
       : paginationLinkRoot.appendChild(newPaginationLinkRoot);
+    
+    document.body.removeChild(loading);
+
   } catch (e) {
     alert(`Something went wrong while fetching ${e}`);
     console.error(e);
