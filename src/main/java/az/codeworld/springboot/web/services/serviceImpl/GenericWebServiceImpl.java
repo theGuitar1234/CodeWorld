@@ -1,5 +1,7 @@
 package az.codeworld.springboot.web.services.serviceImpl;
 
+import java.util.Optional;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,12 @@ public class GenericWebServiceImpl implements GenericWebService {
 
     @Override
     public <T> void saveType(Class<T> type, T t) {
-        genericWebRepository.save(t);
+        genericWebRepository.save(type, t);
+    }
+
+    @Override
+    public <T> T getById(Class<T> type, Long id) {
+        return genericWebRepository.findById(id, type);
     }
     
 }

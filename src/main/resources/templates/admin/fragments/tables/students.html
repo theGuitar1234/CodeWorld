@@ -1,41 +1,32 @@
 <div class="activity" th:fragment="students">
   <div class="title">
-    <h1>Student Payments</h1>
+    <h1>Students</h1>
   </div>
   <div class="panel">
 
-    <div
-      th:replace="~{admin/fragments/tables/transaction-dialog.html :: transaction-dialog}"
-    ></div>
-
-    <table dialog-table>
+    <table>
       <thead>
         <tr>
-          <th>Date</th>
-          <th class="description">Description</th>
-          <th>Status</th>
-          <th>Amount</th>
+          <th>ID</th>
+          <th class="description">Full name</th>
+          <th>Email</th>
+          <th>EnrolledAt</th>
         </tr>
       </thead>
-      
+    
+      <!-- th:if="${spa == 'STUDENTS'}" -->
       <tbody
-        th:if="${spa == 'STUDENTS'}"
-        th:replace="~{admin/fragments/tables/transaction-pagination.html :: tableBody(${transactionsOnPage})}"
-      ></tbody>
-
-      <tbody
-        th:if="${spa == 'HOME'}"
-        th:replace="~{admin/fragments/tables/transaction-pagination.html :: tableBody(${studentTransactions})}"
+        th:replace="~{admin/fragments/tables/entity-pagination.html :: tableBody(${studentsOnPage})}"
       ></tbody>
 
     </table>
   </div>
   <div id="pagination-container">
-    <div
+    <!-- <div
       th:replace="~{admin/fragments/tables/transaction-pagination.html :: view-all-students}"
-    ></div>
+    ></div> -->
     <nav
-      th:replace="~{admin/fragments/tables/transaction-pagination.html :: pagination('/admin/students')}"
+      th:replace="~{admin/fragments/tables/entity-pagination.html :: pagination('/admin/students', ${studentsOnPage}, ${pagesForStudents}, 'pageIndex')}"
     ></nav>
   </div>
 </div>

@@ -1,0 +1,27 @@
+<div class="activity" th:fragment="subjects">
+  <div class="title">
+    <h1>Subjects</h1>
+  </div>
+  <div class="panel">
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th class="description">Description</th>
+        </tr>
+      </thead>
+
+      <tbody
+        th:replace="~{admin/fragments/tables/entity-pagination.html :: subjectTableBody(${subjectsOnPage})}"
+      ></tbody>
+
+    </table>
+  </div>
+  <div id="pagination-container">
+    <nav
+      th:replace="~{admin/fragments/tables/entity-pagination.html :: pagination('/admin/subjects', ${subjectsOnPage}, ${pagesForSubjects}, 'pageIndex')}"
+    ></nav>
+  </div>
+</div>

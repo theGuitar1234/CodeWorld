@@ -1,0 +1,26 @@
+<main
+  data-spa-root
+  th:fragment="course-offerings-main"
+  th:if="${spa == 'COURSE_OFFERINGS'}"
+>
+  <div th:replace="admin/fragments/error/error.html :: error"></div>
+  <div th:replace="admin/fragments/success/success.html :: success"></div>
+
+  <div
+    th:replace="~{admin/fragments/main/header/course-offerings-header.html :: course-offerings-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers spa">
+      <div
+        th:replace="~{admin/fragments/main/filters/course_offerings_filter.html :: course-offerings-filter('Course Offerings', '/admin/courseOfferings/' + ${courseOffering.id}, '/admin/courseOfferings/' + ${courseOffering.id} + '/getReport')}"
+      ></div>
+      <div class="container" id="container9">
+        <div class="activity">
+          <div
+            th:replace="~{admin/fragments/tables/courseEnrollments.html :: courseEnrollments}"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

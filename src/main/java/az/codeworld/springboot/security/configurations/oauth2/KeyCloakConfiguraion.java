@@ -11,7 +11,7 @@ public class KeyCloakConfiguraion {
     
     @Bean
     KeycloakRealmRoleConverter keycloakRealmRoleConverter(
-        @Value("${KEYCLOAK_CLIENT_ID:") String clientId
+        @Value("${KEYCLOAK_CLIENT_ID:}") String clientId
     ) {
         return new KeycloakRealmRoleConverter(clientId);
     }

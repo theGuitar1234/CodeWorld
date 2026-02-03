@@ -3,14 +3,25 @@ package az.codeworld.springboot.admin.services;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Direction;
+
+import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
+import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
 import az.codeworld.springboot.admin.entities.User;
+import az.codeworld.springboot.admin.projections.UserAdminProjection;
+import az.codeworld.springboot.admin.projections.UserLogoutProjection;
+import az.codeworld.springboot.admin.records.UserAuthRecord;
+import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
-import az.codeworld.springboot.security.dtos.UserAuthDTO;
 import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.dtotype;
+import az.codeworld.springboot.utilities.constants.roles;
 
 public interface UserService {
     void defaultMethod();
@@ -42,4 +53,27 @@ public interface UserService {
     String getProfileImageId(String userName);
 
     void updateProfileImageId(String userName, String imageId);
+
+    Long updatePassword(String userName, String password);
+
+    Page<UserPayableDTO> getPaginatedPayableUsers(roles role, int pageIndex, int pageSize, String sortBy, Direction direction);
+
+    UserAuthRecord getUserRecordByUserName(String userName);
+
+    void enable2FA(String email);
+
+    UserAdminProjection updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO, Long userId) throws UserNotFoundException;
+
+    void banUnbanUser(Long userId);
+
+    int countTotalBannedUsers();
+    int countTotalNewThisMonth();
+    int countTotalActiveUsers();
+    int countTotalInActiveUsers();
+    Long countAllUsers();
+
+    List<UserLatestRecord> getLatestUsers();
+
+    <T> T getUserProjectionById(Long id, Class<T> type);
+    <T> T getUserProjectionByUserName(String userName, Class<T> type);
 }

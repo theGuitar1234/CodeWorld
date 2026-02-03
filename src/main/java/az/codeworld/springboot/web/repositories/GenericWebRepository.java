@@ -29,8 +29,9 @@ public class GenericWebRepository {
     }
 
     @Transactional
-    public <T> void save(T t) {
+    public <T> void save(Class<T> type,T t) {
         entityManager.persist(t);
+        entityManager.flush();
     }
 
     @Transactional

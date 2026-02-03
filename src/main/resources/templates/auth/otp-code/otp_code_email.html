@@ -42,20 +42,21 @@
           >
             <tr>
               <td class="p-24" style="padding: 24px">
-                <h2 style="margin: 12px 0 12px 0; color: green">
+                <h2 style="margin: 12px 0 12px 0; color: green" th:text="#{email.otp.title}">
                   OTP Code
                 </h2>
 
-                <p style="margin: 0 0 16px 0; color: #000000">
+                <p style="margin: 0 0 16px 0; color: #000000" th:utext="#{email.otp.forAndExpiry(${email}, ${date})}">
                   For <b th:text="${email}">Email</b>! 
                   The OTP Code will expiry in <b th:text="${date}"></b>
                 </p>
 
                 <p style="margin: 0 0 16px 0; color: #000000">
-                  Here is your OTP Code : <span th:text="${otpCode}">XXXXXX</span>
+                  <span th:text="#{email.otp.codeLabel}">Here is your OTP Code :</span>
+                  <span th:text="${otpCode}">XXXXXX</span>
                 </p>
 
-                <p style="margin: 16px 0 0 0; color: #666; font-size: 12px">
+                <p style="margin: 16px 0 0 0; color: #666; font-size: 12px" th:text="#{email.otp.ignore}">
                   If you didn't request this, ignore this email.
                 </p>
 
@@ -71,14 +72,16 @@
                     text-align: center;
                     color: #000000;
                   "
+                  th:attr="href=#{brand.homeLink}"
                 >
                   <img
                     alt="Code World"
                     width="120"
                     src="cid:logo"
                     style="display: block; margin: auto"
+                    th:attr="alt=#{brand.alt}"
                   />
-                  Code World
+                  <span th:text="#{brand.name}">Code World</span>
                 </a>
               </td>
             </tr>
@@ -103,22 +106,22 @@
                 class="p-24"
                 style="padding: 24px; margin: 50px;"
               >
-                <p style="margin: 0 0 16px 0; color: #ffffff">
+                <p style="margin: 0 0 16px 0; color: #ffffff" th:text="#{email.footer.companyLine}">
                   Code World Inc | Absheron | 2025 | Baku
                 </p>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.facebook}">
                   FaceBook
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.twitter}">
                   Twitter
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.linkedin}">
                   LinkedIn
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.youtube}">
                   Youtube
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.instagram}">
                   Instagram
                 </a>
                 <br />
@@ -130,6 +133,8 @@
                     color: #ffffff;
                     text-decoration: none;
                   "
+                  th:text="#{email.footer.privacyPolicy}"
+                  th:attr="href=#{email.footer.privacyLink}"
                 >
                   Privacy Policy
                 </a>

@@ -1,0 +1,28 @@
+<form
+  class="transactions"
+  th:fragment="transactions-filter(title, basePath, reportPath)"
+  th:action="@{${basePath}}"
+  method="GET"
+>
+  <div class="title">
+    <h3 th:text="${title}">Transactions</h3>
+  </div>
+  <div class="panel">
+    <!-- <p>Select Transactions from start date to end date</p> -->
+    <div class="wrapper">
+      <div class="inputs">
+        <label for="perPage">PerPage : </label>
+        <input type="number" name="perPage" />
+        <label for="start-date">From : </label>
+        <input type="date" name="startDate" id="start-date" />
+        <label for="end-date">To : </label>
+        <input type="date" name="endDate" id="end-date" />
+      </div>
+      <div
+        th:replace="~{fragments/statements.html :: statements(${reportPath})}"
+      ></div>
+    </div>
+    <div th:replace="~{admin/fragments/main/filters/sort_transactions_by.html :: sort-transactions-by}"></div>
+  </div>
+  <button type="submit">Submit</button>
+</form>

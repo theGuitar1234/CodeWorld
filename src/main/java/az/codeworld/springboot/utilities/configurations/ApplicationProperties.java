@@ -13,6 +13,14 @@ public class ApplicationProperties {
     private Login login = new Login();
     private Otp otp = new Otp();
     private RememberMe rememberMe = new RememberMe();
+    private Time time = new Time();
+    private Payriff payriff = new Payriff();
+
+    public Payriff getPayriff() { return payriff; }
+    public void setPayriff(Payriff payriff) { this.payriff = payriff; }
+
+    public Time getTime() { return time; }
+    public void setTime(Time time) { this.time = time; }
 
     public Presence getPresence() { return presence; }
     public void setPresence(Presence presence) { this.presence = presence; }
@@ -86,6 +94,29 @@ public class ApplicationProperties {
         public int getExpirySeconds() { return expirySeconds; }
 
         public void setExpirySeconds(int expirySeconds) { this.expirySeconds = expirySeconds; }
+    }
+
+    public static class Time {
+        private String zone;
+
+        public String getZone() { return zone; }
+
+        public void setZone(String zone) { this.zone = zone; }
+        
+    }
+
+    public static class Payriff {
+        private String secretKey;
+
+        public String getSecretKey() { return secretKey; }
+        
+        public void setSecretKey(String secretKey) { this.secretKey = secretKey; }
+        
+        private String baseUrl;
+        
+        public String getBaseUrl() { return baseUrl; }
+        
+        public void setBaseUrl(String baseUrl) { this.baseUrl = baseUrl; }
     }
 
 

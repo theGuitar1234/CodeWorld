@@ -1,6 +1,6 @@
 <aside th:fragment="aside">
   <div class="logo">
-    <a th:href="@{/admin/}">
+    <a th:href="@{/admin/}" class="admin-panel">
       <!-- <div class="icon"></div> -->
       ADMIN PANEL
     </a>
@@ -10,16 +10,20 @@
       <li>Entities</li>
       <li><a data-spa th:href="@{/admin/teachers}">Teachers</a></li>
       <li><a data-spa th:href="@{/admin/students}">Students</a></li>
+      <li><a data-spa th:href="@{/admin/fetchUser}">Fetch User</a></li>
+      <!-- <li><a data-spa th:href="@{/admin/createUser}">Create User</a></li> -->
+      <li><a data-spa th:href="@{/admin/subjects}">Subjects</a></li>
     </ul>
     <ul>
       <li>Business</li>
-      <li><a data-spa th:href="@{/admin/transactions}">Transactions</a></li>
+      <li><a data-spa th:href="@{/admin/teacherTransactions}">Teachers Transactions</a></li>
+      <li><a data-spa th:href="@{/admin/studentTransactions}">Students Transactions</a></li>
     </ul>
     <ul>
       <li>Auth</li>
       <li><a data-spa th:href="@{/admin/requests}">Requests</a></li>
     </ul>
-    <ul>
+    <!-- <ul>
       <li>Media</li>
       <li>
         <div class="drop-down">
@@ -34,12 +38,11 @@
           <ul class="sub-menu">
             <div class="wrapper">
               <li role="menuitem"><a href="#">Profiles</a></li>
-              <li role="menuitem"><a href="#">Sprites</a></li>
-              <li role="menuitem"><a href="#">Icons</a></li>
+              <li role="menuitem"><a href="#">Thumbnails</a></li>
             </div>
           </ul>
         </div>
       </li>
-    </ul>
+    </ul> -->
   </nav>
 </aside>

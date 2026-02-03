@@ -1,0 +1,73 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <th:block
+      th:replace="fragments/head.html :: head(#{account.security.title}, '/js/account_security_main.js')"
+    ></th:block>
+  </head>
+
+  <body class="layout dashboard">
+    <div id="top-anchor"></div>
+
+    <div th:replace="~{fragments/error/error.html :: error}"></div>
+    <div th:replace="admin/fragments/success/success.html :: success"></div>
+
+    <div th:replace="~{fragments/header.html :: header('ACCOUNT')}"></div>
+
+    <div class="account-navigation" th:fragment="account-navigation">
+      <nav>
+        <ul>
+          <li>
+            <a th:href="@{/account/}" th:text="#{account.nav.account}">Account</a>
+          </li>
+
+          <li class="current">
+            <a
+              th:href="@{/account/accountSecurity}"
+              th:text="#{account.nav.security}"
+            >
+              Security
+            </a>
+          </li>
+
+          <li>
+            <a
+              th:href="@{/account/notifications}"
+              th:text="#{account.nav.notifications}"
+            >
+              Notifications
+            </a>
+          </li>
+
+          <!--
+          <li>
+            <a th:href="@{/account/paymentMethods}" th:text="#{account.nav.paymentMethods}">
+              Payment Methods
+            </a>
+          </li>
+          -->
+        </ul>
+      </nav>
+    </div>
+
+    <main>
+      <div class="wrapper account security">
+        <div th:replace="~{fragments/profile-container.html :: profile-container}"></div>
+        <div th:replace="~{fragments/salary-container.html :: salary-container}"></div>
+        <div th:replace="~{fragments/payment.html :: payment}"></div>
+
+        <div class="personal-details-container">
+          <div th:replace="~{fragments/account/security/password.html :: password}"></div>
+          <div th:replace="~{fragments/account/security/2_step_verification.html :: 2-step-verification}"></div>
+          <div th:replace="~{fragments/account/security/delete_account.html :: delete-account}"></div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="fragments/footer.html :: footer"></div>
+  </body>
+</html>

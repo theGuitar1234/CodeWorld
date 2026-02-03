@@ -24,4 +24,5 @@ public class RequestDTO {
     private String email;
     private roles role;
     private String requestToken;
+    private String expiresAt;
 }

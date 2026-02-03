@@ -4,7 +4,9 @@ public enum roles {
     ADMIN(1L, "ADMIN"),
     USER(2L, "USER"),
     TEACHER(3L, "TEACHER"),
-    STUDENT(4L, "STUDENT");
+    STUDENT(4L, "STUDENT"),
+    PRE_2FA(5L, "PRE_2FA"),
+    BANNED(6L, "BANNED");
 
     private Long roleId;
     private String roleNameString;

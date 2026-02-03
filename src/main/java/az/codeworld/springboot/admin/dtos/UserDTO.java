@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -66,5 +67,9 @@ public class UserDTO extends AuditDTO {
 
     private String presence;
 
-    private String profilePhoto;
+    public boolean isPastPayment;
+    public boolean isNearPayment;
+
+    @Builder.Default
+    private String profilePhoto = "/assets/sprites/profile-thumb.jpg";
 }

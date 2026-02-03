@@ -1,14 +1,24 @@
-<div 
-  class="wrapper" 
-  data-spa-root 
-  th:fragment="students-main"
-  th:if="${spa == 'STUDENTS'}"
->
-  <div class="containers">
-    <div class="container" id="container9">
-      <div
-        th:replace="~{admin/fragments/tables/students.html :: students}"
-      ></div>
+<main data-spa-root th:fragment="students-main" th:if="${spa == 'STUDENTS'}">
+
+  <div th:replace="admin/fragments/error/error.html :: error"></div>
+  <div th:replace="admin/fragments/success/success.html :: success"></div>  
+
+  <div
+    th:replace="~{admin/fragments/main/header/students-header.html :: students-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div th:replace="~{admin/fragments/main/filters/users_filter.html :: users-filter('Students', '/admin/students', '/admin/students/getReport')}"></div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/students.html :: students}"
+        ></div>
+      </div>
+      <div class="container" id="container9">
+        <div
+          th:replace="~{admin/fragments/tables/student-payments.html :: student-payments}"
+        ></div>
+      </div>
     </div>
   </div>
-</div>
+</main>

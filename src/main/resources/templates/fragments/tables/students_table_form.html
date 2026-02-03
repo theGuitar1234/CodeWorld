@@ -1,0 +1,47 @@
+<table th:fragment="students-table-form">
+  <thead>
+    <tr>
+      <th th:text="#{students.table.id}">ID</th>
+      <th class="description" th:text="#{students.table.fullName}">Student Full Name</th>
+      <th th:text="#{students.table.isPresent}">isPresent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      th:if="${selectedSection == null or #lists.isEmpty(selectedSection)}"
+    >
+      <td colspan="3" th:text="#{students.table.noStudents}">No students found.</td>
+    </tr>
+
+    <tr
+      th:each="student : ${selectedSection != null ? selectedSection : {}}"
+    >
+      <td>
+        <p th:text="${student.id}"></p>
+      </td>
+      <td class="description">
+        <h2
+          th:text="${student.firstName + ' ' + student.lastName}"
+        ></h2>
+      </td>
+      <td>
+        <!-- th:checked="${enrollment.isPresent}"
+        th:checked="${!enrollment.isPresent}" -->
+        <input 
+            type="radio" 
+            th:name="${'attendance[' + student.id + ']'}" 
+            value="true" 
+            th:attr="present=#{students.table.present}"
+            present 
+        />
+        <input 
+            type="radio" 
+            th:name="${'attendance[' + student.id + ']'}"
+            value="false" 
+            th:attr="non-present=#{students.table.notPresent}"
+            non-present 
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>

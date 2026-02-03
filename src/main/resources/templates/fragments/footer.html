@@ -2,17 +2,17 @@
   <div class="reach">
     <div class="contact">
       <ul>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
       </ul>
     </div>
     <div class="social-media-links">
       <ul>
-        <li title="Facebook" style="--accent-color: #106aff">
+        <li title="Facebook" th:title="#{footer.social.facebook}" style="--accent-color: #106aff">
           <a href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@
             </svg>
           </a>
         </li>
-        <li title="Twitter" style="--accent-color: #24a3f1">
+        <li title="Twitter" th:title="#{footer.social.twitter}" style="--accent-color: #24a3f1">
           <a href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@
             </svg>
           </a>
         </li>
-        <li title="Google" style="--accent-color: #000000">
+        <li title="Google" th:title="#{footer.social.google}" style="--accent-color: #000000">
           <a href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@
             </svg>
           </a>
         </li>
-        <li title="Youtube" style="--accent-color: #fd3d00">
+        <li title="Youtube" th:title="#{footer.social.youtube}" style="--accent-color: #fd3d00">
           <a href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,14 +101,14 @@
     </div>
   </div>
   <div class="terms">
-    <small
-      >Copyright &copy; 2020 <span>Payyed</span>. All Rights Reserved</small
+    <small th:utext="#{footer.copyright}"
+      >Copyright &copy; 2020 <span>CodeWorld</span>. All Rights Reserved</small
     >
     <div class="terms-of-service">
       <ul>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
+        <li><a href="#" th:text="#{footer.link.element}">Element</a></li>
       </ul>
     </div>
   </div>

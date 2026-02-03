@@ -1,0 +1,65 @@
+<div class="personal-details email-addresses" th:fragment="delete-account">
+  <div class="title">
+    <h3 style="color: red" th:text="#{account.delete.title}">Delete Account</h3>
+  </div>
+  <div class="panel">
+    <button
+      onclick="showDialog(true)"
+      type="submit"
+      style="background-color: red; border: none"
+      th:text="#{account.delete.button}"
+    >
+      DELETE ACCOUNT
+    </button>
+
+    <dialog id="dialog">
+      <div id="wrapper" class="wrapper">
+        <h2 th:text="#{account.delete.confirmTitle}">Are You Sure You Want To Delete The Account?</h2>
+        <form th:action="@{/account/deleteAccount}" method="POST">
+          <button type="submit" class="delete-user" style="background-color: red;" th:text="#{account.delete.button}">
+            DELETE ACCOUNT
+          </button>
+          <button onclick="showDialog(false)" type="button" class="cancel" th:text="#{common.cancel}">Cancel</button>
+        </form>
+        <button onclick="showDialog(false)" type="button" class="close-button" clsBttn>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+            />
+          </svg>
+        </button>
+      </div>
+    </dialog>
+    <script>
+      const dialog = document.getElementById("dialog");
+      function showDialog(show) {
+        const dialog = document.querySelector("#dialog");
+        if (!dialog) return;
+
+        if (!dialog.isConnected) document.body.appendChild(dialog);
+
+        show ? dialog.showModal() : dialog.close();
+      }
+      const wrapper = document.getElementById("wrapper");
+      dialog.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) showDialog(false);
+      });
+      document.addEventListener(
+        "cancel",
+        (e) => {
+          const d = e.target.closest?.("#dialog");
+          if (!d) return;
+          e.preventDefault();
+          showDialog(d, false);
+        },
+        true,
+      );
+    </script>
+  </div>
+</div>

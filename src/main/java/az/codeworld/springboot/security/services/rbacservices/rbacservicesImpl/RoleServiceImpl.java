@@ -32,6 +32,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void saveRole(Role role) {
         roleRepository.save(role);
+        roleRepository.flush();
     }
 
     @Override
@@ -43,32 +44,36 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public void addRolesToUser(String username, Set<Long> roleIds) {
+    public void addRolesToUser(Long userId, Set<Long> roleIds) {
         
-        Optional<User> userOptional = userRepository.findByUserName(username);
+        Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Foumd"));
-
-        // File file = new File("D:\\Payyed\\BOOGER_AIDS");
-        // try {
-        //     Files.write(Paths.get(file.getAbsolutePath()), Arrays.asList(user.toString()), StandardOpenOption.APPEND);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
 
         for (Long roleId : roleIds) {
             Role role = getRoleByRoleId(roleId);
             user.addRole(role);
+
+            userRepository.save(user);
+            userRepository.flush();
+
+            saveRole(role);
         }
     }
 
     @Override
     @Transactional
-    public void removeRolesFromUser(String email, Set<Long> roleIds) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    public void removeRolesFromUser(Long userId, Set<Long> roleIds) {
+        Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Found"));
 
         for (long roleId : roleIds) {
-            user.removeRole(getRoleByRoleId(roleId));
+            Role role = getRoleByRoleId(roleId);
+            user.removeRole(role);
+
+            userRepository.save(user);
+            userRepository.flush();
+
+            saveRole(role);
         }
     }
 

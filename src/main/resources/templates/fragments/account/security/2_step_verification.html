@@ -1,0 +1,26 @@
+<div class="personal-details account-settings" th:fragment="2-step-verification">
+  <div class="title">
+    <h3 th:text="#{account.2fa.title}">2-Step Verification</h3>
+    <!-- <small th:text="${user.lastChanged}"></small> -->
+    <a class="edit" th:href="@{/account/2fa}">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#e8eaed"
+      >
+        <path
+          d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+        />
+      </svg>
+      <span th:text="#{account.2fa.setup}">SETUP</span>
+    </a>
+  </div>
+  <div class="panel">
+    <p th:text="#{account.2fa.description}">
+      Add an extra layer of security to your account by using a one-time
+      security code in addition to your password each time you log in.
+    </p>
+  </div>
+</div>

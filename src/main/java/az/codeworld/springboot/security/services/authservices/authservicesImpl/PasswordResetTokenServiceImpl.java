@@ -68,13 +68,11 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     @Transactional
+    @LogExecutionTime("createPasswordResetToken")
     public void createPasswordResetToken(String email) {
-
-        System.out.println("\n\n\n\n\n\n\n\n" + "THIS IS THE EMAIL BRO : " + email + "\n\n\n\n\n\n\n\n");
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            System.out.println("\n\n\n\n\n\n\n\n" + "WAIT THERE IS SOMEONE WITH THIS EMAIL!" + "\n\n\n\n\n\n\n\n");
             User user = userOptional.get();
 
             if (user.getPasswordResetToken() != null) {
@@ -97,23 +95,18 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
             passwordResetTokenRepository.save(passwordResetToken);
 
             sendPasswordResetLink(email, token);
-            System.out.println("\n\n\n\n\n\n\n\n" + "I SENT THE EMAIL" + "\n\n\n\n\n\n\n\n");
         } else {
             
-            System.out.println("\n\n\n\n\n\n\n\n" + "SORRY I COULDN'T FIND ANYTHING" + "\n\n\n\n\n\n\n\n");
-
             throw new RuntimeException("Email not Found");
         }
     }
 
-    @LogExecutionTime("sendPasswordResetLink")
-    @Override
-    public void sendPasswordResetLink(String email, String token) {
+    private void sendPasswordResetLink(String email, String token) {
 
         String html = thymeleafService.render(
             "auth/reset-password/reset_email", 
             Map.of(
-                "email", email,
+                "email", email.substring(0, 3) + "*".repeat(email.length() - 3),
                 "verifyUrl", "http://localhost:" + port + "/restricted/tokenResetPassword?token=" + token,
                 "date", LocalDateTime.now().plusMinutes(15)
             )
@@ -159,7 +152,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
             userRepository.save(user);
             userRepository.flush();
 
-            logoutService.exterminate(user.getUserName(), request, response);
+            logoutService.exterminate(user.getId(), request, response);
 
             passwordResetTokenRepository.delete(passwordResetTokenOptional.get());
             passwordResetTokenRepository.flush();

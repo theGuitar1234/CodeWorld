@@ -1,4 +1,4 @@
-import { showDialog } from "./dialog.js";
+import { showDialog } from "./transactionDialogs.js";
 
 const opt1 = "checked",
   opt2 = "rejected",
@@ -119,15 +119,17 @@ function initTable() {
   if (!tables) return;
 
   tables.forEach((table) => {
-    tableBody = table.querySelector("tbody");
-    tableBody.addEventListener("click", (e) => {
-      row = e.target.closest("tr");
+    //tableBody = table.querySelector("tbody");
+    table.addEventListener("click", (e) => {
+      row = e.target.closest("tbody tr");
+      console.log(row);
 
       if (!row) return;
 
       try {
         populateDialog(row);
-        dialog = row.parentNode.parentNode.parentNode.firstElementChild;
+        //dialog = row.parentNode.parentNode.parentNode.firstElementChild;
+        dialog = table.parentNode.firstElementChild;
         showDialog(dialog, true);
       } catch (e) {
         console.error("Table doesn't support dialog view: " + e.message);

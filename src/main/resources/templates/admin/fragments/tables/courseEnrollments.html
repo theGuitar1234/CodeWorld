@@ -1,0 +1,29 @@
+<div class="activity" th:fragment="courseEnrollments">
+  <div class="title">
+    <h1>Course Enrollments</h1>
+  </div>
+  <div class="panel">
+
+    <table>
+      <caption th:text="${'ID: ' + courseOffering.id + ' Course Offering based on ' + courseOffering.subjectTitle}"></caption>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th class="description">Full name</th>
+          <th>Email</th>
+          <th>EnrolledAt</th>
+        </tr>
+      </thead>
+
+      <tbody
+        th:replace="~{admin/fragments/tables/entity-pagination.html :: courseEnrollmentTableBody(${courseEnrollmentsOnPage})}"
+      ></tbody>
+
+    </table>
+  </div>
+  <div id="pagination-container">
+    <nav
+      th:replace="~{admin/fragments/tables/entity-pagination.html :: pagination('/admin/courseOfferings/' + ${courseOffering.id}, ${courseEnrollmentsOnPage}, ${pagesForCourseEnrollments}, 'pageIndex')}"
+    ></nav>
+  </div>
+</div>

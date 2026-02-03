@@ -17,6 +17,9 @@ public class TransactionStatusConverter implements AttributeConverter<transactio
             case transactionstatus.CHECKED -> "Checked";
             case transactionstatus.PENDING -> "Pending";
             case transactionstatus.REJECTED -> "Rejected";
+            // case transactionstatus.CANCELLED -> "Cancelled";
+            // case transactionstatus.EXPIRED -> "Expired";
+            // case transactionstatus.ERROR -> "Error";
             default -> throw new IllegalArgumentException("Unknown value: " + attribute);
         };
     }
@@ -31,6 +34,9 @@ public class TransactionStatusConverter implements AttributeConverter<transactio
             case "Checked" -> transactionstatus.CHECKED;
             case "Pending" -> transactionstatus.PENDING;
             case "Rejected" -> transactionstatus.REJECTED;
+            // case "Cancelled" -> transactionstatus.CANCELLED;
+            // case "Expired" -> transactionstatus.EXPIRED;
+            // case "Error" -> transactionstatus.ERROR;
             default -> throw new IllegalArgumentException("Unknown value: " + dbData);
         };
     }

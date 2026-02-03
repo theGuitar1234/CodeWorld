@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.repositories.UserRepository;
+import az.codeworld.springboot.security.auth.JpaUserDetails;
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.utilities.constants.accountstatus;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,12 +44,21 @@ public class JpaUserDetailsService implements UserDetailsService {
             }
         }
 
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
-                                                                                .withUsername(user.getUserName())
-                                                                                .password(user.getPassword())
-                                                                                .authorities(grantedAuthorities)
-                                                                                .build();
-        return userDetails;
+        return JpaUserDetails
+            .builder()
+            .userName(user.getUserName())
+            .password(user.getPassword())
+            .isTwoFactorEnabled(user.isTwoFactorEnabled())
+            .loginAudit(user.getLoginAudit())
+            .baseAuthorities(grantedAuthorities)
+            .build();
+
+        // UserDetails userDetails = org.springframework.security.core.userdetails.User
+        //                                                                         .withUsername(user.getUserName())
+        //                                                                         .password(user.getPassword())
+        //                                                                         .authorities(grantedAuthorities)
+        //                                                                         .build();
+        // return userDetails;
     }
     
 }

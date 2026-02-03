@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.stream.Collector;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
@@ -17,6 +20,8 @@ import az.codeworld.springboot.admin.repositories.RequestRepository;
 import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
 import az.codeworld.springboot.utilities.generators.TokenGenerator;
+import az.codeworld.springboot.web.dtos.CourseEnrollmentDTO;
+import az.codeworld.springboot.web.mappers.CourseEnrollmentMapper;
 import az.codeworld.springboot.admin.records.RequestRecord;
 
 @Service
@@ -56,17 +61,17 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDTO getRequestById(Long requestId) {
-        Optional<Request> requestOptional = requestRepository.findByRequestId(requestId);
+        Optional<Request> requestOptional = requestRepository.findById(requestId);
         Request request = requestOptional.orElseThrow(() -> new RuntimeException("Request Not Found"));
 
         return RequestMapper.toRequestDTO(
-                request.getRequestId(),
+                request.getId(),
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
                 request.getRole(),
-                request.getRequestToken());
-
+                request.getRequestToken(),
+                request.getExpiresAt());
     }
 
     @Override
@@ -78,12 +83,13 @@ public class RequestServiceImpl implements RequestService {
                     if (requestOptional.isPresent()) {
                         Request request = requestOptional.get();
                         return RequestMapper.toRequestDTO(
-                            request.getRequestId(),
+                            request.getId(),
                             request.getFirstName(),
                             request.getLastName(),
                             request.getEmail(),
                             request.getRole(),
-                            request.getRequestToken());
+                            request.getRequestToken(),
+                            request.getExpiresAt());
                     } else {
                         return null;
                     }
@@ -101,12 +107,13 @@ public class RequestServiceImpl implements RequestService {
                     if (requestOptional.isPresent()) {
                         Request request = requestOptional.get();
                         return RequestMapper.toRequestDTO(
-                                request.getRequestId(),
+                                request.getId(),
                                 request.getFirstName(),
                                 request.getLastName(),
                                 request.getEmail(),
                                 request.getRole(),
-                                request.getRequestToken());
+                                request.getRequestToken(),
+                                request.getExpiresAt());
                     } else {
                         return null;
                     }
@@ -116,7 +123,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void deleteRequestByRequestId(Long requestId) {
-        requestRepository.deleteRequestByRequestId(requestId);
+        requestRepository.deleteRequestById(requestId);
         requestRepository.flush();
     }
 
@@ -124,12 +131,13 @@ public class RequestServiceImpl implements RequestService {
     public RequestDTO getRequestByRequestToken(String token) {
         Request request = requestRepository.findByRequestToken(token).orElseThrow(() -> new RuntimeException("Request Not Found"));
         return RequestMapper.toRequestDTO(
-            request.getRequestId(), 
+            request.getId(), 
             request.getFirstName(), 
             request.getLastName(), 
             request.getEmail(), 
             request.getRole(), 
-            request.getRequestToken()
+            request.getRequestToken(),
+            request.getExpiresAt()
         ); 
     }
 
@@ -140,14 +148,23 @@ public class RequestServiceImpl implements RequestService {
             throw new InvalidRequestTokenException("token: " + token);
         Request request = requestOptional.get();
         RequestDTO requestDTO = RequestMapper.toRequestDTO(
-            request.getRequestId(), 
+            request.getId(), 
             request.getFirstName(), 
             request.getLastName(), 
             request.getEmail(), 
             request.getRole(), 
-            request.getRequestToken()
+            request.getRequestToken(),
+            request.getExpiresAt()
         );
         return requestDTO; 
+    }
+
+    @Override
+    public Page<RequestDTO> getPaginatedRequests(int pageIndex, int pageSize, String sortBy,
+            Direction direction) {
+        return requestRepository
+                .findAll(PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy))
+                .map(r -> RequestMapper.toRequestDTO(r.getId(), r.getFirstName(), r.getLastName(), r.getEmail(), r.getRole(), r.getRequestToken(), r.getExpiresAt()));
     }
 
 }

@@ -24,12 +24,12 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("SELECT r FROM Request r ORDER BY r.expiresAt ASC LIMIT 10")
     List<Optional<Request>> findRecentRequests();
 
-    Optional<Request> findByRequestId(Long requestId);
+    Optional<Request> findById(Long id);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Request r WHERE r.requestId = :requestId")
-    void deleteRequestByRequestId(@Param("requestId") Long requestId);
+    @Query("DELETE FROM Request r WHERE r.id = :id")
+    void deleteRequestById(@Param("id") Long id);
 
     @Modifying
     @Transactional

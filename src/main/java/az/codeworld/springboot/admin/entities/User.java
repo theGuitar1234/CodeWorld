@@ -1,5 +1,6 @@
 package az.codeworld.springboot.admin.entities;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -84,6 +85,8 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends AuditedEntity {
 
+    private final String ZONE = "Asia/Baku";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
     @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_sequence", allocationSize = 50, initialValue = 1000)
@@ -92,7 +95,7 @@ public class User extends AuditedEntity {
     @NotNull
     @NotBlank
     // @Length(min = 13, max = 13)
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     //@UsernameValidation
     private String userName;
 
@@ -110,13 +113,16 @@ public class User extends AuditedEntity {
     @EmailValidation
     private String email;
 
+    @Column
+    private boolean isTwoFactorEnabled = false;
+
     @Column(nullable = false)
     @PasswordValidation
     private String password;
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(nullable = true)
     @Pattern(regexp = "^\\+\\d{3}\\d{2}\\d{3}\\d{2}\\d{2}$")
@@ -151,20 +157,33 @@ public class User extends AuditedEntity {
     private accountstatus accountStatus;
 
     @Column
+    private boolean isBanned = false;
+
+    @Column
     private String language;
 
     @Column
     private String zoneId;
 
-    @Column(nullable = true)
-    @Pattern(regexp = "^\\d{4}\\d{4}\\d{4}\\d{4}")
-    private String cardNumber;
+    // @Column(nullable = true)
+    // @Pattern(regexp = "^\\d{4}\\d{4}\\d{4}\\d{4}")
+    // private String cardNumber;
 
-    @Column(nullable = true)
-    private String bankAccount;
+    // @Column(nullable = true)
+    // private String bankAccount;
 
     @Column
-    private byte nextDate;
+    private Instant nextDate;
+
+    @Column
+    private boolean billingEnabled;
+
+    public void updateNextPaymentDate() {
+        this.nextDate = LocalDate
+            .ofInstant(nextDate == null ? Instant.now() : nextDate, ZoneId.of(ZONE))
+            .plusMonths(1)
+            .atStartOfDay(ZoneId.of(ZONE)).toInstant();
+    }
 
     @Embedded
     @AttributeOverrides({
@@ -173,12 +192,9 @@ public class User extends AuditedEntity {
     })
     private Money payment;
 
-    @Column
-    private boolean isBanned;
-
     @Past
     @Column
-    private LocalDateTime lastActiveAt;
+    private Instant lastActiveAt;
 
     //https://imagedelivery.net/<ACCOUNT_HASH>/<IMAGE_ID>/<VARIANT>
     @Column
@@ -187,23 +203,26 @@ public class User extends AuditedEntity {
     @Column
     private Instant profileImageUpdatedAt;
 
+    @Column
+    private LocalDate affiliationDate;
+
     @NotAudited
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ProfilePicture profilePicture;
 
     public void updateLastActiveAt() {
-        this.lastActiveAt = LocalDateTime.now();
+        this.lastActiveAt = Instant.now();
     }
 
     public boolean isOnline() {
         if (this.lastActiveAt == null)
             return false;
-        return this.lastActiveAt.isAfter(LocalDateTime.now().minusMinutes(5));
+        return this.lastActiveAt.isAfter(Instant.now().minus(Duration.ofMinutes(5)));
     }
 
     public String getTimeZone() {
-        ZoneId zone = ZoneId.of(this.zoneId);
+        ZoneId zone = ZoneId.of(this.zoneId == null ? ZONE : this.zoneId);
         ZoneOffset zoneOffset = zone.getRules().getOffset(Instant.now());
 
         String city = zone.getId().contains("/")
@@ -226,21 +245,21 @@ public class User extends AuditedEntity {
         return this.email != null && !this.email.isBlank();
     }
 
-    public boolean hasCardNumber() {
-        return this.cardNumber != null && !this.cardNumber.isBlank();
-    }
+    // public boolean hasCardNumber() {
+    //     return this.cardNumber != null && !this.cardNumber.isBlank();
+    // }
 
-    public boolean hasBankAccount() {
-        return this.bankAccount != null && !this.cardNumber.isBlank();
-    }
+    // public boolean hasBankAccount() {
+    //     return this.bankAccount != null && !this.bankAccount.isBlank();
+    // }
 
     @PrePersist
     @PreUpdate
     private void normalize() {
         this.phoneNumber = normalizeToNull(phoneNumber);
         this.email = normalizeToNull(email);
-        this.cardNumber = normalizeToNull(cardNumber);
-        this.bankAccount = normalizeToNull(bankAccount);
+        // this.cardNumber = normalizeToNull(cardNumber);
+        // this.bankAccount = normalizeToNull(bankAccount);
     }
 
     private String normalizeToNull(String s) {
@@ -251,8 +270,12 @@ public class User extends AuditedEntity {
     }
 
     public byte getCompleteness() {
-        return (byte) ((((this.hasEmail() ? 1 : 0) + (this.hasPhoneNumber() ? 1 : 0) + (this.hasCardNumber() ? 1 : 0)
-                + (this.hasBankAccount() ? 1 : 0)) / 4.0) * 100.0);
+        return (byte) (((
+                (this.hasEmail() ? 1 : 0) + 
+                (this.hasPhoneNumber() ? 1 : 0) 
+                // + (this.hasCardNumber() ? 1 : 0) + 
+                // (this.hasBankAccount() ? 1 : 0)
+            ) / 2.0) * 100.0);
     }
 
     // @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

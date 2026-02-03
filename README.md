@@ -18,7 +18,7 @@ docker ps -a | grep keycloak
 
 Start keycloak : 
 
-docker ps -a | grep keycloak
+docker start keycloak
 
 Check logs : 
 

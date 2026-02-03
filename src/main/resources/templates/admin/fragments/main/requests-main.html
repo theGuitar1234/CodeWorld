@@ -1,14 +1,17 @@
-<div 
-  class="wrapper" 
-  data-spa-root 
-  th:fragment="requests-main"
-  th:if="${spa == 'REQUESTS'}"
->
-  <div class="containers">
-    <div class="container" id="container9">
+<main data-spa-root th:fragment="requests-main" th:if="${spa == 'REQUESTS'}">
+  <div
+    th:replace="~{admin/fragments/main/header/requests-header.html :: requests-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers spa">
       <div
-        th:replace="~{admin/fragments/tables/requests.html :: requests}"
+        th:replace="~{admin/fragments/main/filters/requests_filter.html :: requests-filter('Requests', '/admin/requests', '/admin/requests/getReport')}"
       ></div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/requests.html :: requests}"
+        ></div>
+      </div>
     </div>
   </div>
-</div>
+</main>

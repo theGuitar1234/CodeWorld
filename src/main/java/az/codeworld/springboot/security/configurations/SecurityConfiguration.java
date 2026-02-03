@@ -1,5 +1,7 @@
 package az.codeworld.springboot.security.configurations;
 
+import javax.security.auth.login.AccountExpiredException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +23,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import az.codeworld.springboot.exceptions.UserBlockedException;
 import az.codeworld.springboot.security.auth.handlers.LoginFailureHandler;
 import az.codeworld.springboot.security.auth.handlers.LoginSuccessHandler;
+import az.codeworld.springboot.security.auth.providers.DaoAuthenticationProvider;
 import az.codeworld.springboot.security.filters.UserActivityFilter;
 import az.codeworld.springboot.security.services.JpaUserDetailsService;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
+import az.codeworld.springboot.utilities.constants.exceptionmessages;
 import az.codeworld.springboot.utilities.constants.roles;
 
 @Configuration
@@ -44,6 +49,8 @@ public class SecurityConfiguration {
 
         private final ApplicationProperties applicationProperties;
 
+        private final DaoAuthenticationProvider daoAuthenticationProvider;
+
         public SecurityConfiguration(
                 PasswordEncoder passwordEncoder,
                 JpaUserDetailsService jpaUserDetailsService,
@@ -52,7 +59,8 @@ public class SecurityConfiguration {
                 LoginSuccessHandler loginSuccessHandler,
                 LoginFailureHandler loginFailureHandler,
                 UserActivityFilter userActivityFilter,
-                ApplicationProperties applicationProperties
+                ApplicationProperties applicationProperties,
+                DaoAuthenticationProvider daoAuthenticationProvider
         ) {
                 this.passwordEncoder = passwordEncoder;
                 this.jpaUserDetailsService = jpaUserDetailsService;
@@ -62,6 +70,7 @@ public class SecurityConfiguration {
                 this.loginFailureHandler = loginFailureHandler;
                 this.userActivityFilter = userActivityFilter;
                 this.applicationProperties = applicationProperties;
+                this.daoAuthenticationProvider = daoAuthenticationProvider;
         }
 
         private static final String[] WHITELIST = {
@@ -80,7 +89,8 @@ public class SecurityConfiguration {
                 "/error/**",
                 "/favicon.ico", "/favicon.png", "/favicon.*",
                 "/robots.txt", "/manifest.webmanifest",
-                "/.well-known/**"
+                "/.well-known/**",
+                "/i18n/changeLanguage"
         };
 
         private static final String[] PUBLIC = {
@@ -88,7 +98,10 @@ public class SecurityConfiguration {
                 "/about",
                 "/restricted",
                 "/register",
-                "/user/register"
+                "/user/register",
+                "/user/login",
+                "/user/logout",
+                "/i18n/changeLanguage"
         };
 
         private static final String[] ADMIN = {
@@ -103,6 +116,17 @@ public class SecurityConfiguration {
                 "/swagger-ui.html",
                 "/swagger-ui/**",
                 "/v3/api-docs/**"
+        };
+
+        private static final String[] PRE2FA = {
+                "/restricted/2fa",
+                "/restricted/2fa/",
+                "/restricted/2fa/**"
+        };
+
+        private static final String[] PAYRIFF = {
+                "/admin/payriff/callback",
+                "/admin/payriff/callback"
         };
 
         @Value("${REMEMBER_ME_KEY:}")
@@ -151,10 +175,16 @@ public class SecurityConfiguration {
                         .authorizeHttpRequests(requests -> requests
                                 .requestMatchers(WHITELIST).permitAll()
                                 .requestMatchers(PUBLIC).permitAll()
+                                .requestMatchers(PAYRIFF).permitAll()
+                                .requestMatchers(PRE2FA).hasRole(roles.PRE_2FA.getRoleNameString())
                                 .requestMatchers(ADMIN).hasRole(roles.ADMIN.getRoleNameString())
                                 .anyRequest().access((authentication, context) -> {
                                         Authentication auth = authentication.get();
                                         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) 
+                                                return new AuthorizationDecision(false);
+                                        if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_BANNED")))
+                                                return new AuthorizationDecision(false);
+                                        if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_" + roles.PRE_2FA.getRoleNameString())))
                                                 return new AuthorizationDecision(false);
                                         return new AuthorizationDecision(true);
                                 }))
@@ -163,16 +193,19 @@ public class SecurityConfiguration {
                                 .loginProcessingUrl("/restricted/authenticate")
                                 .usernameParameter("username")
                                 .passwordParameter("password")
-                                .failureUrl("/restricted/?error")
-                                .defaultSuccessUrl("/", true).permitAll()
+                                .failureUrl("/restricted/?error=Login%20Failure")
+                                .defaultSuccessUrl("/?continue", true).permitAll()
                                 .successHandler(loginSuccessHandler)
                                 .failureHandler(loginFailureHandler)
                         )
                         .logout(logout -> logout
                                 .logoutUrl("/user/logout")
+                                .logoutSuccessUrl("/restricted/?success=Account+Deleted")
                                 .invalidateHttpSession(true)
-                                .deleteCookies("JSESSIONID")
+                                .clearAuthentication(true)
+                                .deleteCookies("JSESSIONID", "remember-me")
                         )
+                        .authenticationProvider(daoAuthenticationProvider)
                         .rememberMe(rememberMe -> rememberMe
                                 .userDetailsService(jpaUserDetailsService)
                                 .key(key)
@@ -187,7 +220,7 @@ public class SecurityConfiguration {
                                         if (authenticationException instanceof BadCredentialsException) {
                                                 response.sendRedirect("/restricted/?error=" + authenticationException.getMessage());
                                         } else {
-                                                response.sendRedirect("/restricted/");
+                                                response.sendRedirect("/restricted/?error=" + exceptionmessages.getDefault());
                                         }
                                 }))
                         .securityContext(securityContext -> securityContext

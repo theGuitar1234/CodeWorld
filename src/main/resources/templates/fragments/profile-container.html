@@ -1,11 +1,12 @@
 <div class="profile-container" th:fragment="profile-container">
   <div class="icon-container">
     <div class="icon">
-      <!-- th:src="@{/assets/sprites/profile-thumb.jpg}" -->
-      <img th:src="@{${user.profilePhoto}}" alt="Profile picture" />
+      <img th:src="@{${user.profilePhoto}}" th:alt="#{profile.picture.alt}" />
+
       <form
         class="upload-pfp"
-        title="Upload Profile Picture"
+        th:title="#{profile.picture.uploadTitle}"
+        id="profile-picture-form"
         method="POST"
         th:action="@{/user/updateProfilePicture/{userName}(userName=${user.userName})}"
         enctype="multipart/form-data"
@@ -15,8 +16,9 @@
           id="profile-picture"
           accept="image/*"
           name="profilePicture"
+          style="visibility: hidden;"
         />
-        <label for="profile-picture">
+        <label for="profile-picture" style="display: contents;" th:title="#{profile.picture.uploadTitle}">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -29,16 +31,22 @@
             />
           </svg>
         </label>
-        <button type="submit">Submit</button>
       </form>
     </div>
   </div>
+
   <p>
-    Hello, <span th:text="${user.firstName + ' ' + user.lastName}">User</span>!
+    <span th:text="#{profile.greeting}">Hello,</span>
+    <span th:text="${user.firstName + ' ' + user.lastName}">User</span>!
   </p>
-  <small>Username : <span th:text="${user.userName}">Username</span></small>
+
+  <small>
+    <span th:text="#{profile.usernameLabel}">Username :</span>
+    <span th:text="${user.userName}">Username</span>
+  </small>
+
   <div class="edit">
-    <a th:href="@{/user/account}" class="edit" title="Edit Profile">
+    <a th:href="@{/user/account}" class="edit" th:title="#{profile.editTitle}">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"

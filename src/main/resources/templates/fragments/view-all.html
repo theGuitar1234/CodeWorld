@@ -1,0 +1,22 @@
+<div
+  class="view-all"
+  id="view-all"
+  th:if="${transactions.size() >= 10 && mode == 'PREVIEW'}"
+  th:fragment="view-all"
+>
+  <a
+    th:href="@{/user/transactions(
+      perPage=${perPage},
+      pageIndex=1,
+      direction=${direction},
+      sortBy=${sortBy},
+      startDate=${startDate},
+      endDate=${endDate},
+      role=${role}
+    )}"
+    data-pagination
+    th:text="#{transactions.viewAll}"
+  >
+    View all &gt;
+  </a>
+</div>

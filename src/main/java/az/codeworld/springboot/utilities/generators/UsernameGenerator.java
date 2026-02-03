@@ -53,13 +53,6 @@ public class UsernameGenerator {
         counter++;
         //appendRandom(stringBuilder, 1);
 
-        // File file = new File("D:\\Payyed\\BOOGER_AIDS");
-        // try {
-        //     Files.write(Paths.get(file.getAbsolutePath()), Arrays.asList(stringBuilder.toString()), StandardOpenOption.APPEND);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
-
         return stringBuilder.toString();
     }
 

@@ -2,6 +2,8 @@ package az.codeworld.springboot.admin.dtos.transactions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -22,10 +24,11 @@ import lombok.ToString;
 @Builder
 @Component
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDTO {
     private Long transactionId;
-    private Object transactionDate;
+    private Object transactionTime;
     private String transactionPaidBy;
     private String transactionDescription;
     private String transactionDetails;
@@ -34,28 +37,4 @@ public class TransactionDTO {
     private BigDecimal transactionTotal;
     private transactionstatus status;
     private currency currency;
-
-    public TransactionDTO(
-        Long transactionId,
-        Object transactionDate,
-        String transactionPaidBy,
-        String transactionDescription,
-        String transactionDetails,
-        BigDecimal transactionAmount,
-        BigDecimal transactionFee,
-        BigDecimal transactionTotal,
-        transactionstatus status,
-        currency currency
-    ) {
-        this.transactionId = transactionId;
-        this.transactionDate = transactionDate.toString();
-        this.transactionPaidBy = transactionPaidBy;
-        this.transactionDescription =  transactionDescription;
-        this.transactionDetails =  transactionDetails;
-        this.transactionAmount =  transactionAmount;
-        this.transactionFee =  transactionFee;
-        this.transactionTotal =  transactionTotal;
-        this.status =  status;
-        this.currency =  currency;
-    }
 }

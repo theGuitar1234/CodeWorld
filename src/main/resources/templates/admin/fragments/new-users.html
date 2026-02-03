@@ -1,28 +1,16 @@
 <div th:fragment="new-users" style="display: contents;">
-  <div class="title">
+  <div class="title header">
     <h3>New Users</h3>
   </div>
-  <div class="wrapper">
-    <ul>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
+  <div class="wrapper new-users">
+    <ul th:if="${latestUsers.size() == 0}">
+      <li>No New Users this month...</li>
+    </ul>
+    <ul th:if="${latestUsers.size() > 0}">
+      <li th:each="user : ${latestUsers}">
+        <img th:src="${user.profilePhoto}" alt="A User's Profile Photo" />
+        <div class="title" th:text="${user.email}">Email</div>
+        <small th:text="${user.createdAt}">xx-xx-xxxx</small>
       </li>
     </ul>
   </div>

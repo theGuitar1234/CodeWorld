@@ -1,12 +1,12 @@
 <div th:fragment="personal-details" style="display: contents">
   <div
-    th:if="${personalDetails == 'DISPLAY'}" 
+    th:if="${personalDetails == 'DISPLAY'}"
     class="personal-details"
     fragment="personalDetails"
   >
     <div class="title">
-      <h3>Personal Details</h3>
-      <a class="edit" href="/user/account" section="personalDetails">
+      <h3 th:text="#{account.personalDetails.title}">Personal Details</h3>
+      <a class="edit" href="/user/account" section="personalDetails" th:text="#{common.edit}">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -26,34 +26,50 @@
         <span
           data-attr="Full name :"
           class="fn"
+          th:attr="data-attr=#{account.personalDetails.fullNameLabel}"
           th:text="${user.firstName + ' ' + user.lastName}"
           >Firstname Lastname</span
         ><br />
-        <span data-attr="Birth Date :" class="dt" th:text="${user.birthDate}"
+        <span
+          data-attr="Birth Date :"
+          class="dt"
+          th:attr="data-attr=#{account.personalDetails.birthDateLabel}"
+          th:text="${user.birthDate}"
           >12-09-1982</span
         >
         <span class="adr">
           <span
             data-attr="Street :"
             class="street-address"
+            th:attr="data-attr=#{account.personalDetails.streetLabel}"
             th:text="${user.street}"
             >456 Market St</span
           ><br />
-          <span data-attr="City :" class="locality" th:text="${user.city}"
+          <span
+            data-attr="City :"
+            class="locality"
+            th:attr="data-attr=#{account.personalDetails.cityLabel}"
+            th:text="${user.city}"
             >San Francisco,</span
           >
-          <span data-attr="Region :" class="region" th:text="${user.region}"
+          <span
+            data-attr="Region :"
+            class="region"
+            th:attr="data-attr=#{account.personalDetails.regionLabel}"
+            th:text="${user.region}"
             >CA</span
           >
           <span
             data-attr="Postal Code :"
             class="postal-code"
+            th:attr="data-attr=#{account.personalDetails.postalCodeLabel}"
             th:text="${user.postalCode}"
             >94103,</span
           >
           <span
             data-attr="Country :"
             class="country-name"
+            th:attr="data-attr=#{account.personalDetails.countryLabel}"
             th:text="${user.country}"
             >USA</span
           >
@@ -62,57 +78,117 @@
     </div>
   </div>
   <form
-    action="/user/udpateUser"
+    action="/user/updateUser"
     th:object="${userUpdateDTO}"
-    th:if="${personalDetails == 'EDIT'}" 
-    class="personal-details"
+    th:if="${personalDetails == 'EDIT'}"
+    class="personal-details edit"
     fragment="personalDetails"
+    fragmentForm
   >
     <div class="title">
-      <h3>Personal Details</h3>
-      <button type="submit">Submit</button>
+      <h3 th:text="#{account.personalDetails.title}">Personal Details</h3>
+      <button class="edit" type="submit" th:text="#{common.submit}">Submit</button>
+      <!-- <button type="button">Cancel</button> -->
     </div>
     <div class="panel">
-      <input class="vcard">
-        <input
-          type="text"
-          data-attr="Full name :"
+      <address class="vcard">
+        <span
+          data-attr="First Name :"
           class="fn"
-          th:text="${user.firstName + ' ' + user.lastName}"
-        />
+          th:attr="data-attr=#{account.personalDetails.firstNameLabel}"
+        >
+          <input
+            type="text"
+            th:field="*{firstName}"
+            th:placeholder="${user.firstName}"
+          />
+        </span>
         <br />
-        <input 
-          data-attr="Birth Date :" 
-          class="dt" 
-          th:field="*{birthDate}"
-        />
-        <input 
-          class="adr">
+        <span
+          data-attr="Last Name :"
+          class="fn"
+          th:attr="data-attr=#{account.personalDetails.lastNameLabel}"
+        >
+          <input
+            type="text"
+            th:field="*{lastName}"
+            th:placeholder="${user.lastName}"
+          />
+        </span>
+        <br />
+        <span
+          data-attr="Birth Date :"
+          class="dt"
+          th:attr="data-attr=#{account.personalDetails.birthDateLabel}"
+        >
+          <input
+            type="date"
+            th:field="*{birthDate}"
+            th:placeholder="${user.birthDate}"
+          />
+        </span>
+        <br />
+        <address class="adr">
           <span
             data-attr="Street :"
             class="street-address"
-            th:text="${user.street}"
-            >456 Market St</span
-          ><br />
-          <span data-attr="City :" class="locality" th:text="${user.city}"
-            >San Francisco,</span
+            th:attr="data-attr=#{account.personalDetails.streetLabel}"
           >
-          <span data-attr="Region :" class="region" th:text="${user.region}"
-            >CA</span
+            <input
+              th:field="*{street}"
+              type="text"
+              th:placeholder="${user.street}"
+            />
+          </span>
+          <br />
+          <span
+            data-attr="City :"
+            class="locality"
+            th:attr="data-attr=#{account.personalDetails.cityLabel}"
           >
+            <input
+              th:field="*{city}"
+              type="text"
+              th:placeholder="${user.city}"
+            />
+          </span>
+          <br />
+          <span
+            data-attr="Region :"
+            class="region"
+            th:attr="data-attr=#{account.personalDetails.regionLabel}"
+          >
+            <input
+              th:field="*{region}"
+              type="text"
+              th:placeholder="${user.region}"
+            />
+          </span>
+          <br />
           <span
             data-attr="Postal Code :"
             class="postal-code"
-            th:text="${user.postalCode}"
-            >94103,</span
+            th:attr="data-attr=#{account.personalDetails.postalCodeLabel}"
           >
+            <input
+              th:field="*{postalCode}"
+              type="number"
+              th:placeholder="${user.postalCode}"
+            />
+          </span>
+          <br />
           <span
             data-attr="Country :"
             class="country-name"
-            th:text="${user.country}"
-            >USA</span
+            th:attr="data-attr=#{account.personalDetails.countryLabel}"
           >
-        </input>
+            <input
+              th:field="*{country}"
+              type="text"
+              th:placeholder="${user.country}"
+            />
+          </span>
+        </address>
       </address>
     </div>
   </form>

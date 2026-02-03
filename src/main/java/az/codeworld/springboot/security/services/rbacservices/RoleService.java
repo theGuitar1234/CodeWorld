@@ -10,6 +10,6 @@ public interface RoleService {
     void saveRole(Role role);
     Role getRoleByRoleId(Long roleId);
 
-    void addRolesToUser(String username, Set<Long> roleIds);
-    void removeRolesFromUser(String email, Set<Long> roleIds);
+    void addRolesToUser(Long userId, Set<Long> roleIds);
+    void removeRolesFromUser(Long userId, Set<Long> roleIds);
 }

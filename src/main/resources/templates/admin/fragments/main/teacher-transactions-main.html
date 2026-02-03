@@ -1,0 +1,21 @@
+<main
+  data-spa-root
+  th:fragment="teacher-transactions-main"
+  th:if="${spa == 'TEACHER_TRANSACTIONS'}"
+>
+  <div
+    th:replace="~{admin/fragments/main/header/teacher-transactions-header.html :: teacher-transactions-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div class="container" id="container9">
+        <div th:replace="~{admin/fragments/main/filters/transactions_filter.html :: transactions-filter('Teacher Transactions', '/admin/teacherTransactions', '/admin/teacherTransactions/getReport')}"></div>
+      </div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/teacher-transactions.html :: teacher-transactions}"
+        ></div>
+      </div>
+    </div>
+  </div>
+</main>

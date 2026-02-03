@@ -1,0 +1,82 @@
+<div class="drop-down" th:fragment="sort-transactions-by">
+  <input
+    type="checkbox"
+    id="create"
+    aria-hidden="true"
+    aria-checked="undefined"
+    focusable="false"
+  />
+  <label
+    for="create"
+    role="menu"
+    aria-expanded="undefined"
+    aria-haspopup="true"
+    tabindex="0"
+  >
+    Sort By
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style="transform: rotate(90deg)"
+    >
+      <path
+        d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </label>
+  <ul class="sub-menu">
+    <div class="wrapper">
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="transaction-date"
+          value="transactionTime"
+          name="sortBy"
+          th:checked="${sortBy == 'transactionTime'}"
+          autocomplete="off"
+        />
+        <label for="transaction-date"><small>Date</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="transaction-amount"
+          value="transactionAmount"
+          name="sortBy"
+          th:checked="${sortBy == 'transactionAmount'}"
+          autocomplete="on"
+        />
+        <label for="transaction-amount"><small>Amount</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="direction-ascending"
+          value="ASC"
+          name="direction"
+          th:checked="${direction == 'ASC'}"
+          autocomplete="on"
+        />
+        <label for="direction-ascending"><small>Ascending</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="direction-descending"
+          value="DESC"
+          name="direction"
+          th:checked="${direction == 'DESC'}"
+          autocomplete="off"
+        />
+        <label for="direction-descending"><small>Descending</small></label>
+      </li>
+    </div>
+  </ul>
+</div>

@@ -27,11 +27,22 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="file" type="xs:string" />
+                            <xs:element name="append" type="xs:string" />
                             <xs:element name="rollingPolicy">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="fileNamePattern" type="xs:string" />
                                         <xs:element name="maxHistory" type="xs:string" />
+                                        <xs:element name="totalSizeCap" type="xs:string" />
+                                        <xs:element name="cleanHistoryOnStart" type="xs:string" />
+                                        <xs:element name="timeBasedFileNamingAndTriggeringPolicy">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="maxFileSize" type="xs:string"></xs:element>
+                                                </xs:sequence>
+                                                <xs:attribute name="class" use="required" />
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                     <xs:attribute name="class" use="required" />
                                 </xs:complexType>

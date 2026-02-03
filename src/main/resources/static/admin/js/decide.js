@@ -25,7 +25,8 @@ async function handleDecide(e) {
       method: "DELETE",
       headers: {
         [header]: token,
-        "X-Requested-With": "fetch",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-SPA": "true"
       },
       credentials: "same-origin",
     });

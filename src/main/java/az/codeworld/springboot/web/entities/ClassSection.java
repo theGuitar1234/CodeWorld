@@ -1,5 +1,6 @@
 package az.codeworld.springboot.web.entities;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +23,20 @@ import lombok.ToString;
 public class ClassSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long classId;
+    private Long classId;
 
     @Column(name = "CLASS_TITLE")
     private String classTitle;
 
+    @Column
+    private LocalDate classDate;
+
     @ManyToOne
-    @JoinColumn(name = "subject_id")
+    @JoinColumn(name = "id")
     private Subject subject;
 
-    @OneToMany(mappedBy = "classSection")
+    @JsonIgnore
+    @OneToMany(mappedBy = "classSection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeachingAssignment> teachingAssignments = new ArrayList<>();
 
     public void addAssignment(TeachingAssignment teachingAssignment) {
@@ -39,11 +44,13 @@ public class ClassSection {
         teachingAssignment.setClassSection(this);
     }
 
-    @OneToMany(mappedBy = "classSection")
+    @JsonIgnore
+    @OneToMany(mappedBy = "classSection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
     public void addEnrollment(Enrollment enrollment) {
         this.enrollments.add(enrollment);
         enrollment.setClassSection(this);
     }
+
 }

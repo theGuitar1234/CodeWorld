@@ -1,14 +1,88 @@
-<div 
-  class="wrapper" 
-  data-spa-root 
-  th:fragment="teachers-main"
-  th:if="${spa == 'TEACHERS'}"
->
-  <div class="containers">
-    <div class="container" id="container9">
-      <div
-        th:replace="~{admin/fragments/tables/teachers.html :: teachers}"
-      ></div>
+<main data-spa-root th:fragment="teachers-main" th:if="${spa == 'TEACHERS'}">
+  <div
+    th:replace="~{admin/fragments/main/header/teachers-header.html :: teachers-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div th:replace="~{admin/fragments/main/filters/users_filter.html :: users-filter('Teachers', '/admin/teachers', '/admin/teachers/getReport')}"></div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/teachers.html :: teachers}"
+        ></div>
+      </div>
+      <div class="container" id="container9">
+        <div
+          th:replace="~{admin/fragments/tables/teacher-pay-dues.html :: teacher-pay-dues}"
+        ></div>
+      </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+      #dialog {
+        border: none;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+        /* display: flex; */
+        justify-content: center;
+        flex-direction: column;
+        /* display: none; */
+        padding: 0;
+        margin: auto;
+      }
+      #dialog h2 {
+        margin-bottom: 1em;
+        font-weight: 100;
+      }
+      #dialog::backdrop {
+        backdrop-filter: blur(15px);
+      }
+    </style>
+    <script>
+      const dialog = document.getElementById("dialog");
+      function showDialog(show) {
+        const dialog = document.querySelector("#dialog");
+        if (!dialog) return;
+
+        if (!dialog.isConnected) document.body.appendChild(dialog);
+
+        show ? dialog.showModal() : dialog.close();
+      }
+      const wrapper = document.getElementById("wrapper");
+      dialog.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) showDialog(false);
+      });
+    </script>
   </div>
-</div>
+</main>

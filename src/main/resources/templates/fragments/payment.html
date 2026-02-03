@@ -1,4 +1,9 @@
-<div class="payment" th:fragment="payment">
+<div
+  class="payment"
+  th:fragment="payment"
+  style="color: black"
+  sec:authorize="!hasRole('ADMIN')"
+>
   <div class="icon">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,12 +17,227 @@
       />
     </svg>
   </div>
-  <p sec:authorize="hasRole('TEACHER')">Your Next Payment Date</p>
-  <p sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')">Your Next Pay due Date</p>
+
+  <p sec:authorize="hasRole('TEACHER')" th:text="#{payment.nextPaymentDate}">
+    Your Next Payment Date
+  </p>
+  <p
+    sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+    th:text="#{payment.nextPayDueDate}"
+  >
+    Your Next Pay due Date
+  </p>
+
   <div class="payment-text">
-    <p sec:authorize="hasRole('TEACHER')"><b th:text="${user.nextDate}">DD/MM/YYYY</b></p>
-    <p sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"><b th:text="${user.nextDate}">DD/MM/YYYY</b></p>
-    <p><small>Is it past your payment date?</small></p>
+    <p>
+      <b th:text="${user.nextDate}">DD/MM/YYYY</b>
+    </p>
+
+    <p sec:authorize="hasRole('TEACHER')" th:if="${user.isPastPayment}">
+      <small style="color: red" th:text="#{payment.teacher.pastPayment}">
+        It is past your payment date
+      </small>
+    </p>
+
+    <p
+      sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+      th:if="${user.isNearPayment && !user.isPastPayment}"
+    >
+      <small th:text="#{payment.student.nearPayDue}">
+        Is it your payment date?
+      </small>
+    </p>
+
+    <p
+      sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+      th:if="${user.isPastPayment}"
+    >
+      <small style="color: red" th:text="#{payment.student.pastPayDue}">
+        It is past your pay due date
+      </small>
+    </p>
+
+    <p
+      sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+      th:if="${user.isNearPayment && !user.isPastPayment}"
+    >
+      <small class="glow" style="color: red" th:text="#{payment.student.nearPayDueUrgent}">
+        Is it your pay due date?
+      </small>
+    </p>
   </div>
-  <a href="#" class="chat-with-us"> Contact Admin </a>
+
+  <details
+    sec:authorize="hasRole('TEACHER')"
+    class="contact-or-pay"
+    th:if="${user.isPastPayment || user.isNearPayment}"
+  >
+    <summary th:text="#{payment.contactAdmin}">Contact Admin</summary>
+    <ul class="contacts-list">
+      <li style="--accent-color: red">
+        <a
+          href="/teachers/notifyAdmin"
+          th:title="#{payment.contact.email.title}"
+          title="Email"
+          contactLink
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
+            />
+          </svg>
+        </a>
+      </li>
+
+      <li class="contactAdminPhone" style="--accent-color: blue">
+        <a
+          th:href="@{'tel:' + ${adminContact.phoneNumber}}"
+          th:title="#{payment.contact.phone.title}"
+          title="Phone"
+          contactPhone
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M162-120q-18 0-30-12t-12-30v-162q0-13 9-23.5t23-14.5l138-28q14-2 28.5 2.5T342-374l94 94q38-22 72-48.5t65-57.5q33-32 60.5-66.5T681-524l-97-98q-8-8-11-19t-1-27l26-140q2-13 13-22.5t25-9.5h162q18 0 30 12t12 30q0 125-54.5 247T631-329Q531-229 409-174.5T162-120Zm556-480q17-39 26-79t14-81h-88l-18 94 66 66ZM360-244l-66-66-94 20v88q41-3 81-14t79-28Zm358-356ZM360-244Z"
+            />
+          </svg>
+        </a>
+        <div>
+          <button id="copy" type="button" th:text="#{payment.copy}">
+            Copy
+          </button>
+          <!-- <span id="copy-status" role="status" aria-live="polite"></span> -->
+        </div>
+      </li>
+    </ul>
+  </details>
+
+  <button
+    commonDialogButton
+    dialog="pay"
+    sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+    class="contact-or-pay"
+    th:if="${user.isPastPayment || user.isNearPayment}"
+    th:text="#{payment.pay}"
+  >
+    Pay
+  </button>
+
+  <dialog
+    pay
+    commonDialog
+    sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')"
+    th:if="${user.isPastPayment || user.isNearPayment}"
+  >
+    <div class="wrapper">
+      <form
+        class="transaction-details"
+        th:action="@{/students/recordTransaction}"
+        method="POST"
+        th:object="${transaction}"
+      >
+        <input
+          type="hidden"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"
+        />
+
+        <div class="header">
+          <h1 class="title" th:text="#{payment.transactionDetails.title}">
+            Transaction Details
+          </h1>
+        </div>
+
+        <div class="amount-details">
+          <div class="data">
+            <label for="amount">
+              <small th:text="#{payment.transactionAmount.label}">Transaction Amount :</small>
+            </label>
+            <input
+              required
+              th:placeholder="#{payment.amount.placeholder}"
+              placeholder="0.00$"
+              autocomplete="transaction-amount"
+              type="number"
+              id="amount"
+              name="transactionAmount"
+              th:value="${user.payment.getAmount()}"
+              readonly
+            />
+          </div>
+
+          <div class="data">
+            <label for="fee">
+              <small th:text="#{payment.transactionFee.label}">Transaction Fee :</small>
+            </label>
+            <input
+              required
+              th:placeholder="#{payment.amount.placeholder}"
+              placeholder="0.00$"
+              autocomplete="transaction-amount"
+              type="number"
+              id="fee"
+              name="transactionFee"
+            />
+          </div>
+        </div>
+
+        <div class="others">
+          <div class="paid-by">
+            <label for="paid-by">
+              <small th:text="#{payment.paidBy.label}">Paid By :</small>
+            </label>
+            <input type="text" id="paid-by" name="paidBy" />
+          </div>
+
+          <div class="description">
+            <label for="description">
+              <small th:text="#{payment.description.label}">Description :</small>
+            </label>
+            <input type="text" id="description" name="transactionDescription" />
+          </div>
+
+          <div class="data">
+            <label for="currency">
+              <small th:text="#{payment.currency.label}">Currency :</small>
+            </label>
+            <select name="currency" id="currency">
+              <option value="USD">USD</option>
+              <option value="AZN">AZN</option>
+              <option value="TRY">TRY</option>
+              <option value="EURO">EURO</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" th:text="#{common.submit}">Submit</button>
+      </form>
+
+      <button class="close-button" clsBttn th:aria-label="#{common.close}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#e8eaed"
+        >
+          <path
+            d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+          />
+        </svg>
+      </button>
+    </div>
+  </dialog>
 </div>

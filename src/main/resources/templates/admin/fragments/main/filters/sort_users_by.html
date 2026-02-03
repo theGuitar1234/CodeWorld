@@ -1,0 +1,126 @@
+<div class="drop-down" th:fragment="sort-users-by">
+  <input
+    type="checkbox"
+    id="create"
+    aria-hidden="true"
+    aria-checked="undefined"
+    focusable="false"
+  />
+  <label
+    for="create"
+    role="menu"
+    aria-expanded="undefined"
+    aria-haspopup="true"
+    tabindex="0"
+  >
+    Sort By
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style="transform: rotate(90deg)"
+    >
+      <path
+        d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </label>
+  <ul class="sub-menu">
+    <div class="wrapper">
+      <li role="menuitem" sec:authorize="hasRole('TEACHER')">
+        <input
+          type="radio"
+          id="hire-date"
+          value="affiliationDate"
+          name="sortBy"
+          th:checked="${sortBy == 'affiliationDate'}"
+          autocomplete="off"
+        />
+        <label for="hire-date"><small>Affiliation Date</small></label>
+      </li>
+      <li role="menuitem" sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')">
+        <input
+          type="radio"
+          id="enrollment-date"
+          value="affiliationDate"
+          name="sortBy"
+          th:checked="${sortBy == 'affiliationDate'}"
+          autocomplete="off"
+        />
+        <label for="enrollment-date"><small>EnrolledAt</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="user-id"
+          value="id"
+          name="sortBy"
+          th:checked="${sortBy == 'id'}"
+          autocomplete="off"
+        />
+        <label for="user-id"><small>ID Users</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="payable-user-id"
+          value="id"
+          name="payableSortBy"
+          th:checked="${payableSortBy == 'id'}"
+          autocomplete="off"
+        />
+        <label for="payable-user-id"><small>ID Payable Users</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="payment"
+          value="payment"
+          name="payableSortBy"
+          th:checked="${payableSortBy == 'payment'}"
+          autocomplete="off"
+        />
+        <label for="payment"><small>Payment</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="payment-date"
+          value="nextDate"
+          name="payableSortBy"
+          th:checked="${payableSortBy == 'nextDate'}"
+          autocomplete="off"
+        />
+        <label for="payment-date"><small>Payment Date</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="direction-ascending"
+          value="ASC"
+          name="direction"
+          th:checked="${direction == 'ASC'}"
+          autocomplete="off"
+        />
+        <label for="direction-ascending"><small>Ascending</small></label>
+      </li>
+      <li role="menuitem">
+        <input
+          type="radio"
+          id="direction-descending"
+          value="DESC"
+          name="direction"
+          th:checked="${direction == 'DESC'}"
+          autocomplete="off"
+        />
+        <label for="direction-descending"><small>Descending</small></label>
+      </li>
+    </div>
+  </ul>
+</div>

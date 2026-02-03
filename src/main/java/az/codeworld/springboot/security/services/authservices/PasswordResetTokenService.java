@@ -9,8 +9,5 @@ public interface PasswordResetTokenService {
 
     void createPasswordResetToken(String email);
     boolean isTokenValid(String token);
-
-    void sendPasswordResetLink(String email, String token);
-
     boolean tokenResetPassword(String token, String password, HttpServletRequest request, HttpServletResponse response);
 }

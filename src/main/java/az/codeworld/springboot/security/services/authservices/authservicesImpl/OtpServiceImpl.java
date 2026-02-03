@@ -3,6 +3,7 @@ package az.codeworld.springboot.security.services.authservices.authservicesImpl;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Optional;
 
@@ -55,6 +56,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
+    @LogExecutionTime("createOtpCode")
     public void createOtpCode(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
@@ -86,15 +88,13 @@ public class OtpServiceImpl implements OtpService {
         }
     }
 
-    @LogExecutionTime("sendOtpCode")
-    @Override
-    public void sendOtpCode(String email, String otpCode) {
+    private void sendOtpCode(String email, String otpCode) {
         String html = thymeleafService.render(
-            "auth/otp-code/otp_code",
+            "auth/otp-code/otp_code_email",
             Map.of(
-                "email", email,
+                "email", email.substring(0, 3) + "*".repeat(email.length() - 3),
                 "otpCode", otpCode,
-                "date", LocalDateTime.now().plusMinutes(applicationProperties.getOtp().getExpiryMinutes())
+                "date", LocalDateTime.now(ZoneId.of(applicationProperties.getTime().getZone())).plusMinutes(applicationProperties.getOtp().getExpiryMinutes())
             )
         );
 

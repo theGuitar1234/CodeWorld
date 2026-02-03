@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.entities.Money;
+import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -20,6 +22,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDashboardDTO {
+
+    private Long id;
 
     @NotNull
     @NotBlank
@@ -42,4 +46,15 @@ public class UserDashboardDTO {
     private boolean isCardAdded;
     private boolean isBankAccountAdded;
     private byte completeness;
+
+    @Builder.Default
+    private String profilePhoto = "/assets/sprites/profile-thumb.jpg";
+
+    private String passwordLastUpdatedAt;
+
+    public boolean isPastPayment;
+    public boolean isNearPayment;
+
+    private roles role;
+
 }

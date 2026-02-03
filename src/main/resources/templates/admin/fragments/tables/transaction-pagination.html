@@ -2,22 +2,22 @@
   <table>
     <tbody th:fragment="tableBody(dataObj)">
       <tr
-        th:each="teacherTransaction : ${dataObj}"
-        th:data-amount="${teacherTransaction.transactionAmount}"
-        th:data-fee="${teacherTransaction.transactionFee}"
-        th:data-total="${teacherTransaction.transactionTotal}"
-        th:data-paid-by="${teacherTransaction.transactionPaidBy}"
-        th:data-date="${teacherTransaction.transactionDate}"
-        th:data-transaction-id="${teacherTransaction.transactionId}"
-        th:data-details="${teacherTransaction.transactionDetails}"
-        th:data-status="${teacherTransaction.status}"
+        th:each="entityTransaction : ${dataObj}"
+        th:data-amount="${entityTransaction.transactionAmount}"
+        th:data-fee="${entityTransaction.transactionFee}"
+        th:data-total="${entityTransaction.transactionTotal}"
+        th:data-paid-by="${entityTransaction.transactionPaidBy}"
+        th:data-date="${entityTransaction.transactionTime}"
+        th:data-transaction-id="${entityTransaction.transactionId}"
+        th:data-details="${entityTransaction.transactionDetails}"
+        th:data-status="${entityTransaction.status}"
       >
         <td>
-          <p th:text="${teacherTransaction.transactionDate}"></p>
+          <p th:text="${entityTransaction.transactionTime}"></p>
         </td>
         <td class="description">
-          <h2 th:text="${teacherTransaction.transactionPaidBy}"></h2>
-          <small th:text="${teacherTransaction.transactionDescription}"></small>
+          <h2 th:text="${entityTransaction.transactionPaidBy}"></h2>
+          <small th:text="${entityTransaction.transactionDescription}"></small>
         </td>
         <td status-icon>
           <div class="checked-unchecked">
@@ -63,32 +63,32 @@
           </div>
         </td>
         <td class="amount-uprise">
-          <p th:text="${teacherTransaction.transactionAmount}"></p>
-          <p th:text="${teacherTransaction.currency}"></p>
+          <p th:text="${entityTransaction.transactionAmount}"></p>
+          <p th:text="${entityTransaction.currency}"></p>
         </td>
       </tr>
     </tbody>
   </table>
-  <div 
-    th:if="${teacherTransactions.size() >= 10 && mode == 'PREVIEW'}"
-    class="view-all" 
-    id="view-all" 
+  <div
+    th:if="${spa == 'HOME' && teacherTransactions.size() >= 10 && mode == 'PREVIEW'}"
+    class="view-all"
+    id="view-all"
     th:fragment="view-all-teachers"
   >
-    <a data-spa th:href="@{/admin/teachers}"> View all &gt; </a>
+    <a data-spa th:href="@{/admin/teacherTransactions}"> View all &gt; </a>
   </div>
-  <div 
-    th:if="${studentTransactions.size() >= 10 && mode == 'PREVIEW'}"
-    class="view-all" 
-    id="view-all" 
+  <div
+    th:if="${spa == 'HOME' && studentTransactions.size() >= 10 && mode == 'PREVIEW'}"
+    class="view-all"
+    id="view-all"
     th:fragment="view-all-students"
   >
-    <a data-spa th:href="@{/admin/students}"> View all &gt; </a>
+    <a data-spa th:href="@{/admin/studentTransactions}"> View all &gt; </a>
   </div>
-  <div 
-    th:if="${requests.size() >= 10 && mode == 'PREVIEW'}"
-    class="view-all" 
-    id="view-all" 
+  <div
+    th:if="${transactionsOnPage.getSize() >= 10 && mode == 'PREVIEW'}"
+    class="view-all"
+    id="view-all"
     th:fragment="view-all-requests"
   >
     <a data-spa th:href="@{/admin/requests}"> View all &gt; </a>
@@ -149,4 +149,113 @@
     </ul>
     <!-- <a th:href="@{/user/dashboard}"> View less &lt; </a> -->
   </nav>
+  <form
+    th:if="${mode == 'VIEW_ALL'}"
+    class="transactions"
+    th:fragment="transactions-filter"
+    th:action="@{/user/transactions}"
+    method="GET"
+    pagination-filter-root
+  >
+    <div class="title">
+      <h3>Transactions</h3>
+    </div>
+    <div class="panel transactions">
+      <!-- <p>Select Transactions from start date to end date</p> -->
+      <div class="wrapper">
+        <div class="dates">
+          <label for="start-date">From : <input type="date" name="startDate" id="start-date" /></label>
+          <label for="end-date">To : <input type="date" name="endDate" id="end-date" /></label>
+        </div>
+        <div
+          th:replace="~{fragments/statements.html :: statements('/user/transactions/getReport')}"
+        ></div>
+      </div>
+      <div class="drop-down">
+        <input
+          type="checkbox"
+          id="create"
+          aria-hidden="true"
+          aria-checked="undefined"
+          focusable="false"
+        />
+        <label
+          for="create"
+          role="menu"
+          aria-expanded="undefined"
+          aria-haspopup="true"
+          tabindex="0"
+        >
+          Sort By
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="transform: rotate(90deg)"
+          >
+            <path
+              d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+        <ul class="sub-menu">
+          <div class="wrapper">
+            <li role="menuitem">
+              <input
+                type="radio"
+                id="transaction-date"
+                value="transactionTime"
+                name="sortBy"
+                th:checked="${sortBy == 'transactionTime'}"
+                autocomplete="off"
+              />
+              <label for="transaction-date"><small>Date</small></label>
+            </li>
+            <li role="menuitem">
+              <input
+                type="radio"
+                id="transaction-amount"
+                value="transactionAmount"
+                name="sortBy"
+                th:checked="${sortBy == 'transactionAmount'}"
+                autocomplete="on"
+              />
+              <label for="transaction-amount"><small>Amount</small></label>
+            </li>
+            <li role="menuitem">
+              <input
+                type="radio"
+                id="direction-ascending"
+                value="ASC"
+                name="direction"
+                th:checked="${direction == 'ASC'}"
+                autocomplete="on"
+              />
+              <label for="direction-ascending"><small>Ascending</small></label>
+            </li>
+            <li role="menuitem">
+              <input
+                type="radio"
+                id="direction-descending"
+                value="DESC"
+                name="direction"
+                th:checked="${direction == 'DESC'}"
+                autocomplete="off"
+              />
+              <label for="direction-descending"
+                ><small>Descending</small></label
+              >
+            </li>
+          </div>
+        </ul>
+      </div>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
 </div>

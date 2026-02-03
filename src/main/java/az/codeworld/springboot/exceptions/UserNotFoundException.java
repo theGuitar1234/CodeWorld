@@ -2,12 +2,14 @@ package az.codeworld.springboot.exceptions;
 
 import org.springframework.stereotype.Component;
 
+import az.codeworld.springboot.utilities.constants.exceptionmessages;
+
 @Component
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends RuntimeException {
 
     public String field;
 
-    public String exceptionMessage = "User Not Found by " + field;
+    public String exceptionMessage = exceptionmessages.USER_NOT_FOUND.getExceptionMessageString() + field;
 
     public String getExceptionMessage() {
         return exceptionMessage;

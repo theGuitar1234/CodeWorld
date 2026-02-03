@@ -1,0 +1,41 @@
+<div class="activity" th:fragment="student-transactions">
+  <div class="title">
+    <h1>Student Payments</h1>
+  </div>
+  <div class="panel">
+
+    <div
+      th:replace="~{admin/fragments/tables/transaction-dialog.html :: transaction-dialog}"
+    ></div>
+
+    <table dialog-table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th class="description">Description</th>
+          <th>Status</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      
+      <tbody
+        th:if="${spa == 'STUDENTS'}"
+        th:replace="~{admin/fragments/tables/transaction-pagination.html :: tableBody(${transactionsOnPage})}"
+      ></tbody>
+
+      <tbody
+        th:if="${spa == 'HOME'}"
+        th:replace="~{admin/fragments/tables/transaction-pagination.html :: tableBody(${studentTransactions})}"
+      ></tbody>
+
+    </table>
+  </div>
+  <div id="pagination-container">
+    <div
+      th:replace="~{admin/fragments/tables/transaction-pagination.html :: view-all-students}"
+    ></div>
+    <nav
+      th:replace="~{admin/fragments/tables/transaction-pagination.html :: pagination('/admin/studentTransactions')}"
+    ></nav>
+  </div>
+</div>

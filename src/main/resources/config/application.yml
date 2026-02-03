@@ -1,3 +1,7 @@
+spring:
+  config:
+    import: "optional:file:./.env[.properties]"
+
 application:
   presence:
     touch-throttle-seconds: 30     
@@ -15,12 +19,7 @@ application:
     expiry-minutes: 2    
 
   remember-me:
-    expiry-seconds: 1209600    
+    expiry-seconds: 1209600  
 
-cloudflare:
-  images:
-    account-id: "YOUR_ACCOUNT_ID"
-    api-token: "<TOKEN>"
-    account-hash: "<ACCOUNT-HASH>"
-    default-variant: "avatar_md"
-    
+  time:
+    zone: "Asia/Baku"

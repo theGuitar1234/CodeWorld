@@ -25,6 +25,13 @@ public class LoginAudit {
     @Column
     private Instant lastLoginAt;
 
+    @Column
+    private Instant passwordLastUpdatedAt;
+
+    public void updatePasswordLastUpdatedAt() {
+        this.passwordLastUpdatedAt = Instant.now();
+    }
+
     @Column(length = 45)
     private String lastLoginIp;
 
@@ -38,13 +45,13 @@ public class LoginAudit {
     private boolean isBlocked = false;
 
     @Column
-    private long blockExpiry = 0;
+    private Long blockExpiry;
 
     @JsonIgnore
     @OneToOne
     @JoinColumn(
-        name = "USER_EMAIL",
-        referencedColumnName = "EMAIL",
+        name = "USER_ID",
+        referencedColumnName = "id",
         nullable = false,
         unique = true)
     private User user;

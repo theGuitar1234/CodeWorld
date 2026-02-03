@@ -1,53 +1,117 @@
-{
-  "groups": [
-    { "name": "application", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties" },
-    { "name": "application.presence", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Presence" },
-    { "name": "application.login", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Login" },
-    { "name": "application.otp", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$Otp" },
-    { "name": "application.remember-me", "type": "az.codeworld.springboot.utilities.configurations.ApplicationProperties$RememberMe" }
-  ],
-  "properties": [
-    {
-      "name": "application.presence.touch-throttle",
-      "type": "java.time.Duration",
-      "description": "Minimum time between DB updates of lastActiveAt for a user.",
-      "defaultValue": "30s"
-    },
-    {
-      "name": "application.presence.online-window",
-      "type": "java.time.Duration",
-      "description": "How recent lastActiveAt must be to consider a user online.",
-      "defaultValue": "5m"
-    },
-    {
-      "name": "application.login.attempts.threshold",
-      "type": "java.lang.Integer",
-      "description": "Failed login attempts before blocking the user.",
-      "defaultValue": 3
-    },
-    {
-      "name": "application.login.block.expiry",
-      "type": "java.time.Duration",
-      "description": "How long the user remains blocked after too many failed attempts.",
-      "defaultValue": "20m"
-    },
-    {
-      "name": "application.login.password.placeholder",
-      "type": "java.lang.String",
-      "description": "String used when masking passwords in logs or DTOs.",
-      "defaultValue": "[PROTECTED]"
-    },
-    {
-      "name": "application.otp.expiry",
-      "type": "java.time.Duration",
-      "description": "OTP lifetime.",
-      "defaultValue": "2m"
-    },
-    {
-      "name": "application.remember-me.expiry",
-      "type": "java.time.Duration",
-      "description": "Remember Me Cookie TTL.",
-      "defaultValue": "7d"
-    }
-  ]
-}
+{"properties": [
+  {
+    "name": "application.presence.touch-throttle-seconds",
+    "type": "java.lang.String",
+    "description": "A description for 'application.presence.touch-throttle-seconds'"
+  },
+  {
+    "name": "application.presence.online-window-minutes",
+    "type": "java.lang.String",
+    "description": "A description for 'application.presence.online-window-minutes'"
+  },
+  {
+    "name": "application.login.attempts.threshold",
+    "type": "java.lang.String",
+    "description": "A description for 'application.login.attempts.threshold'"
+  },
+  {
+    "name": "application.login.block.expiry-minutes",
+    "type": "java.lang.String",
+    "description": "A description for 'application.login.block.expiry-minutes'"
+  },
+  {
+    "name": "application.login.password.placeholder",
+    "type": "java.lang.String",
+    "description": "A description for 'application.login.password.placeholder'"
+  },
+  {
+    "name": "application.otp.expiry-minutes",
+    "type": "java.lang.String",
+    "description": "A description for 'application.otp.expiry-minutes'"
+  },
+  {
+    "name": "application.remember-me.expiry-seconds",
+    "type": "java.lang.String",
+    "description": "A description for 'application.remember-me.expiry-seconds'"
+  },
+  {
+    "name": "application.time.zone",
+    "type": "java.lang.String",
+    "description": "A description for 'application.time.zone'"
+  },
+  {
+    "name": "cloudflare.images.account-id",
+    "type": "java.lang.String",
+    "description": "A description for 'cloudflare.images.account-id'"
+  },
+  {
+    "name": "cloudflare.images.api-token",
+    "type": "java.lang.String",
+    "description": "A description for 'cloudflare.images.api-token'"
+  },
+  {
+    "name": "cloudflare.images.account-hash",
+    "type": "java.lang.String",
+    "description": "A description for 'cloudflare.images.account-hash'"
+  },
+  {
+    "name": "cloudflare.images.default-variant",
+    "type": "java.lang.String",
+    "description": "A description for 'cloudflare.images.default-variant'"
+  },
+  {
+    "name": "payriff.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'payriff.secret-key'"
+  },
+  {
+    "name": "payriff.base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'payriff.base-url'"
+  },
+  {
+    "name": "application.public-base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'application.public-base-url'"
+  },
+  {
+    "name": "application.payriff.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'application.payriff.secret-key'"
+  },
+  {
+    "name": "application.cloudflare.images.account-id",
+    "type": "java.lang.String",
+    "description": "A description for 'application.cloudflare.images.account-id'"
+  },
+  {
+    "name": "application.cloudflare.images.default-variant",
+    "type": "java.lang.String",
+    "description": "A description for 'application.cloudflare.images.default-variant'"
+  },
+  {
+    "name": "application.cloudflare.images.account-hash",
+    "type": "java.lang.String",
+    "description": "A description for 'application.cloudflare.images.account-hash'"
+  },
+  {
+    "name": "application.cloudflare.images.api-token",
+    "type": "java.lang.String",
+    "description": "A description for 'application.cloudflare.images.api-token'"
+  },
+  {
+    "name": "application.payriff.base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'application.payriff.base-url'"
+  },
+  {
+    "name": "presence.online-window-minutes",
+    "type": "java.lang.String",
+    "description": "A description for 'presence.online-window-minutes'"
+  },
+  {
+    "name": "presence.throttle-seconds",
+    "type": "java.lang.String",
+    "description": "A description for 'presence.throttle-seconds'"
+  }
+]}

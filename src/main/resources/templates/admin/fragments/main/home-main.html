@@ -1,61 +1,63 @@
-<div 
-  class="wrapper" 
-  data-spa-root 
-  th:fragment="home-main"
-  th:if="${spa == 'HOME'}"
->
-  <div class="containers">
-    <div class="container" id="container1">
-      <div th:replace="~{admin/fragments/statistics/chart.html :: chart}"></div>
-    </div>
+<main data-spa-root th:fragment="home-main" th:if="${spa == 'HOME'}">
+  <div
+    th:replace="~{admin/fragments/main/header/home-header.html :: home-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div class="container" id="container1">
+        <div
+          th:replace="~{admin/fragments/statistics/chart.html :: chart}"
+        ></div>
+      </div>
 
-    <div class="container" id="container2">
-      <div
-        th:replace="~{admin/fragments/statistics/impressions.html :: impressions}"
-      ></div>
-    </div>
+      <div class="container" id="container2">
+        <div
+          th:replace="~{admin/fragments/statistics/impressions.html :: impressions}"
+        ></div>
+      </div>
 
-    <div class="container" id="container3">
-      <div
-        th:replace="~{admin/fragments/statistics/total-logins.html :: total-logins}"
-      ></div>
-    </div>
+      <div class="container" id="container3">
+        <div
+          th:replace="~{admin/fragments/statistics/total-logins.html :: total-logins}"
+        ></div>
+      </div>
 
-    <div class="container" id="container4">
-      <div
-        th:replace="~{admin/fragments/statistics/total-users.html :: total-users}"
-      ></div>
-    </div>
+      <div class="container" id="container4">
+        <div
+          th:replace="~{admin/fragments/statistics/total-users.html :: total-users}"
+        ></div>
+      </div>
 
-    <div class="container" id="container5">
-      <div
-        th:replace="~{admin/fragments/statistics/pie-chart.html :: pie-chart}"
-      ></div>
-    </div>
+      <div class="container" id="container5">
+        <div
+          th:replace="~{admin/fragments/statistics/pie-chart.html :: pie-chart}"
+        ></div>
+      </div>
 
-    <div class="container" id="container6">
-      <div
-        th:replace="~{admin/fragments/latest-activity.html :: latest-activity}"
-      ></div>
-    </div>
+      <div class="container" id="container6">
+        <div
+          th:replace="~{admin/fragments/latest-activity.html :: latest-activity}"
+        ></div>
+      </div>
 
-    <div class="container" id="container7">
-      <div th:replace="~{admin/fragments/new-users.html :: new-users}"></div>
-    </div>
+      <div class="container" id="container7">
+        <div th:replace="~{admin/fragments/new-users.html :: new-users}"></div>
+      </div>
 
-    <div class="container" id="container8">
-      <div
-        th:replace="~{admin/fragments/tables/requests.html :: requests}"
-      ></div>
-    </div>
-    <div class="container" id="container9">
-      <div
-        th:replace="~{admin/fragments/tables/teachers.html :: teachers}"
-      ></div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/requests.html :: requests}"
+        ></div>
+      </div>
+      <div class="container" id="container9">
+        <div
+          th:replace="~{admin/fragments/tables/teacher-transactions.html :: teacher-transactions}"
+        ></div>
 
-      <div
-        th:replace="~{admin/fragments/tables/students.html :: students}"
-      ></div>
+        <div
+          th:replace="~{admin/fragments/tables/student-transactions.html :: student-transactions}"
+        ></div>
+      </div>
     </div>
   </div>
-</div>
+</main>

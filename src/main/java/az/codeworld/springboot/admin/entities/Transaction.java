@@ -1,7 +1,9 @@
 package az.codeworld.springboot.admin.entities;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,7 +30,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,7 +54,7 @@ public class Transaction {
     private Long transactionId;
 
     @Column
-    private LocalDate transactionDate;
+    private Instant transactionTime;
 
     @Column
     private String transactionPaidBy;
@@ -91,7 +95,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction [transactionId=" + transactionId + ", transactionDate=" + transactionDate
+        return "Transaction [transactionId=" + transactionId + ", transactionTime=" + transactionTime
                 + ", transactionDescription=" + transactionDescription + ", transactionAmount=" + transactionAmount 
                 + ", status=" + status + ", currency=" + currency + "]";
     }

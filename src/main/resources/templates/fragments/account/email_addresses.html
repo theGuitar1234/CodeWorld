@@ -40,20 +40,23 @@
     action="/user/updateUser"
     th:object="${userUpdateDTO}"
     fragment="emailAddresses"
+    fragmentForm
   >
     <div class="title">
       <h3>Email Addresses</h3>
-      <button type="submit">Submit</button>
+      <button class="edit" type="submit">Submit</button>
+      <!-- <button type="button">Cancel</button> -->
     </div>
     <div class="panel">
       <address class="vcard">
-        <input
-          type="email"
-          data-attr="Email ID :"
-          class="email primary"
-          th:href="@{mailto:${user.email}}"
-          th:field="*{email}"
-        />
+        <!--class="primary"-->
+        <span data-attr="Email ID :" class="email">
+          <input
+            type="email"
+            th:placeholder="${user.email}"
+            th:field="*{email}"
+          />
+        </span>
       </address>
     </div>
   </form>

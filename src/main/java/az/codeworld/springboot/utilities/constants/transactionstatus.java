@@ -1,5 +1,11 @@
 package az.codeworld.springboot.utilities.constants;
 
 public enum transactionstatus {
-    CHECKED, REJECTED, PENDING
+    PENDING, 
+    CHECKED, 
+    REJECTED
+    //DECLINED, 
+    //CANCELLED, 
+    //EXPIRED, 
+    //ERROR
 }

@@ -11,11 +11,11 @@ import org.thymeleaf.TemplateEngine;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.services.UserService;
-import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImpl;
+import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImplDev;
 import az.codeworld.springboot.aop.LogExecutionTime;
-import az.codeworld.springboot.security.dtos.UserAuthDTO;
 import az.codeworld.springboot.security.entities.EmailOutbox;
 import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
@@ -48,9 +48,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.port = getPort;
     }
 
-    @LogExecutionTime("sendAcceptanceEmail")
     @Override
     @Transactional
+    @LogExecutionTime("sendAcceptanceEmail")
     public void sendAcceptanceEmail(RequestDTO requestDTO) {
 
         String html = thymeleafService.render(
@@ -74,9 +74,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         applicationEventPublisher.publishEvent(new EmailRequestedEvent(emailOutbox.getOutBoxId()));
     }
 
-    @LogExecutionTime("sendRejectionEmail")
     @Override
     @Transactional
+    @LogExecutionTime("sendRejectionEmail")
     public void sendRejectionEmail(RequestDTO requestDTO) {
 
         String html = thymeleafService.render(
@@ -98,9 +98,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         applicationEventPublisher.publishEvent(new EmailRequestedEvent(emailOutbox.getOutBoxId()));
     }
 
-    @LogExecutionTime("registerUser")
     @Override
     @Transactional
+    @LogExecutionTime("registerUser")
     public void registerUser(UserAuthDTO userAuthDTO) {
 
         UserCreateDTO userCreateDTO = (UserCreateDTO) userService.createNewUser(userAuthDTO, dtotype.CREATE);

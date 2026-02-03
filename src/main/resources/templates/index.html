@@ -1,174 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-  <title>Home</title>
-
-  <head th:fragment="head">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Title</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <script type="module" th:src="@{/js/hero-main.js}" defer></script>
+  <head>
+    <th:block
+      th:replace="fragments/head.html :: head('Home', '/js/hero-main.js')"
+    ></th:block>
   </head>
 
   <body class="layout landing">
-    <div id="top-anchor"></div>
+    <div class="body-container">
+      <div class="body-wrapper">
+        <div id="top-anchor"></div>
 
-    <div th:replace="~{fragments/header.html :: header}"></div>
+        <div th:replace="~{fragments/header.html :: header('LANDING')}"></div>
 
-    <div class="hero">
-      <div class="hero-container" style="--multiplier: 100">
-        <h1 class="hero-title">CODE WORLD</h1>
-        <p class="hero-sub">Education Center</p>
+        <div class="hero">
+          <div class="hero-container" style="--multiplier: 100">
+            <h1 class="hero-title" th:text="#{home.hero.title}">CODE WORLD</h1>
+            <p class="hero-sub" th:text="#{home.hero.subtitle}">
+              Education Center
+            </p>
+          </div>
+          <img
+            class="layer layer1"
+            th:src="@{/assets/sprites/hero-banner.png}"
+            aria-hidden="true"
+            style="--multiplier: 18"
+          />
+          <img
+            class="layer layer2"
+            th:src="@{/assets/sprites/cloud1.png}"
+            aria-hidden="true"
+            style="animation: none"
+          />
+          <img
+            class="layer layer3"
+            th:src="@{/assets/sprites/cloud2.png}"
+            aria-hidden="true"
+            style="animation: none"
+          />
+        </div>
+
+        <main>
+          <div class="container" id="about">
+            <div class="wrapper">
+              <div class="container-img"></div>
+              <div class="container-text">
+                <a class="kicker" href="#about-us" th:text="#{home.about.link}"
+                  >About Us</a
+                >
+                <h1 th:text="#{home.about.heading}">
+                  First Choice For Education AnyWhere
+                </h1>
+                <p th:text="#{home.about.description}">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut
+                  nemo nulla ut, eaque iusto fuga numquam laborum aspernatur
+                  necessitatibus ipsam
+                </p>
+              </div>
+            </div>
+            <div class="counters">
+              <div class="counter">
+                <h3 th:text="${totalTeachers}"></h3>
+                <p th:text="#{home.counter.teachers}">Teachers</p>
+              </div>
+              <div class="counter">
+                <h3 th:text="${totalStudents}"></h3>
+                <p th:text="#{home.counter.students}">Students</p>
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <h1 th:text="#{home.start.exploring}">Start Exploring!</h1>
+            <div class="carousel">
+              <div class="panel">
+                <div class="card card1"></div>
+                <div class="card card2"></div>
+                <div class="card card3"></div>
+                <div class="card card4"></div>
+              </div>
+            </div>
+          </div>
+          <div class="request-sign-in">
+            <div class="content">
+              <h3 th:text="#{home.request.member}">Become a member of us!</h3>
+              <p th:text="#{home.request}">
+                Request a Sign In and you will become one of us upon
+                verification!
+              </p>
+            </div>
+            <a th:text="#{home.request.signIn}" th:href="@{/restricted/#sign-in-anchor}">REQUEST SIGN IN!</a>
+          </div>
+          <div class="about-us" id="about-us">
+            <div class="wrapper">
+              <nav>
+                <ul>
+                  <li>The Luxury</li>
+                  <li><a href="#">Apparel</a></li>
+                  <li><a href="#">Eyewater</a></li>
+                  <li><a href="#">Fragrance</a></li>
+                  <li><a href="#">SKincare</a></li>
+                </ul>
+              </nav>
+              <nav>
+                <ul>
+                  <li>Online Services</li>
+                  <li><a href="#">My Account</a></li>
+                  <li><a href="#">Shipping</a></li>
+                  <li><a href="#">Returns</a></li>
+                  <li><a href="#">FAQ</a></li>
+                </ul>
+              </nav>
+              <nav>
+                <ul>
+                  <li>Boutique</li>
+                  <li><a href="#">Store Locator</a></li>
+                  <li><a href="#">Book an Appoinment</a></li>
+                </ul>
+              </nav>
+              <nav>
+                <ul>
+                  <li>Boutique</li>
+                  <li><a href="#">Store Locator</a></li>
+                  <li><a href="#">Book an Appoinment</a></li>
+                </ul>
+              </nav>
+            </div>
+            <h1 th:text="#{home.about.us}">ABOUT US</h1>
+          </div>
+        </main>
+        <div th:replace="fragments/footer.html :: footer"></div>
       </div>
-      <img
-        class="layer layer1"
-        th:src="@{/assets/sprites/hero-banner.png}"
-        aria-hidden="true"
-        style="--multiplier: 18"
-      />
-      <img
-        class="layer layer2"
-        th:src="@{/assets/sprites/cloud1.png}"
-        aria-hidden="true"
-        style="animation: none"
-      />
-      <img
-        class="layer layer3"
-        th:src="@{/assets/sprites/cloud2.png}"
-        aria-hidden="true"
-        style="animation: none"
-      />
     </div>
-
-    <main>
-      <div class="container">
-        <div class="container-img"></div>
-        <a href="#about">About Us</a>
-        <h1>First Choice For Education AnyWhere</h1>
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut nemo
-          nulla ut, eaque iusto fuga numquam laborum aspernatur necessitatibus
-          ipsam, reiciendis tempore minus cupiditate soluta excepturi nisi
-          similique asperiores nostrum. Voluptates qui, quis totam rem dolores
-          deleniti, incidunt vero, nulla quaerat maxime odio accusamus. Non
-          veritatis explicabo vitae dolor, excepturi labore! Corporis, eos
-          aliquid in deserunt laborum eius assumenda eum!
-        </p>
-        <div class="counters">
-          <div class="counter" style="--accent-color: black">
-            <h3>123</h3>
-            <p>Online Courses</p>
-          </div>
-          <div class="counter" style="--accent-color: black">
-            <h3>123</h3>
-            <p>Online Courses</p>
-          </div>
-          <div class="counter" style="--accent-color: black">
-            <h3>123</h3>
-            <p>Online Courses</p>
-          </div>
-          <div class="counter" style="--accent-color: black">
-            <h3>123</h3>
-            <p>Online Courses</p>
-          </div>
-        </div>
-      </div>
-      <div class="carousel">
-        <div class="panel">
-          <div class="card card1"></div>
-          <div class="card card2"></div>
-          <div class="card card3"></div>
-          <div class="card card4"></div>
-        </div>
-      </div>
-      <form
-        th:action="@{/restricted/request}"
-        class="form-signIn"
-        method="POST"
-        id="sign-in-anchor"
-      >
-        <fieldset>
-          <legend>Request A Sign in</legend>
-          <label
-            for="first-name"
-            data-invalid="Invalid First Name"
-            data-empty="Enter your First Name"
-            data-valid="Valid First Name"
-          >
-            <div class="help" id="first-name-help-request">
-              You must enter your valid real first name
-            </div>
-            Enter Your First name :
-            <input
-              type="text"
-              id="first-name"
-              aria-describedby="first-name-help-request"
-              placeholder="John"
-              pattern="^[A-Z]{1}[a-z]{1,14}$"
-              maxlength="15"
-              name="firstName"
-              autocomplete="name"
-            />
-          </label>
-          <label
-            for="last-name"
-            data-invalid="Invalid Last Name"
-            data-empty="Enter your Last Name"
-            data-valid="Valid Last Name"
-          >
-            <div class="help" id="last-name-help-request">
-              You must enter your valid real last name
-            </div>
-            Enter Your Last name :
-            <input
-              type="text"
-              id="last-name"
-              aria-describedby="last-name-help-request"
-              placeholder="Doe"
-              pattern="^[A-Z]{1}[a-z]{1,19}$"
-              maxlength="20"
-              name="lastName"
-              autocomplete="family-name"
-            />
-          </label>
-          <label
-            for="email"
-            data-invalid="Invalid Email"
-            data-empty="Enter your Email"
-            data-valid="Valid Email"
-          >
-            <div class="help" id="email-help-request">
-              You must enter your email
-            </div>
-            Enter Your Email :
-            <input
-              type="email"
-              id="email"
-              aria-describedby="email-help-request"
-              placeholder="example@mail.com"
-              pattern="^[A-Za-z0-9\.+-_]+@[A-Za-z]{3,6}\.[A-Za-z]{1,3}"
-              name="email"
-              autocomplete="email"
-            />
-          </label>
-          <label for="role">
-            Who are you claiming to be?
-            <select name="role" id="role">
-              <option value="TEACHER">Teacher</option>
-              <option value="STUDENT">Student</option>
-            </select>
-          </label>
-        </fieldset>
-        <button type="submit">Request</button>
-        <div class="opts">
-          <a th:href="@{/restricted/}">Already registered? Authenticate!</a>
-        </div>
-      </form>
-    </main>
-    <div th:replace="fragments/footer.html :: footer"></div>
   </body>
 </html>

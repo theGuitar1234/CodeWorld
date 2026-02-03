@@ -1,51 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-  <head th:fragment="head">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Account</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <script type="module" th:src="@{/js/account-main.js}" defer></script>
-    <meta name="_csrf" th:content="${_csrf.token}" />
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <head>
+    <th:block
+      th:replace="fragments/head.html :: head(#{account.page.title}, '/js/account-main.js')"
+    ></th:block>
   </head>
 
   <body class="layout dashboard">
     <div id="top-anchor"></div>
 
-    <div th:replace="~{fragments/header.html :: header}"></div>
+    <div th:replace="~{fragments/error/error.html :: error}"></div>
+    <div th:replace="admin/fragments/success/success.html :: success"></div>
 
-    <div
-      th:replace="~{fragments/account/account_navigation.html :: account-navigation}"
-    ></div>
+    <div th:replace="~{fragments/header.html :: header('ACCOUNT')}"></div>
+
+    <div class="account-navigation" th:fragment="account-navigation">
+      <nav>
+        <ul>
+          <li class="current">
+            <a th:href="@{/account/}" th:text="#{account.nav.account}">Account</a>
+          </li>
+
+          <li>
+            <a
+              th:href="@{/account/accountSecurity}"
+              th:text="#{account.nav.security}"
+            >
+              Security
+            </a>
+          </li>
+
+          <li>
+            <a
+              th:href="@{/account/notifications}"
+              th:text="#{account.nav.notifications}"
+            >
+              Notifications
+            </a>
+          </li>
+
+          <!--
+          <li>
+            <a th:href="@{/account/paymentMethods}" th:text="#{account.nav.paymentMethods}">
+              Payment Methods
+            </a>
+          </li>
+          -->
+        </ul>
+      </nav>
+    </div>
 
     <main>
       <div class="wrapper account">
-        <div
-          th:replace="~{fragments/profile-container.html :: profile-container}"
-        ></div>
-        <div
-          th:replace="~{fragments/salary-container.html :: salary-container}"
-        ></div>
+        <div th:replace="~{fragments/profile-container.html :: profile-container}"></div>
+        <div th:replace="~{fragments/salary-container.html :: salary-container}"></div>
         <div th:replace="~{fragments/payment.html :: payment}"></div>
 
         <div class="personal-details-container">
-          <div
-            th:replace="~{fragments/account/personal_details.html :: personal-details}"
-          ></div>
-
-          <div
-            th:replace="~{fragments/account/account_settings.html :: account-settings}"
-          ></div>
-
-          <div
-            th:replace="~{fragments/account/email_addresses.html :: email-addresses}"
-          ></div>
-
+          <div th:replace="~{fragments/account/personal_details.html :: personal-details}"></div>
+          <div th:replace="~{fragments/account/account_settings.html :: account-settings}"></div>
+          <div th:replace="~{fragments/account/email_addresses.html :: email-addresses}"></div>
           <div th:replace="~{fragments/account/phone.html :: phone}"></div>
         </div>
       </div>

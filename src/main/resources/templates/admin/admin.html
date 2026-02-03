@@ -1,71 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-  <div th:replace="~{admin/fragments/head.html :: head}"></div>
+  <head>
+    <th:block
+      th:replace="~{admin/fragments/head.html :: head('Admin', '/admin/js/main.js')}"
+    ></th:block>
+  </head>
 
   <body class="admin">
-
     <div id="top-anchor"></div>
 
+    <div th:replace="~{admin/fragments/aside.html :: aside}"></div>
     <div th:replace="~{admin/fragments/header.html :: header}"></div>
 
-    <div th:replace="~{admin/fragments/aside.html :: aside}"></div>
+    <div th:replace="~{admin/fragments/main/home-main.html :: home-main}"></div>
 
-    <main>
-      <header>
-        <div class="logo">
-          <a th:href="@{/}">
-            <div class="icon"></div>
-            Dashboard
-          </a>
-        </div>
-        <div class="location">
-          <span
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"
-              />
-            </svg>
-            / Dashboard</span
-          >
-        </div>
-      </header>
-
-      <div 
-        th:replace="~{admin/fragments/main/home-main.html :: home-main}"
-      ></div>
-
-      <div 
-        th:replace="~{admin/fragments/main/teachers-main.html :: teachers-main}"
-      ></div>
-
-      <div 
-        th:replace="~{admin/fragments/main/students-main.html :: students-main}"
-      ></div>
-
-      <div 
-        th:replace="~{admin/fragments/main/requests-main.html :: requests-main}"
-      ></div>
-
-      <div 
-        th:replace="~{admin/fragments/main/transactions-main.html :: transactions-main}"
-      ></div>
-    
-    </main>
+    <div
+      th:replace="~{admin/fragments/main/teacher-transactions-main.html :: teacher-transactions-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/student-transactions-main.html :: student-transactions-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/requests-main.html :: requests-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/teachers-main.html :: teachers-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/students-main.html :: students-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/users-main.html :: users-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/course-offerings-main.html :: course-offerings-main}"
+    ></div>
+    <div
+      th:replace="~{admin/fragments/main/subjects-main.html :: subjects-main}"
+    ></div>
 
     <div th:replace="~{admin/fragments/footer.html :: footer}"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1/dist/chartjs-adapter-luxon.umd.min.js"></script>
+    <script
+      th:if="${spa == 'HOME'}"
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+    ></script>
+    <script
+      th:if="${spa == 'HOME'}"
+      src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"
+    ></script>
+    <script
+      th:if="${spa == 'HOME'}"
+      src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1/dist/chartjs-adapter-luxon.umd.min.js"
+    ></script>
+
+    <script th:if="${spa == 'HOME'}" th:inline="javascript">
+      const statistics = document.querySelectorAll("[statistics]");
+
+      const start = new Date(1);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setMonth(end.getMonth() + 1);
+
+      statistics.forEach((s) => {
+        s.textContent = `
+          ${start.toLocaleString("en-US", { month: "short" })} 
+          ${start.getDay()}
+          - 
+          ${end.toLocaleString("en-US", { month: "short" })} 
+          ${end.getDay() + 1}
+          (${new Date().getFullYear()})
+        `;
+      });
+
+      const ctx = document.getElementById("tsChart");
+
+      const points = /*[[${chartPoints}]]*/ [];
+      //console.log(points);
+
+      const normalized = (Array.isArray(points) ? points : []).map((p) => {
+        let x = Number(p.timestamp);
+        if (x < 1e12) x *= 1000;
+        return { x, y: Number(p.transactionAmount) };
+      });
+
+      const chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          datasets: [
+            {
+              label: "Income Over Time",
+              data: normalized,
+              tension: 0.25,
+              pointRadius: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+
+          parsing: true, //Use This for formatting
+          scales: {
+            x: {
+              type: "time",
+              time: { tooltipFormat: "DD T" },
+              title: { display: true, text: "Date" },
+            },
+            y: {
+              title: { display: true, text: "Value" },
+            },
+          },
+        },
+      });
+
+      // function pushPoint(point) {
+      //   chart.data.datasets[0].data.push({ x: new Date(Number(point.timestamp)), y: point.transactionAmount});
+      //   chart.update("none");
+      // }
+
+      // console.log(points[0].x, typeof points[0].x);
+
+      // for (const i of points) {
+      //   pushPoint(i);
+      //   //console.log(new Date(i.x));
+      // }
+    </script>
   </body>
 </html>

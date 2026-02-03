@@ -1,25 +1,42 @@
 package az.codeworld.springboot.security.auth.handlers;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
+import az.codeworld.springboot.admin.services.ActivityService;
+import az.codeworld.springboot.admin.services.serviceImpl.ActivityServiceImpl;
 import az.codeworld.springboot.security.services.auditservices.AuditService;
+import az.codeworld.springboot.utilities.constants.accountError;
+import az.codeworld.springboot.utilities.constants.eventtype;
+import az.codeworld.springboot.utilities.constants.exceptionmessages;
+import az.codeworld.springboot.utilities.constants.source;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private final ActivityService activityService;
     private final AuditService auditService;
 
-    public LoginFailureHandler(AuditService auditService) {
-        setDefaultFailureUrl("/?continue");
+    public LoginFailureHandler(
+        AuditService auditService,
+        ActivityService activityService
+    ) {
+        setDefaultFailureUrl("/restricted/?error=Login%20Failure");
 
         this.auditService = auditService;
+        this.activityService = activityService;
     }
 
     @Override
@@ -28,11 +45,107 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         HttpServletResponse response,
         AuthenticationException authException
     ) throws IOException, ServletException {
-    
-        String userName = (String) request.getAttribute("userName");
+
+        HttpServletRequest modifiedRequest = request;
+
+        if (authException instanceof DisabledException) {
+            // modifiedRequest = new HttpServletRequestWrapper(request) {
+            //     @Override
+            //     public String getParameter(String name) {
+            //         if ("error".equals(name)) return accountError.ACCOUNT_BANNED.getAccountErrorString();
+            //         return super.getParameter(name);
+            //     }
+
+            //     @Override
+            //     public Map<String, String[]> getParameterMap() {
+            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
+            //         map.putIfAbsent("error", new String[] { accountError.ACCOUNT_BANNED.getAccountErrorString() });
+            //         return map;
+            //     }
+
+            //     @Override
+            //     public String[] getParameterValues(String name) {
+            //         if ("error".equals(name)) return new String[] { accountError.ACCOUNT_BANNED.getAccountErrorString() };
+            //         return super.getParameterValues(name);
+            //     }
+            // };
+
+            // response.sendRedirect("/restricted/?error=" + accountError.ACCOUNT_BANNED.getAccountErrorString());
+            // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            // response.setContentType("text/plain;charset=UTF-8");
+            // response.getWriter().write("User is Banned");
+            // return;
+            setDefaultFailureUrl("/restricted/?error=" + accountError.ACCOUNT_BANNED.getAccountErrorString());
+        }
+
+        if (authException instanceof LockedException) {
+            // modifiedRequest = new HttpServletRequestWrapper(request) {
+            //     @Override
+            //     public String getParameter(String name) {
+            //         if ("error".equals(name)) return exceptionmessages.USER_BLOCKED.getExceptionMessageString();
+            //         return super.getParameter(name);
+            //     }
+
+            //     @Override
+            //     public Map<String, String[]> getParameterMap() {
+            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
+            //         map.putIfAbsent("error", new String[] { exceptionmessages.USER_BLOCKED.getExceptionMessageString() });
+            //         return map;
+            //     }
+
+            //     @Override
+            //     public String[] getParameterValues(String name) {
+            //         if ("error".equals(name)) return new String[] { exceptionmessages.USER_BLOCKED.getExceptionMessageString() };
+            //         return super.getParameterValues(name);
+            //     }
+            // };
+
+            // response.sendRedirect("/restricted/?error=" + exceptionmessages.USER_BLOCKED.getExceptionMessageString());
+            // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            // response.setContentType("text/plain;charset=UTF-8");
+            // response.getWriter().write("User is Locked");
+            // return;
+            setDefaultFailureUrl("/restricted/?error=" + exceptionmessages.USER_BLOCKED.getExceptionMessageString());
+        }
+
+        if (authException instanceof BadCredentialsException) {
+            // modifiedRequest = new HttpServletRequestWrapper(request) {
+            //     @Override
+            //     public String getParameter(String name) {
+            //         if ("error".equals(name)) return authException.getLocalizedMessage();
+            //         return super.getParameter(name);
+            //     }
+
+            //     @Override
+            //     public Map<String, String[]> getParameterMap() {
+            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
+            //         map.putIfAbsent("error", new String[] { authException.getLocalizedMessage() });
+            //         return map;
+            //     }
+
+            //     @Override
+            //     public String[] getParameterValues(String name) {
+            //         if ("error".equals(name)) return new String[] { authException.getLocalizedMessage() };
+            //         return super.getParameterValues(name);
+            //     }
+            // };
+            //response.sendRedirect("/restricted/?error=" + authException.getLocalizedMessage());
+            setDefaultFailureUrl("/restricted/?error=" + authException.getLocalizedMessage());
+        }
+
+        String userName = (String) request.getParameter("username");
        
         if (userName != null) auditService.recordFailure(userName);
-        super.onAuthenticationFailure(request, response, authException);
+
+        activityService.recordActivity(
+            eventtype.LOGIN_FAILURE, 
+            "Login unsuccessful", 
+            "Failed Login Attempt for: " + userName, 
+            source.SYSTEM.getSourceString(), 
+            userName
+        );
+
+        super.onAuthenticationFailure(modifiedRequest, response, authException);
     }
     
 }

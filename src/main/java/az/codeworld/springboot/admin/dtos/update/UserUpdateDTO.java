@@ -27,11 +27,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class UserUpdateDTO {
 
-    //@NotBlank
     @Pattern(regexp = "^[A-Z]{1}[a-z]{1,14}$")
     private String firstName;
 
-    //@NotBlank
     @Pattern(regexp = "^[A-Z]{1}[a-z]{1,20}$")
     private String lastName;
 
@@ -39,12 +37,19 @@ public class UserUpdateDTO {
     private String email;
 
     private String birthDate;
+    
     private String street;
+    
     private String city;
+    
     private String region;
+    
     private Integer postalCode;
+    
     private String country;
+    
     private String language;
+    
     private String timeZone;
 
     @Pattern(regexp = "^\\+\\d{3}\\d{2}\\d{3}\\d{2}\\d{2}$")
@@ -53,6 +58,4 @@ public class UserUpdateDTO {
     @Min(0)
     @Max(150)
     private Integer age; 
-
-    private String presence;
 }

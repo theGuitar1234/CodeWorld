@@ -4,62 +4,102 @@ function cacheElements() {
   spaRoot = document.querySelector("[data-spa-root]");
 }
 
-async function handleFragment(e, { push = true } = {}) {
+async function navigate(url, { push = true } = {}) {
+  const mergedUrl = new URL(url, location.origin);
 
-  const link = e.target.closest("#view-all a, li a.js-page, a[data-spa]");
+  const fetchUrl = new URL(mergedUrl);
+  fetchUrl.searchParams.set("fragment", "true");
 
-  if (
-    !link || 
-    e.metaKey ||
-    e.ctrlKey ||
-    e.shiftKey ||
-    e.altKey ||
-    link.target && link.target !== "_self"
-  ) return;
-
-  e.preventDefault();
-
-  const url = new URL(link.href, location.origin);
-
-  if (url.origin !== location.origin) return;
-
-  url.searchParams.set("fragment", "true");
-  url.searchParams.set("mode", "VIEW_ALL");
-
-  const res = await fetch(url, {credentials: "same-origin"});
-
+  const res = await fetch(fetchUrl, { credentials: "same-origin" });
   if (!res.ok) return;
 
   const html = await res.text();
-
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const incomingRoot = doc.querySelector("[data-spa-root]") || doc.querySelector(".wrapper");
+  const incomingRoot =
+    doc.querySelector("[data-spa-root]") || doc.querySelector("main");
 
   if (!incomingRoot) return;
 
   spaRoot.replaceWith(incomingRoot);
   spaRoot = incomingRoot;
 
-  url.searchParams.set("fragment", "false");
-  if (push) history.pushState({}, "", url.toString());
+  mergedUrl.searchParams.delete("fragment");
 
-  document.dispatchEvent( new CustomEvent("spa:navigated", {detail: { url }}));
+  if (push) history.pushState({}, "", mergedUrl.toString());
+
+  document.dispatchEvent(
+    new CustomEvent("spa:navigated", { detail: { url: mergedUrl } })
+  );
+}
+
+function onClick(e) {
+  const link = e.target.closest("a[data-spa]");
+
+  if (
+    !link ||
+    e.metaKey ||
+    e.ctrlKey ||
+    e.shiftKey ||
+    e.altKey ||
+    (link.target && link.target !== "_self")
+  ) return;
+
+  const url = new URL(link.href, location.origin);
+  if (url.origin !== location.origin) return;
+
+  e.preventDefault();
+  navigate(url, { push: true });
+}
+
+function onPopState() {
+  navigate(location.href, { push: false });
+}
+
+async function handleFragmentForm(e) {
+  const form = e.target.closest("form[data-spa-form]");
+  if (!form) return;
+
+  e.preventDefault();
+
+  const url = new URL(form.action, location.origin);
+  url.searchParams.set("fragment", "true");
+
+  const body = new URLSearchParams(new FormData(form));
+
+  const token = document.querySelector('meta[name="_csrf"]').content;
+  const header = document.querySelector('meta[name="_csrf_header"]').content;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      [header]: token,
+      "X-Requested-With": "XMLHttpRequest",
+      "X-SPA": "true"
+    },
+    body,
+    credentials: "same-origin",
+  });
+
+  if (!res.ok) return;
+
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const incomingRoot = doc.querySelector("[data-spa-root]");
+  if (!incomingRoot) return;
+
+  spaRoot.replaceWith(incomingRoot);
+  spaRoot = incomingRoot;
+
+  document.dispatchEvent(new CustomEvent("spa:navigated", { detail: { url } }));
 }
 
 function initFragment() {
-  console.log("Initializing Fragment...");
-
   cacheElements();
-
   if (!spaRoot) return;
 
-  window.addEventListener("popstate", () => {
-    handleFragment(e, { push: false });
-  });
-
-  document.addEventListener("click", (e) => {
-    handleFragment(e);
-  });
+  window.addEventListener("popstate", onPopState);
+  document.addEventListener("click", onClick);
+  document.addEventListener("submit", handleFragmentForm);
 }
 
 export { initFragment };

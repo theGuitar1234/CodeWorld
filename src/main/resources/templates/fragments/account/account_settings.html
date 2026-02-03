@@ -1,12 +1,12 @@
 <div th:fragment="account-settings" style="display: contents">
-  <div 
+  <div
     th:if="${accountSettings == 'DISPLAY'}"
-    class="personal-details account-settings" 
+    class="personal-details account-settings"
     fragment="accountSettings"
   >
     <div class="title">
-      <h3>Account Settings</h3>
-      <a class="edit" href="/user/account" section="accountSettings">
+      <h3 th:text="#{account.settings.title}">Account Settings</h3>
+      <a class="edit" href="/user/account" section="accountSettings" th:text="#{common.edit}">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -23,52 +23,73 @@
     </div>
     <div class="panel">
       <address class="vcard">
-        <span data-attr="Language :" class="lg" th:text="${user.language}"
+        <span
+          data-attr="Language :"
+          class="lg"
+          th:attr="data-attr=#{account.settings.languageLabel}"
+          th:text="${user.language}"
           >English (United States)</span
         ><br />
-        <span data-attr="Time Zone :" class="tz" th:text="${user.timeZone}"
+        <span
+          data-attr="Time Zone :"
+          class="tz"
+          th:attr="data-attr=#{account.settings.timeZoneLabel}"
+          th:text="${user.timeZone}"
           >(GMT-06:00) Central America</span
         ><br />
-        <span data-attr="Status :" class="stts" th:text="${user.presence}"
+        <span
+          data-attr="Status :"
+          class="stts"
+          th:attr="data-attr=#{account.settings.statusLabel}"
+          th:text="${user.presence}"
           >Offline</span
         >
       </address>
     </div>
   </div>
-  <form 
+  <form
     th:if="${accountSettings == 'EDIT'}"
-    class="personal-details account-settings" 
+    class="personal-details account-settings"
     action="/user/updateUser"
     th:object="${userUpdateDTO}"
     fragment="accountSettings"
+    fragmentForm
   >
     <div class="title">
-      <h3>Account Settings</h3>
-      <button class="edit">
-        Submit
-      </button>
+      <h3 th:text="#{account.settings.title}">Account Settings</h3>
+      <button class="edit" type="submit" th:text="#{common.submit}">Submit</button>
+      <!-- <button type="button">Cancel</button> -->
     </div>
     <div class="panel">
       <address class="vcard">
-        <input 
-          type="text"
-          data-attr="Language :" 
-          class="lg" 
-          th:text="${user.language}"
-          th:field="*{language}"
-        />
+        <span
+          data-attr="Language :"
+          class="lg"
+          th:attr="data-attr=#{account.settings.languageLabel}"
+        >
+          <input
+            type="text"
+            th:placeholder="${user.language}"
+            th:field="*{language}"
+          />
+        </span>
         <br />
-        <input 
-          type="text"
-          data-attr="Time Zone :" 
-          class="tz" 
-          th:text="${user.timeZone}"
-          th:field="*{timeZone}"
-        />
+        <span
+          data-attr="Time Zone :"
+          class="tz"
+          th:attr="data-attr=#{account.settings.timeZoneLabel}"
+        >
+          <input
+            type="text"
+            th:placeholder="${user.timeZone}"
+            th:field="*{timeZone}"
+          />
+        </span>
         <br />
-        <span 
-          data-attr="Status :" 
-          class="stts" 
+        <span
+          data-attr="Status :"
+          class="stts"
+          th:attr="data-attr=#{account.settings.statusLabel}"
           th:text="${user.presence}"
         >
           Offline

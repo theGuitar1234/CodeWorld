@@ -16,9 +16,13 @@
       <h1 id="data-total-header"></h1>
       <small id="data-date"></small>
     </div>
+
     <div class="transaction-details">
       <div class="header">
-        <h1 class="title">Transaction Details</h1>
+        <h1 class="title">
+          <span th:text="#{transaction.dialog.title}">Transaction Details</span>
+        </h1>
+
         <button id="dialog-button" clsBttn>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,31 +37,38 @@
           </svg>
         </button>
       </div>
+
       <div class="amount-details">
         <div class="data">
-          <small>Payment Amount</small
-          ><small id="data-amount" style="color: var(--text-color)"></small>
+          <small th:text="#{transaction.paymentAmount}">Payment Amount</small>
+          <small id="data-amount" style="color: var(--text-color)"></small>
         </div>
         <div class="data">
-          <small>Fee</small
-          ><small id="data-fee" style="color: var(--text-color)"></small>
+          <small th:text="#{transaction.fee}">Fee</small>
+          <small id="data-fee" style="color: var(--text-color)"></small>
         </div>
       </div>
+
       <div class="transfer-details">
         <div class="data">
-          <h3>Total Amount</h3>
+          <h3 th:text="#{transaction.totalAmount}">Total Amount</h3>
           <h3 id="data-total"></h3>
         </div>
+
         <div class="others">
-          <h3>Paid By:</h3>
+          <h3 th:text="#{transaction.paidBy}">Paid By:</h3>
           <small id="data-paid-by"></small>
-          <h3>Transaction ID:</h3>
+
+          <h3 th:text="#{transaction.id}">Transaction ID:</h3>
           <small id="data-transaction-id"></small>
-          <h3>Description:</h3>
+
+          <h3 th:text="#{transaction.description}">Description:</h3>
           <small id="data-details"></small>
-          <h3>Status</h3>
+
+          <h3 th:text="#{transaction.status}">Status</h3>
           <div class="checked-unchecked" id="dialog-status-icon">
             <small id="data-status"></small>
+
             <div class="checkbox" style="width: 16px; height: 16px">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +82,7 @@
                 />
               </svg>
             </div>
+
             <div class="rejected" style="width: 16px; height: 16px">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +96,7 @@
                 />
               </svg>
             </div>
+
             <div class="pending" style="width: 16px; height: 16px">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,9 +1,70 @@
-<head>
+<th:block th:fragment="head(title, jsPath)">
+  
+  <title th:text="${title}"></title>
+
+  <meta name="description" content="A Website for Teachers and their Students."/>
   <meta charset="UTF-8" />
+  <meta name="author" content="The Guitar" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="keywords" content="HTML, meta tags, SEO, caching, icon, Education, study, teacher, student" />
+  <meta name="language" content="en-US" />
+
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://example.com/current-page" />
+
+  <meta property="og:title" content="Code World Education Center" />
+  <meta property="og:description" content="A Website for Teachers and their Students." />
+  <meta property="og:image" content="https://localhost:8082/assets/sprites/meta/og_image.png" />
+  <meta property="og:url" content="http://localhost:8082/" />
+  <meta property="og:type" content="website" /> 
+  <meta property="og:site_name" content="CodeWorld" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Code World Education Center" />
+  <meta name="twitter:description" content="A Website for Teachers and their Students." />
+  <meta name="twitter:image" content="http://localhost:8082/assets/sprites/meta/og_image.png" />
+
+  <meta name="theme-color" content="#001485" />
+  <!-- <meta name="color-scheme" content="dark light" /> -->
+
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="apple-touch-icon" content="icon.png">
+
+  <meta http-equiv="content-language" content="en" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- 
+  <meta http-equiv="content-security-policy" content="
+    default-src 'self'; 
+    script-src 'self';
+    manifest-src 'self';
+    style-src 'self';
+    img-src 'self';
+    font-src 'self';
+    connect-src 'self';
+    frame-src 'self';
+    object-src 'self';
+    media-src 'self';
+    frame-ancestors 'none';
+    form-action 'self';
+    base-uri 'self';
+  "
+  />
+   -->
+  <link rel="stylesheet" th:href="@{/admin/css/style.css}" />
+  
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>Admin</title>
-  <link rel="stylesheet" th:href="@{/admin/css/style.css}" />
-  <script type="module" th:src="@{/admin/js/main.js}" defer></script>
-</head>
+
+  <link rel="icon" type="image/png" th:href="@{/assets/sprites/icons/favicon/favicon-96x96.png}" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" th:href="@{/assets/sprites/icons/favicon/favicon.svg}">
+  <link rel="shortcut icon" th:href="@{/assets/sprites/icons/favicon/favicon.ico}">
+  <link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/sprites/icons/favicon/apple-touch-icon.png}">
+  <link rel="manifest" th:href="@{/assets/sprites/icons/favicon/site.webmanifest}">
+
+  <script th:attr="nonce=${cspNonce}" type="module" th:src="@{${jsPath}}" defer></script>
+</th:block>
+

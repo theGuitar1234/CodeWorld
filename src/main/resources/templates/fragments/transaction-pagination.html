@@ -1,353 +1,53 @@
 <div th:fragment="transaction-pagination">
-  <div
-    th:if="${mode == 'PREVIEW'}"
-    id="profile-completeness"
-    class="profile-completeness"
-    th:fragment="profile-completeness"
-  >
-    <div class="title">
-      <h3>Profile Completeness <span th:text="${user.completeness + '%'}" th:class="${user.completeness} == 100 ? 'complete' : ''"></span></h3>
-    </div>
-    <div class="panel">
-      <div class="step">
-        <div class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path
-              d="M280-40q-33 0-56.5-23.5T200-120v-720q0-33 23.5-56.5T280-920h400q33 0 56.5 23.5T760-840v124q18 7 29 22t11 34v80q0 19-11 34t-29 22v404q0 33-23.5 56.5T680-40H280Zm0-80h400v-720H280v720Zm0 0v-720 720Zm200-40q17 0 28.5-11.5T520-200q0-17-11.5-28.5T480-240q-17 0-28.5 11.5T440-200q0 17 11.5 28.5T480-160Z"
-            />
-          </svg>
-        </div>
-        <div 
-          th:class="${user.isPhoneAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
-        >
-          <div class="checkbox">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z" />
-            </svg>
-          </div>
-        </div>
-        <a href="#" class="name" added="Mobile Added" unadded="Add Mobile"></a>
-      </div>
-      <div class="step">
-        <div class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path
-              d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
-            />
-          </svg>
-        </div>
-        <div 
-          th:class="${user.isEmailAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
-        >
-          <div class="checkbox">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z" />
-            </svg>
-          </div>
-        </div>
-        <a href="#" class="name" added="Email Added" unadded="Add Email"></a>
-      </div>
-      <div class="step">
-        <div class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path
-              d="M880-720v480q0 33-23.5 56.5T800-160H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720Zm-720 80h640v-80H160v80Zm0 160v240h640v-240H160Zm0 240v-480 480Z"
-            />
-          </svg>
-        </div>
-        <div
-          th:class="${user.isCardAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
-        >
-          <div class="checkbox">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z" />
-            </svg>
-          </div>
-        </div>
-        <a href="#" class="name" added="Card Added" unadded="Add Card"></a>
-      </div>
-      <div class="step">
-        <div class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path
-              d="M200-280v-280h80v280h-80Zm240 0v-280h80v280h-80ZM80-120v-80h800v80H80Zm600-160v-280h80v280h-80ZM80-640v-80l400-200 400 200v80H80Zm178-80h444-444Zm0 0h444L480-830 258-720Z"
-            />
-          </svg>
-        </div>
-        <div
-          th:class="${user.isBankAccountAdded} ? 'checked-unchecked checked' : 'checked-unchecked'"
-        >
-          <div class="checkbox">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z" />
-            </svg>
-          </div>
-        </div>
-        <a
-          href="#"
-          class="name"
-          unadded="Add Account"
-          added="Account Added"
-        ></a>
-      </div>
-    </div>
-  </div>
-  <div
-    th:if="${mode == 'VIEW_ALL'}"
-    id="transactions-filter"
-    class="transactions"
-    th:fragment="transactions-filter"
-  >
-    <div class="title">
-      <h3>Transactions</h3>
-    </div>
-    <div class="panel transactions">
-      <div class="wrapper">
-        <input type="date" id="date" />
-        <div class="statements">
-          <details id="statements-details">
-            <summary>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e8eaed"
-              >
-                <path
-                  d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
-                />
-              </svg>
-              Statements
-            </summary>
-            <ul>
-              <li>
-                <a href="#">CSV</a>
-              </li>
-              <li>
-                <a href="#">PDF</a>
-              </li>
-            </ul>
-          </details>
-        </div>
-      </div>
-      <div class="drop-down">
-        <input
-          type="checkbox"
-          id="create"
-          aria-hidden="true"
-          aria-checked="undefined"
-          focusable="false"
-        />
-        <label
-          for="create"
-          role="menu"
-          aria-expanded="undefined"
-          aria-haspopup="true"
-          tabindex="0"
-        >
-          Add Filters
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style="transform: rotate(90deg)"
-          >
-            <path
-              d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </label>
-        <ul class="sub-menu">
-          <div class="wrapper">
-            <li role="menuitem">
-              <input type="radio" id="element" name="element" /><small
-                >Element</small
-              >
-            </li>
-          </div>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div
-    class="view-all"
-    id="view-all"
-    th:if="${transactions.size() >= 10 && mode == 'PREVIEW'}"
-    th:fragment="view-all"
-  >
-    <a th:href="@{/user/transactions}"> View all &gt; </a>
-  </div>
-  <nav
-    id="pagination"
-    th:fragment="pagination"
-    th:if="${transactionsOnPage.totalPages > 1 && mode == 'VIEW_ALL'}"
-    class="pagination"
-  >
-    <ul>
-      <!-- class="disabled" -->
-      <li>
-        <a
-          tabindex="-1"
-          th:if="${transactionsOnPage.hasPrevious()}"
-          th:href="@{/user/transactions(pageIndex=${transactionsOnPage.number})}"
-          class="js-page"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
-          </svg>
-        </a>
-      </li>
-      <li th:each="page : ${pages}" th:class="${page.isActive}">
-        <a
-          th:href="@{/user/transactions(perPage=${page.perPage}, pageIndex=${page.pageIndex}, direction=${page.direction}, role=${page.role})}"
-          th:text="${page.pageIndex}"
-          class="js-page"
-        ></a>
-      </li>
-      <li>
-        <a
-          th:if="${transactionsOnPage.hasNext()}"
-          th:href="@{/user/transactions(pageIndex=${transactionsOnPage.number+2})}"
-          class="js-page"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
-          </svg>
-        </a>
-      </li>
-    </ul>
-    <a th:href="@{/user/dashboard}"> View less &lt; </a>
-  </nav>
   <table>
-    <tbody id="table-body" th:fragment="tableBody">
+    <tbody th:fragment="tableBody" pagination-table-root>
+      <!-- Optional: show a friendly empty-state row -->
+      <tr th:if="${transactions == null or #lists.isEmpty(transactions)}">
+        <td colspan="4" th:text="#{transactions.none}">No transactions found.</td>
+      </tr>
+
       <tr
         th:each="transaction : ${transactions}"
         th:data-amount="${transaction.transactionAmount}"
         th:data-fee="${transaction.transactionFee}"
         th:data-total="${transaction.transactionTotal}"
         th:data-paid-by="${transaction.transactionPaidBy}"
-        th:data-date="${transaction.transactionDate}"
+        th:data-date="${transaction.transactionTime}"
         th:data-transaction-id="${transaction.transactionId}"
         th:data-details="${transaction.transactionDetails}"
         th:data-status="${transaction.status}"
       >
         <td>
-          <p th:text="${transaction.transactionDate}"></p>
+          <p th:text="${transaction.transactionTime}"></p>
         </td>
+
         <td class="description">
           <h2 th:text="${transaction.transactionPaidBy}"></h2>
           <small th:text="${transaction.transactionDescription}"></small>
         </td>
+
         <td status-icon>
           <div class="checked-unchecked">
             <div class="pending">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e3e3e3"
-              >
-                <path
-                  d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                <path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/>
               </svg>
             </div>
+
             <div class="checkbox">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e8eaed"
-              >
-                <path
-                  d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"/>
               </svg>
             </div>
+
             <div class="rejected">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e3e3e3"
-              >
-                <path
-                  d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                <path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/>
               </svg>
             </div>
           </div>
         </td>
+
         <td class="amount-uprise">
           <p th:text="${transaction.transactionAmount}"></p>
           <p th:text="${transaction.currency}"></p>
@@ -355,4 +55,182 @@
       </tr>
     </tbody>
   </table>
+
+  <form
+    th:if="${mode == 'VIEW_ALL'}"
+    class="transactions"
+    th:fragment="transactions-filter"
+    th:action="@{/user/transactions}"
+    method="GET"
+    pagination-filter-root
+  >
+    <div class="title">
+      <h3 th:text="#{transactions.title}">Transactions</h3>
+    </div>
+
+    <input type="number" name="perPage" th:placeholder="#{transactions.perPage}" />
+
+    <div class="panel transactions">
+      <div class="wrapper">
+        <div class="dates">
+          <label for="start-date" th:text="#{transactions.from}">From :</label>
+          <input type="date" name="startDate" id="start-date" />
+
+          <label for="end-date" th:text="#{transactions.to}">To :</label>
+          <input type="date" name="endDate" id="end-date" />
+        </div>
+
+        <div th:replace="~{fragments/statements.html :: statements('/user/transactions/getReport')}"></div>
+      </div>
+
+      <div class="drop-down">
+        <input type="checkbox" id="create" aria-hidden="true" />
+
+        <label for="create" role="menu" aria-haspopup="true" tabindex="0">
+          <span th:text="#{transactions.sortBy}">Sort By</span>
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg)">
+            <path d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </label>
+
+        <!-- IMPORTANT: ul cannot contain div directly. Use li wrapper instead. -->
+        <ul class="sub-menu">
+          <li class="wrapper">
+            <div role="menuitem">
+              <input
+                type="radio"
+                id="transaction-date"
+                value="transactionTime"
+                name="sortBy"
+                th:checked="${sortBy == 'transactionTime'}"
+                autocomplete="off"
+              />
+              <label for="transaction-date">
+                <small th:text="#{transactions.sort.date}">Date</small>
+              </label>
+            </div>
+
+            <div role="menuitem">
+              <input
+                type="radio"
+                id="transaction-amount"
+                value="transactionAmount"
+                name="sortBy"
+                th:checked="${sortBy == 'transactionAmount'}"
+                autocomplete="off"
+              />
+              <label for="transaction-amount">
+                <small th:text="#{transactions.sort.amount}">Amount</small>
+              </label>
+            </div>
+
+            <div role="menuitem">
+              <input
+                type="radio"
+                id="direction-ascending"
+                value="ASC"
+                name="direction"
+                th:checked="${direction == 'ASC'}"
+                autocomplete="off"
+              />
+              <label for="direction-ascending">
+                <small th:text="#{transactions.sort.asc}">Ascending</small>
+              </label>
+            </div>
+
+            <div role="menuitem">
+              <input
+                type="radio"
+                id="direction-descending"
+                value="DESC"
+                name="direction"
+                th:checked="${direction == 'DESC'}"
+                autocomplete="off"
+              />
+              <label for="direction-descending">
+                <small th:text="#{transactions.sort.desc}">Descending</small>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <button type="submit" th:text="#{common.submit}">Submit</button>
+  </form>
+
+  <!-- Pagination -->
+  <nav
+    th:fragment="pagination"
+    th:if="${transactionsOnPage.totalPages > 1 && mode == 'VIEW_ALL'}"
+    class="pagination"
+    pagination-link-root
+  >
+    <ul>
+      <li>
+        <a
+          tabindex="-1"
+          th:if="${transactionsOnPage.hasPrevious()}"
+          th:href="@{/user/transactions(
+            perPage=${perPage},
+            pageIndex=${transactionsOnPage.number},
+            direction=${direction},
+            sortBy=${sortBy},
+            startDate=${startDate},
+            endDate=${endDate},
+            role=${role}
+          )}"
+          class="js-page"
+          data-pagination
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+          </svg>
+        </a>
+      </li>
+
+      <li th:each="page : ${pages}" th:classappend="${page.isActive} ? 'active' : ''">
+        <a
+          th:href="@{/user/transactions(
+            perPage=${page.perPage},
+            pageIndex=${page.pageIndex},
+            direction=${page.direction},
+            sortBy=${sortBy},
+            startDate=${startDate},
+            endDate=${endDate},
+            role=${page.role}
+          )}"
+          th:text="${page.pageIndex}"
+          class="js-page"
+          data-pagination
+        ></a>
+      </li>
+
+      <li>
+        <a
+          th:if="${transactionsOnPage.hasNext()}"
+          th:href="@{/user/transactions(
+            perPage=${perPage},
+            pageIndex=${transactionsOnPage.number + 2},
+            direction=${direction},
+            sortBy=${sortBy},
+            startDate=${startDate},
+            endDate=${endDate},
+            role=${role}
+          )}"
+          class="js-page"
+          data-pagination
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+
+    <a class="view-less" th:href="@{/user/dashboard}" th:text="#{transactions.viewLess}">
+      View less &lt;
+    </a>
+  </nav>
 </div>

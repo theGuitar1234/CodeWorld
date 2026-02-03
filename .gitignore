@@ -41,5 +41,8 @@ logs/
 ### db ###
 db/
 
-### BOOGER_AIDS ###
-BOOGER_AIDS
+### log.txt ###
+log.txt
+
+### discards ###
+discards/

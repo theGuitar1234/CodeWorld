@@ -37,13 +37,17 @@ async function handleFragmentDisplay(e) {
   console.log(html);
 
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const incomingRoot = doc.querySelector(`[fragment = ${section}]`);
+
+  const selector = `[fragment="${CSS.escape(section)}"]`;
+  // const incomingRoot = doc.querySelector(`[fragment = ${section}]`);
+  const incomingRoot = doc.querySelector(selector);
 
   console.log(incomingRoot);
 
   if (!incomingRoot) return;
 
-  target = document.querySelector(`[fragment = ${section}]`);
+  // target = document.querySelector(`[fragment = ${section}]`);
+  target = document.querySelector(selector);
 
   console.log(target);
 
@@ -55,7 +59,7 @@ async function handleFragmentDisplay(e) {
 }
 
 async function handleFragmentEdit(e) {
-  const form = e.target.closest("form");
+  const form = e.target.closest("form[fragmentForm]");
   console.log(form);
 
   if (!form || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -81,13 +85,20 @@ async function handleFragmentEdit(e) {
     const token = document.querySelector('meta[name="_csrf"]').content;
     const header = document.querySelector('meta[name="_csrf_header"]').content;
 
-    const body = new URLSearchParams(new FormData(form));
+    const formFields = new FormData(form);
+    const body = new URLSearchParams();
+
+    for (const [key, value] of formFields.entries()) {
+      if (typeof value === "string" && value.trim() === "") continue;
+      body.append(key, value);
+    }
 
     const res = await fetch(url, {
       method: "POST",
       headers: {
         [header]: token,
-        "X-Requested-With": "fetch",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-SPA": "true"
       },
       body,
       credentials: "same-origin",

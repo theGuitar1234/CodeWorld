@@ -1,11 +1,11 @@
 package az.codeworld.springboot.utilities.constants;
 
-public enum accountSuccess {
+public enum accountsuccess {
     ACCOUNT_ADDED("ACCOUNT_ADDED");
 
     private String accountSuccessString;
 
-    private accountSuccess(String accountSuccessString) {
+    private accountsuccess(String accountSuccessString) {
         this.accountSuccessString = accountSuccessString;
     }
 

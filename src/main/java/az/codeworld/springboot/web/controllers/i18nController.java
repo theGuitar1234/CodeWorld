@@ -16,15 +16,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/i18n")
 public class i18nController {
 
-    @GetMapping("/change-language")
-    public String changeLanguage(@RequestParam("lang") String lang, @RequestParam("redirectUrl") String redirectUrl, HttpServletRequest request) {
+    @GetMapping("/changeLanguage")
+    public String changeLanguage(
+            @RequestParam("lang") String lang,
+            @RequestParam(value = "redirectUrl", required = false) String redirectUrl,
+            HttpServletRequest request) {
         Locale newLocale = Locale.forLanguageTag(lang);
-        HttpSession session = request.getSession();
 
-        session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, newLocale);
+        request.getSession(true)
+                .setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, newLocale);
 
-        return "redirect:" + redirectUrl;
+        String target = (redirectUrl == null || redirectUrl.isBlank()) ? "/" : redirectUrl;
+
+        if (!target.startsWith("/"))
+            target = "/";
+
+        return "redirect:" + target;
     }
 
 }
-

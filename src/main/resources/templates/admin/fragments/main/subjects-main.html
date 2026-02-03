@@ -1,0 +1,57 @@
+<main data-spa-root th:fragment="subjects-main" th:if="${spa == 'SUBJECTS'}">
+  
+  <div th:replace="admin/fragments/error/error.html :: error"></div>
+  <div th:replace="admin/fragments/success/success.html :: success"></div>
+
+  <div
+    th:replace="~{admin/fragments/main/header/subjects-header.html :: subjects-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div
+        th:replace="~{admin/fragments/main/filters/subjects_filter.html :: subjects-filter('Subjects', '/admin/subjects', '/admin/subjects/getReport')}"
+      ></div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/subjects.html :: subjects}"
+        ></div>
+      </div>
+      <div class="container create-subject" id="container9">
+        <div class="title">
+          <h3>Create New Subject</h3>
+        </div>
+        <form
+          action="/admin/createNewSubject"
+          method="POST"
+          class="create-user"
+          data-spa-form
+        >
+          <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"
+          />
+          <label for="subject-title-input">Subject Title : </label>
+          <input
+            id="subject-title-input"
+            type="text"
+            name="subjectTitle"
+            placeholder="Subject Title"
+            required
+          />
+
+          <label for="subject-body-input">Subject Description : </label>
+          <input
+            type="text"
+            id="subject-body-input"
+            name="subjectBody"
+            placeholder="Subject Description"
+            required
+          />
+
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

@@ -195,9 +195,19 @@
 		</dependency>
 
 		<!-- Redis -->
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>4.0.0</version>
+			<!-- <scope>compile</scope> -->
+		</dependency>
+
+		<!-- Spring Starter Cache -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
 		<!-- Hibernate Envers -->
@@ -219,6 +229,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<!-- OAuth Client -->
 		<!-- Source:
 		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client -->
 		<dependency>
@@ -228,6 +239,7 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- OAuth Resource Server -->
 		<!-- Source:
 		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-resource-server -->
 		<dependency>
@@ -237,6 +249,15 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Bucket4j Rate Limiting -->
+		<!-- Source: https://mvnrepository.com/artifact/com.bucket4j/bucket4j_jdk17-core -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk17-core</artifactId>
+			<version>8.16.0</version>
+			<!-- <scope>compile</scope> -->
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
@@ -244,9 +265,13 @@
 			<id>prod</id>
 			<dependencies>
 				<!-- Redis -->
+				<!--
+				https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
 				<dependency>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-data-redis</artifactId>
+					<version>4.0.0</version>
+					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 		</profile>

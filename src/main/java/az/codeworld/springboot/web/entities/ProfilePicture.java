@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,4 +50,14 @@ public class ProfilePicture {
     @OneToOne
     @JoinColumn(name="userId", nullable = false)
     private User user;
+
+    @PrePersist
+    private void onCreate() {
+        if (added == null) {
+            added = LocalDateTime.now();
+        }
+        if (profilePhoto == null || profilePhoto.isBlank()) {
+            profilePhoto = "/assets/sprites/profile-thumb.jpg";
+        }
+    }
 }

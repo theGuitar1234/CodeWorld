@@ -4,9 +4,7 @@
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
-  <title>404 Not Found</title>
-
-  <div th:replace="~{fragments/head.html :: head}"></div>
+  <div th:replace="~{fragments/head.html :: head(#{error.404.title}, '')}"></div>
 
   <body class="layout error">
     <div id="top-anchor"></div>
@@ -15,9 +13,21 @@
 
     <main>
       <div class="content">
-        <h1 class="text" data-text="404 NOT FOUND">404 NOT FOUND</h1>
+        <h1
+          class="text"
+          data-text="404 NOT FOUND"
+          th:attr="data-text=#{error.404.heading}"
+          th:text="#{error.404.heading}"
+        >
+          404 NOT FOUND
+        </h1>
       </div>
-      <a th:href="@{/}" class="text link" data-text="REDIRECT BACK TO HOME"
+      <a
+        th:href="@{/}"
+        class="text link"
+        data-text="REDIRECT BACK TO HOME"
+        th:attr="data-text=#{error.404.redirect}"
+        th:text="#{error.404.redirect}"
         >REDIRECT BACK TO HOME</a
       >
     </main>

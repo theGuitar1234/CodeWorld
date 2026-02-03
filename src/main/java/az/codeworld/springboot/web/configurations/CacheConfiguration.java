@@ -9,6 +9,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -20,13 +21,15 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 // import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import az.codeworld.springboot.admin.dtos.UserDTO;
 
 @EnableCaching
-@Configuration("prod")
+@Configuration
+@Profile("prod")
 @ConditionalOnClass(RedisCacheManager.class)
 public class CacheConfiguration {
 
@@ -40,19 +43,23 @@ public class CacheConfiguration {
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
         //GenericJackson2JsonRedisSerializer valueSerializer = new GenericJackson2JsonRedisSerializer();
-        var valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        //var valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        JacksonJsonRedisSerializer<Object> valueSerializer = new JacksonJsonRedisSerializer<>(Object.class);
 
         RedisCacheConfiguration defaultConfiguration = RedisCacheConfiguration
                                                                             .defaultCacheConfig()
                                                                             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(keySerializer))
                                                                             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer))
-                                                                            .prefixCacheNameWith("demo:")
+                                                                            //.prefixCacheNameWith("demo:")
                                                                             .disableCachingNullValues()
                                                                             .entryTtl(Duration.ofHours(1));
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
         cacheConfigurations.put("users", defaultConfiguration
-                                                            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer<>(UserDTO.class)))
+                                                            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                                                                //new Jackson2JsonRedisSerializer<>(UserDTO.class))
+                                                                new JacksonJsonRedisSerializer<>(Object.class))
+                                                            )
                                                             .entryTtl(Duration.ofMinutes(10)));
         
         return RedisCacheManager

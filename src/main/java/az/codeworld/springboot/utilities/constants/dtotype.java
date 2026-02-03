@@ -4,6 +4,7 @@ public enum dtotype {
     TRANSACTION("TRANSACTION"), 
     DASHBOARD("DASHBOARD"), 
     CREATE("CREATE"),
+    PAYABLE("PAYABLE"),
     LOGIN_AUDIT("LOGIN_AUDIT"),
     FULL("FULL");
 

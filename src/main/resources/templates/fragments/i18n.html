@@ -1,0 +1,10 @@
+<div class="i18n" th:fragment="i18n">
+  <form th:action="@{/i18n/changeLanguage}" method="GET">
+    <input type="hidden" name="redirectUrl" id="redirectUrl" />
+    <select name="lang" id="lang">
+      <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
+      <option value="ru" th:selected="${#locale.language == 'ru'}">RU</option>
+      <option value="az" th:selected="${#locale.language == 'az'}">AZ</option>
+    </select>
+  </form>
+</div>

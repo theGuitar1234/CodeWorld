@@ -1,0 +1,21 @@
+<main
+  data-spa-root
+  th:fragment="student-transactions-main"
+  th:if="${spa == 'STUDENT_TRANSACTIONS'}"
+>
+  <div
+    th:replace="~{admin/fragments/main/header/student-transactions-header.html :: student-transactions-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div class="container" id="container9">
+        <div th:replace="~{admin/fragments/main/filters/transactions_filter.html :: transactions-filter('Student Transactions', '/admin/studentTransactions', '/admin/studentTransactions/getReport')}"></div>
+      </div>
+      <div class="container" id="container8">
+        <div
+          th:replace="~{admin/fragments/tables/student-transactions.html :: student-transactions}"
+        ></div>
+      </div>
+    </div>
+  </div>
+</main>

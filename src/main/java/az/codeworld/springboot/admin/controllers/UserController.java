@@ -5,50 +5,74 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
 import az.codeworld.springboot.admin.entities.User;
-import az.codeworld.springboot.admin.records.LinkRecord;
+import az.codeworld.springboot.admin.projections.UserAdminProjection;
+import az.codeworld.springboot.admin.projections.UserLogoutProjection;
+import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.services.LogoutService;
 import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
+
 import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
-import az.codeworld.springboot.security.dtos.UserAuthDTO;
+
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
+
+import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.contenttypes;
 import az.codeworld.springboot.utilities.constants.dtotype;
+import az.codeworld.springboot.utilities.constants.exceptionmessages;
 import az.codeworld.springboot.utilities.constants.mode;
 import az.codeworld.springboot.utilities.constants.profileError;
 import az.codeworld.springboot.utilities.constants.roles;
+
 import az.codeworld.springboot.web.dtos.ProfilePayloadDTO;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.services.ProfileService;
@@ -83,13 +107,16 @@ public class UserController {
     private final RequestService requestService;
     private final LogoutService logoutService;
 
+    private final ApplicationProperties applicationProperties;
+
     public UserController(
         TransactionService transactionService,
         RequestService requestService,
         LogoutService logoutService,
         RegistrationService registrationService,
         UserService userService,
-        ProfileService profileService
+        ProfileService profileService,
+        ApplicationProperties applicationProperties
     ) {
         this.transactionService = transactionService;
         this.requestService = requestService;
@@ -97,6 +124,7 @@ public class UserController {
         this.registrationService = registrationService;
         this.userService = userService;
         this.profileService = profileService;
+        this.applicationProperties = applicationProperties;
     }
 
     @GetMapping("/login")
@@ -106,7 +134,11 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(Principal principal, HttpServletRequest request, HttpServletResponse response) {
-        logoutService.exterminate(principal.getName(), request, response);
+        logoutService.exterminate(
+            (userService.getUserProjectionByUserName(principal.getName(), UserLogoutProjection.class)).getId(), 
+            request, 
+            response
+        );
         return "redirect:/restricted/";
     }
 
@@ -155,16 +187,16 @@ public class UserController {
 
         UserDashboardDTO userDashboardDTO = (UserDashboardDTO) userService.getUserByUserName(principal.getName(),
                 dtotype.DASHBOARD);
-
-        System.out.println("\n\n\n\n\n\n\n\n" + userDashboardDTO.getCompleteness() + "\n\n\n\n\n\n\n\n");
-
+        
         model.addAllAttributes(
-                Map.of(
-                        "user", userDashboardDTO,
-                        "transactions", transactionService.getRecentTransactions(roles.TEACHER),
-                        "transactionsOnPage", Page.empty(),
-                        "pages", Page.empty(),
-                        "mode", "PREVIEW"));
+            Map.of(
+            //"user", userDashboardDTO,
+            "transactions", transactionService.getRecentTransactions(userDashboardDTO.getId()),
+            "transactionsOnPage", Page.empty(),
+            "pages", Page.empty(),
+            "mode", "PREVIEW"
+            )
+        );
         return "dashboard/dashboard.html";
     }
 
@@ -177,6 +209,9 @@ public class UserController {
             @RequestParam(required = false, name = "role", defaultValue = "TEACHER") roles role,
             @RequestParam(required = false, name = "mode", defaultValue = "PREVIEW") String mode,
             @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
+            @RequestParam(required = false, name = "report", defaultValue = "false") boolean report,
+            @RequestParam(required = false, name = "startDate") LocalDate startDate,
+            @RequestParam(required = false, name = "endDate") LocalDate endDate,
             Model model,
             Principal principal) {
 
@@ -185,35 +220,80 @@ public class UserController {
 
         Page<TransactionDTO> transactionsOnPage = transactionService
                 .getPaginatedTransactions(
-                        role,
+                        Optional.ofNullable(startDate).orElseGet(() -> LocalDate.ofEpochDay(0))
+                                .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
+                        Optional.ofNullable(endDate).orElseGet(() -> LocalDate.now().plusDays(1))
+                                .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
+                        userDashboardDTO.getId(),
                         pageIndex - 1,
                         perPage,
                         sortBy,
-                        direction);
+                        direction
+                    );
 
-        LinkRecord linkRecord;
-        List<LinkRecord> pages = new ArrayList<>();
+        TransactionLinkRecord linkRecord;
+        List<TransactionLinkRecord> pages = new ArrayList<>();
         for (int i = 0; i < transactionsOnPage.getTotalPages(); i++) {
             String isActive = "";
             if (i == transactionsOnPage.getNumber()) {
                 isActive = "current";
             }
-            linkRecord = new LinkRecord(isActive, perPage, i + 1, direction, role);
+            linkRecord = new TransactionLinkRecord(isActive, perPage, i + 1, direction, role);
             pages.add(linkRecord);
         }
 
         model.addAllAttributes(
                 Map.of(
-                        "user", userDashboardDTO,
+                        //"user", userDashboardDTO,
                         "transactions", transactionsOnPage.getContent(),
                         "transactionsOnPage", transactionsOnPage,
                         "mode", "VIEW_ALL",
                         "pages", pages));
+        
+        model.addAllAttributes(
+            Map.of(
+                "sortBy", sortBy,
+                "direction", direction.name()
+            )
+        );
 
+        if (report)
+            return transactionsOnPage.get().toString();
         if (fragment)
             return "fragments/transaction-pagination.html :: transaction-pagination";
 
         return "dashboard/dashboard.html";
+    }
+
+    @ResponseBody
+    @GetMapping("/transactions/getReport")
+    public ResponseEntity<?> getReport(
+            @RequestParam(required = false, name = "sortBy", defaultValue = "transactionAmount") String sortBy,
+            @RequestParam(required = false, name = "perPage", defaultValue = "8") int perPage,
+            @RequestParam(required = false, name = "pageIndex", defaultValue = "1") int pageIndex,
+            @RequestParam(required = false, name = "direction", defaultValue = "ASC") Direction direction,
+            @RequestParam(required = false, name = "role", defaultValue = "TEACHER") roles role,
+            @RequestParam(required = false, name = "mode", defaultValue = "PREVIEW") String mode,
+            @RequestParam(required = false, name = "startDate") LocalDate startDate,
+            @RequestParam(required = false, name = "endDate") LocalDate endDate,
+            Principal principal) {
+
+        UserDashboardDTO userDashboardDTO = (UserDashboardDTO) userService.getUserByUserName(principal.getName(),
+                dtotype.DASHBOARD);
+
+        Page<TransactionDTO> transactionsOnPage = transactionService
+                .getPaginatedTransactions(
+                        Optional.ofNullable(startDate).orElseGet(() -> LocalDate.ofEpochDay(0))
+                                .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
+                        Optional.ofNullable(endDate).orElseGet(() -> LocalDate.now().plusDays(1))
+                                .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
+                        userDashboardDTO.getId(),
+                        pageIndex - 1,
+                        perPage,
+                        sortBy,
+                        direction);
+
+        return ResponseEntity.ok(transactionsOnPage.get().toList());
     }
 
     @GetMapping("/account")
@@ -229,9 +309,24 @@ public class UserController {
 
         UserDTO userDTO = (UserDTO) userService.getUserByUserName(principal.getName(), dtotype.FULL);
 
+        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+        userUpdateDTO.setFirstName(userDTO.getFirstName());
+        userUpdateDTO.setLastName(userDTO.getLastName());
+        userUpdateDTO.setEmail(userDTO.getEmail());
+        userUpdateDTO.setBirthDate(userDTO.getBirthDate());
+        userUpdateDTO.setStreet(userDTO.getStreet());
+        userUpdateDTO.setCity(userDTO.getCity());
+        userUpdateDTO.setRegion(userDTO.getRegion());
+        userUpdateDTO.setPostalCode(userDTO.getPostalCode());
+        userUpdateDTO.setCountry(userDTO.getCountry());
+        userUpdateDTO.setLanguage(userDTO.getLanguage());
+        userUpdateDTO.setTimeZone(userDTO.getTimeZone());
+        userUpdateDTO.setPhoneNumber(userDTO.getPhoneNumber());
+        userUpdateDTO.setAge(userDTO.getAge());
+
         model.addAllAttributes(
                 Map.of(
-                        "userUpdateDTO", new UserUpdateDTO(),
+                        "userUpdateDTO", userUpdateDTO,
                         "user", userDTO,
                         "personalDetails", personalDetails,
                         "accountSettings", accountSettings,
@@ -293,6 +388,29 @@ public class UserController {
         return "user/account";
     }
 
+    @PostMapping("/updatePassword")
+    public String updatePassword(
+        Principal principal,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @RequestParam String password,
+        @RequestParam String password2
+    ) {
+        String userName = principal.getName();
+        try {
+            Long userId = null;
+            if (password.equals(password2)) {
+                userId = userService.updatePassword(userName, password);
+            }
+            logoutService.exterminate(userId, request, response);
+            return "redirect:/restricted/?success=User%20Logged%20Out";
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return "user/account_security?error=" + exceptionmessages.getDefault();
+        }
+    }
+    
+
     @PostMapping(value = "/addProfilePicture", consumes = "Application/JSON")
     public ResponseEntity<?> addProfilePicture(
             @Valid @RequestBody ProfilePayloadDTO profilePayloadDTO,
@@ -337,7 +455,7 @@ public class UserController {
             BufferedImage thumbImg = Scalr.resize(img, Scalr.Method.AUTOMATIC, Scalr.Mode.AUTOMATIC, 300,
                     Scalr.OP_ANTIALIAS);
 
-            Path thumbnailsDirectory = Paths.get(System.getProperty("user.dir"), "thumbnails");
+            Path thumbnailsDirectory = Paths.get(System.getProperty("user.dir"), "uploads/thumbnails");
 
             if (!Files.exists(thumbnailsDirectory))
                 Files.createDirectory(thumbnailsDirectory);
@@ -363,32 +481,83 @@ public class UserController {
         }
     }
 
-    @PostMapping("/updateProfilePicture/{userId}")
-    public String updateProfilePicture(@PathVariable("userName") String userName,
-            @RequestParam("file") MultipartFile file) throws IllegalStateException,
-            IOException {
+    @PostMapping(value = "/updateProfilePicture/{userName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String updateProfilePicture(
+            @PathVariable("userName") String userName,
+            @RequestParam("profilePicture") MultipartFile file,
+            Principal principal) throws IOException {
 
-        if (file.isEmpty()) {
-            throw new RuntimeException("File not Found");
-        }
-        Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
+        if (principal == null || principal.getName() == null || !principal.getName().equals(userName)) {
+            return "redirect:/user/dashboard?avatar=forbidden";
         }
 
-        Path destination = uploadDir.resolve(UUID.randomUUID().toString());
-        File saveFile = new File(destination.toString());
-        file.transferTo(saveFile);
-
-        UserDTO userDTOTemp = (UserDTO) userService.getUserByUserName(userName, dtotype.FULL);
-        if (!"/sprites/profile_picture.jpg".equals(userDTOTemp.getProfilePhoto())) {
-            Files.delete(Paths.get(userDTOTemp.getProfilePhoto()));
+        if (file == null || file.isEmpty()) {
+            return "redirect:/user/dashboard?avatar=empty";
         }
 
-        userDTOTemp.setProfilePhoto("/uploads/" + saveFile.getName());
-        //userService.save(userDTOTemp);
+        String contentType = file.getContentType();
+        String ext;
+        String format;
 
-        return "redirect:/user/login";
+        if ("image/jpeg".equalsIgnoreCase(contentType) || "image/jpg".equalsIgnoreCase(contentType)) {
+            ext = contenttypes.JPEG.getContentTypeString();
+            format = "jpg";
+        } else if ("image/png".equalsIgnoreCase(contentType)) {
+            ext = contenttypes.PNG.getContentTypeString();
+            format = "png";
+        } else {
+            return "redirect:/user/dashboard?avatar=unsupported";
+        }
+
+        ProfilePicture profile = profileService.getOrCreateForUser(userName);
+
+        Path root = Paths.get(System.getProperty("user.dir"), "uploads");
+        Path photosDir = root.resolve("profile");
+        Path thumbsDir = root.resolve(Paths.get("profile", "thumbs"));
+        Files.createDirectories(photosDir);
+        Files.createDirectories(thumbsDir);
+
+        deleteLocalDefault(profile.getProfilePhoto(), root);
+        deleteLocalDefault(profile.getThumbnail(), root);
+
+        String fileName = UUID.randomUUID().toString() + ext;
+        Path photoPath = photosDir.resolve(fileName).normalize();
+
+        Files.copy(file.getInputStream(), photoPath, StandardCopyOption.REPLACE_EXISTING);
+
+        BufferedImage img = ImageIO.read(photoPath.toFile());
+        if (img != null) {
+            BufferedImage thumbImg = Scalr.resize(
+                    img,
+                    Scalr.Method.QUALITY,
+                    Scalr.Mode.AUTOMATIC,
+                    300,
+                    Scalr.OP_ANTIALIAS);
+
+            String thumbName = UUID.randomUUID().toString() + contenttypes.PNG.getContentTypeString();
+            Path thumbPath = thumbsDir.resolve(thumbName).normalize();
+            ImageIO.write(thumbImg, "png", thumbPath.toFile());
+
+            profile.setThumbnail("/uploads/profile/thumbs/" + thumbName);
+        } else {
+            profile.setThumbnail(profile.getThumbnail());
+        }
+
+        profile.setProfilePhoto("/uploads/profile/" + fileName);
+        profileService.saveProfilePicture(profile);
+
+        return "redirect:/user/dashboard?avatar=updated";
+    }
+
+    private void deleteLocalDefault(String urlPath, Path uploadsRoot) {
+        if (urlPath == null || urlPath.isBlank()) return;
+        if (!urlPath.startsWith("/uploads/")) return;
+        try {
+            Path p = uploadsRoot.resolve(urlPath.substring(1).replaceFirst("^uploads/", "")).normalize();
+            
+            if (!p.toAbsolutePath().startsWith(uploadsRoot.toAbsolutePath())) return;
+            Files.deleteIfExists(p);
+        } catch (Exception e) {}
     }
 
 }

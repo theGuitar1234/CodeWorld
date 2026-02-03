@@ -1,58 +1,16 @@
 <div th:fragment="latest-activity" style="display: contents;">
-  <div class="title">
+  <div class="title header">
     <h3>Latest Activity</h3>
   </div>
-  <div class="wrapper">
-    <ul>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
-      </li>
-      <li>
-        <div class="title">Title</div>
-        <small>description</small>
-        <a href="#">More...</a>
+  <div class="wrapper latest-activity">
+     <ul th:if="${latestActivities.size() == 0}">
+      <li>No New Activities so far...</li>
+    </ul>
+    <ul th:if="${latestActivities.size() > 0}">
+      <li th:each="activity : ${latestActivities}" th:style="'--accent-color:' + ${activity.activityColor}">
+        <div class="title" th:text="${activity.title}">Title</div>
+        <p th:text="${activity.description}">description</p>
+        <small th:text="${activity.ocurredAt}">xx-xx-xxxx</small>
       </li>
     </ul>
   </div>

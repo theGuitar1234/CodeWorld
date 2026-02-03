@@ -1,19 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}"
 >
   <head>
-    <title>Dashboard</title>
+    <th:block
+      th:replace="fragments/head.html :: head(#{dashboard.title}, '/js/main.js')"
+    ></th:block>
   </head>
-
-  <div th:replace="~{fragments/head.html :: head}"></div>
 
   <body class="layout dashboard">
     <div id="top-anchor"></div>
 
-    <div th:replace="~{fragments/header.html :: header}"></div>
+    <div th:replace="~{fragments/error/error.html :: error}"></div>
+    <div th:replace="admin/fragments/success/success.html :: success"></div>
+
+    <div th:replace="~{fragments/header.html :: header('DASHBOARD')}"></div>
 
     <main>
       <div class="wrapper">
@@ -25,9 +28,9 @@
         ></div>
         <div th:replace="~{fragments/payment.html :: payment}"></div>
 
-        <div id="pagination-filter-container" style="display: contents">
+        <div pagination-filter-root style="display: contents">
           <div
-            th:replace="~{fragments/transaction-pagination.html :: profile-completeness}"
+            th:replace="~{fragments/profile-completeness.html :: profile-completeness}"
           ></div>
           <div
             th:replace="~{fragments/transaction-pagination.html :: transactions-filter}"
@@ -36,7 +39,7 @@
 
         <div class="activity">
           <div class="title">
-            <h1>Recent Activity</h1>
+            <h1 th:text="#{dashboard.recentActivity.title}">Recent Activity</h1>
           </div>
           <div class="panel">
             <dialog
@@ -45,10 +48,10 @@
             <table>
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th class="description">Description</th>
-                  <th>Status</th>
-                  <th>Amount</th>
+                  <th th:text="#{dashboard.table.date}">Date</th>
+                  <th class="description" th:text="#{dashboard.table.description}">Description</th>
+                  <th th:text="#{dashboard.table.status}">Status</th>
+                  <th th:text="#{dashboard.table.amount}">Amount</th>
                 </tr>
               </thead>
               <tbody
@@ -56,10 +59,8 @@
               ></tbody>
             </table>
           </div>
-          <div id="pagination-container">
-            <div
-              th:replace="~{fragments/transaction-pagination.html :: view-all}"
-            ></div>
+          <div pagination-link-root>
+            <div th:replace="~{fragments/view-all.html :: view-all}"></div>
             <nav
               th:replace="~{fragments/transaction-pagination.html :: pagination}"
             ></nav>

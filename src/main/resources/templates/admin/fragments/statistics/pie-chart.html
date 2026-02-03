@@ -1,34 +1,44 @@
 <div th:fragment="pie-chart" style="display: contents;">
   <div class="title">
-    <h3>Title</h3>
+    <h3>User Health</h3>
   </div>
   <div
     class="pie-chart"
-    title="Title"
-    element1="Element1"
-    element2="Element2"
-    element3="Element3"
-    element4="Element4"
-    element5="Element5"
-    style="
-      --quantity: 5;
+    title="User Health"
+    element1="newThisMonth"
+    element2="activeUsers"
+    element3="bannedUsers"
+    element4="inActiveUsers"
+    th:style="|
+      --quantity: 4;
 
-      --start-angle: 90deg;
+      --start-angle: 135deg;
 
-      --element1: 20%;
-      --element2: 50%;
-      --element3: 10%;
-      --element4: 10%;
-      --element5: 10%;
+      --element1: ${newThisMonthPercentage}%;
+      --element2: ${activeUsersPercentage}%;
+      --element3: ${bannedUsersPercentage}%;
+      --element4: ${inActiveUsersPercentage}%;
 
-      --element1-color: orange;
-      --element2-color: yellow;
+      --element1-color: black;
+      --element2-color: orange;
       --element3-color: blue;
       --element4-color: green;
-      --element5-color: black;
-    "
+    |"     
   ></div>
   <div class="diff">
-    <h3>Teachers Students</h3>
+    <ul style="list-style-type: none;">
+      <li style="--accent-color: black;">
+        Active Users : <span th:text="${newThisMonth}"></span> 
+      </li>
+      <li style="--accent-color: orange;">
+        InActive Users : <span th:text="${activeUsers}"></span>
+      </li>
+      <li style="--accent-color: blue;">
+        Banned Users : <span th:text="${bannedUsers}"></span>
+      </li>
+      <li style="--accent-color: green;">
+        New This Month : <span th:text="${inActiveUsers}"></span> 
+      </li>
+    </ul>
   </div>
 </div>

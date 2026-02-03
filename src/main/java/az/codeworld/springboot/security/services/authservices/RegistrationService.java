@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
-import az.codeworld.springboot.security.dtos.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 
 public interface RegistrationService {
 

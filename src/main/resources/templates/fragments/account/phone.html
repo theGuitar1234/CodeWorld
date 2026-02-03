@@ -1,12 +1,12 @@
 <div th:fragment="phone" style="display: contents">
-  <div 
+  <div
     th:if="${phone == 'DISPLAY'}"
     class="personal-details phone"
     fragment="phone"
   >
     <div class="title">
-      <h3>Phone</h3>
-      <a class="edit" href="/user/account" section="phone">
+      <h3 th:text="#{account.phone.title}">Phone</h3>
+      <a class="edit" href="/user/account" section="phone" th:text="#{common.edit}">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -26,6 +26,7 @@
         <span
           data-attr="Phone : "
           class="tel primary"
+          th:attr="data-attr=#{account.phone.label}"
           th:text="${user.phoneNumber}"
           >+1-555-123-4567</span
         >
@@ -34,28 +35,29 @@
       </address>
     </div>
   </div>
-  <form 
+  <form
     th:if="${phone == 'EDIT'}"
     class="personal-details phone"
     action="/user/updateUser"
-    th:object="${user}"
+    th:object="${userUpdateDTO}"
     fragment="phone"
+    fragmentForm
   >
     <div class="title">
-      <h3>Phone</h3>
-      <button type="submit">Submit</button>
+      <h3 th:text="#{account.phone.title}">Phone</h3>
+      <button class="edit" type="submit" th:text="#{common.submit}">Submit</button>
+      <!-- <button type="button">Cancel</button> -->
     </div>
     <div class="panel">
-      <input class="vcard">
-        <input
+      <address class="vcard">
+        <!--class=primary-->
+        <span
           data-attr="Phone : "
-          class="tel primary"
-          th:text="${user.phoneNumber}"
+          class="tel"
+          th:attr="data-attr=#{account.phone.label}"
         >
-          +1-555-123-4567 
-        </input>
-        <!-- <br />
-                <span data-attr="Phone : " class="tel">+1-555-123-4567</span> -->
+          <input type="tel" th:field="*{phoneNumber}" autocomplete="tel" th:placeholder="${user.phoneNumber}" />
+        </span>
       </address>
     </div>
   </form>

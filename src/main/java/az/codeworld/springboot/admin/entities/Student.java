@@ -9,7 +9,9 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.web.entities.CourseEnrollment;
 import az.codeworld.springboot.web.entities.Enrollment;
+import az.codeworld.springboot.web.entities.SubjectEnrollment;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -47,11 +49,17 @@ public class Student extends User {
     private String major;
 
     @Column
-    private LocalDate enrollmentDate;
-
-    @Column
     private double gpa;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<SubjectEnrollment> subjectEnrollments = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseEnrollment> courseEnrollments = new ArrayList<>();
 }

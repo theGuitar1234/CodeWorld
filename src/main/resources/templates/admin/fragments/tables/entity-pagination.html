@@ -1,0 +1,555 @@
+<div th:fragment="entity-pagination">
+  <table style="border-collapse: collapse">
+    <tbody th:fragment="tableBody(dataObj)">
+      <tr th:each="entity : ${dataObj}">
+        <td>
+          <p th:text="${entity.id}"></p>
+        </td>
+        <td class="description">
+          <h2 th:text="${entity.firstName + ' ' + entity.lastName}"></h2>
+        </td>
+        <td>
+          <p th:text="${entity.email}"></p>
+        </td>
+        <td>
+          <p th:text="${entity.affiliatedSince}">xx-xx-xxxx</p>
+        </td>
+        <td>
+          <button
+            class="delete-user"
+            commonDialog
+            dialog="deleteUser"
+            style="background-color: transparent"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+              />
+            </svg>
+          </button>
+          <dialog deleteUser>
+            <div class="wrapper">
+              <h2>Are You Sure You Want To Delete The User?</h2>
+              <form
+                th:action="@{/admin/deleteUser/{id}(id=${entity.id})}"
+                method="POST"
+                data-spa-form
+              >
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+                <input type="hidden" th:value="${spa}" name="spa" />
+                <input type="hidden" th:value="${entity.role}" name="role" />
+
+                <button
+                  type="submit"
+                  style="background-color: red; border-radius: 10px"
+                >
+                  Delete User
+                </button>
+                <button type="button" style="border-radius: 10px" clsBttn>
+                  Cancel
+                </button>
+              </form>
+            </div>
+            <button class="close-button" clsBttn>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e8eaed"
+              >
+                <path
+                  d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+                />
+              </svg>
+            </button>
+          </dialog>
+        </td>
+        <td>
+          <form
+            th:action="@{/admin/banUnbanUser/{id}(id=${entity.id})}"
+            method="post"
+            data-spa-form
+          >
+            <input
+              type="hidden"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+            <input type="hidden" name="spa" th:value="${spa}" />
+            <input type="hidden" th:value="${entity.role}" name="role" />
+            <button
+              type="submit"
+              th:text="${entity.isBanned ? 'unBan' : 'ban'}"
+              th:class="${entity.isBanned ? 'unBan' : 'ban'}"
+            ></button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody th:fragment="payableTableBody(dataObj)">
+      <tr th:each="entity : ${dataObj}">
+        <td>
+          <p th:text="${entity.id}"></p>
+        </td>
+        <td class="description">
+          <h2 th:text="${entity.firstName + ' ' + entity.lastName}"></h2>
+        </td>
+        <td>
+          <b
+            th:text="${entity.payment.getAmount() + entity.payment.getCurrency().getCurrencySign()}"
+          ></b>
+        </td>
+        <td>
+          <b th:text="${entity.nextDate}"></b>
+        </td>
+        <td>
+          <button
+            commonDialog
+            dialog="pay"
+            th:if="${spa == 'TEACHERS'}"
+            style="color: black; border-radius: 10px"
+          >
+            Pay
+          </button>
+          <dialog pay th:if="${spa == 'TEACHERS'}">
+            <div class="wrapper">
+              <form
+                class="transaction-details"
+                th:action="@{/admin/recordTransaction}"
+                method="POST"
+                th:object="${transaction}"
+                data-spa-form=""
+              >
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" name="teacherId" th:value="${entity.id}" />
+                <input type="hidden" th:value="${spa}" name="spa" />
+                <input type="hidden" th:value="${entity.role}" name="role" />
+
+                <div class="header">
+                  <h1 class="title">Transaction Details</h1>
+                </div>
+
+                <div class="amount-details">
+                  <div class="data">
+                    <label for="amount"
+                      ><small>Transaction Amount :</small></label
+                    >
+                    <input
+                      required
+                      placeholder="0.00$"
+                      autocomplete="transaction-amount"
+                      type="number"
+                      id="amount"
+                      name="transactionAmount"
+                      th:value="${entity.payment.getAmount()}"
+                      readonly
+                    />
+                  </div>
+                  <div class="data">
+                    <label for="fee"><small>Transaction Fee :</small></label>
+                    <input
+                      required
+                      placeholder="0.00$"
+                      autocomplete="transaction-amount"
+                      type="number"
+                      id="fee"
+                      name="transactionFee"
+                    />
+                  </div>
+                </div>
+
+                <!-- <div class="transfer-details">
+                  <label for="total-amount"
+                    ><small>Total Amount :</small></label
+                  >
+                  <input
+                    required
+                    placeholder="000.00$"
+                    autocomplete="transaction-amount"
+                    type="number"
+                    id="total-amount"
+                    name="transactionTotal"
+                    th:field="*{transactionTotal}"
+                  />
+                </div> -->
+
+                <div class="others">
+                  <div class="paid-by">
+                    <label for="paid-by"><small>Paid By :</small></label>
+                    <input type="text" id="paid-by" name="paidBy" />
+                  </div>
+
+                  <div class="description">
+                    <label for="description"
+                      ><small>Description : </small></label
+                    >
+                    <input
+                      type="text"
+                      id="description"
+                      name="transactionDescription"
+                    />
+                  </div>
+
+                  <div class="data">
+                    <label for="currency"><small>Currency : </small></label>
+                    <select name="currency" id="currency">
+                      <option value="USD">USD</option>
+                      <option value="AZN">AZN</option>
+                      <option value="TRY">TRY</option>
+                      <option value="EURO">EURO</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit">Submit</button>
+              </form>
+              <button class="close-button" clsBttn>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path
+                    d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </dialog>
+          <button
+            commonDialog
+            dialog="contact"
+            th:if="${spa == 'STUDENTS'}"
+            style="color: black; border-radius: 10px"
+          >
+            Contact for Payment
+          </button>
+          <dialog contact th:if="${spa == 'STUDENTS'}">
+            <div class="wrapper">
+              Contact your beloved lazy student via :
+              <ul class="contacts-list">
+                <li style="--accent-color: red">
+                  <!--Sends POST via JS-->
+                  <a
+                    th:href="@{'/admin/notifyStudent/' + ${entity.id}}"
+                    title="Email"
+                    contactLink
+                  >
+                    Email :
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e3e3e3"
+                    >
+                      <path
+                        d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
+                      />
+                    </svg>
+                  </a>
+                </li>
+                <li class="contactAdminPhone" style="--accent-color: blue">
+                  <a
+                    th:href="@{'tel:' + ${entity.phoneNumber}}"
+                    title="Phone"
+                    contactPhone
+                  >
+                    Phone :
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e3e3e3"
+                    >
+                      <path
+                        d="M162-120q-18 0-30-12t-12-30v-162q0-13 9-23.5t23-14.5l138-28q14-2 28.5 2.5T342-374l94 94q38-22 72-48.5t65-57.5q33-32 60.5-66.5T681-524l-97-98q-8-8-11-19t-1-27l26-140q2-13 13-22.5t25-9.5h162q18 0 30 12t12 30q0 125-54.5 247T631-329Q531-229 409-174.5T162-120Zm556-480q17-39 26-79t14-81h-88l-18 94 66 66ZM360-244l-66-66-94 20v88q41-3 81-14t79-28Zm358-356ZM360-244Z"
+                      />
+                    </svg>
+                  </a>
+                  <div>
+                    <button id="copy" type="button">Copy</button>
+                    <!-- <span id="copy-status" role="status" aria-live="polite"></span> -->
+                  </div>
+                </li>
+                <!-- <li style="--accent-color: green">
+                  <a href="#" title="Whatsapp">
+                    Whatsapp :
+                    <svg
+                      fill="#e3e3e3"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 32 32"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M26.576 5.363c-2.69-2.69-6.406-4.354-10.511-4.354-8.209 0-14.865 6.655-14.865 14.865 0 2.732 0.737 5.291 2.022 7.491l-0.038-0.070-2.109 7.702 7.879-2.067c2.051 1.139 4.498 1.809 7.102 1.809h0.006c8.209-0.003 14.862-6.659 14.862-14.868 0-4.103-1.662-7.817-4.349-10.507l0 0zM16.062 28.228h-0.005c-0 0-0.001 0-0.001 0-2.319 0-4.489-0.64-6.342-1.753l0.056 0.031-0.451-0.267-4.675 1.227 1.247-4.559-0.294-0.467c-1.185-1.862-1.889-4.131-1.889-6.565 0-6.822 5.531-12.353 12.353-12.353s12.353 5.531 12.353 12.353c0 6.822-5.53 12.353-12.353 12.353h-0zM22.838 18.977c-0.371-0.186-2.197-1.083-2.537-1.208-0.341-0.124-0.589-0.185-0.837 0.187-0.246 0.371-0.958 1.207-1.175 1.455-0.216 0.249-0.434 0.279-0.805 0.094-1.15-0.466-2.138-1.087-2.997-1.852l0.010 0.009c-0.799-0.74-1.484-1.587-2.037-2.521l-0.028-0.052c-0.216-0.371-0.023-0.572 0.162-0.757 0.167-0.166 0.372-0.434 0.557-0.65 0.146-0.179 0.271-0.384 0.366-0.604l0.006-0.017c0.043-0.087 0.068-0.188 0.068-0.296 0-0.131-0.037-0.253-0.101-0.357l0.002 0.003c-0.094-0.186-0.836-2.014-1.145-2.758-0.302-0.724-0.609-0.625-0.836-0.637-0.216-0.010-0.464-0.012-0.712-0.012-0.395 0.010-0.746 0.188-0.988 0.463l-0.001 0.002c-0.802 0.761-1.3 1.834-1.3 3.023 0 0.026 0 0.053 0.001 0.079l-0-0.004c0.131 1.467 0.681 2.784 1.527 3.857l-0.012-0.015c1.604 2.379 3.742 4.282 6.251 5.564l0.094 0.043c0.548 0.248 1.25 0.513 1.968 0.74l0.149 0.041c0.442 0.14 0.951 0.221 1.479 0.221 0.303 0 0.601-0.027 0.889-0.078l-0.031 0.004c1.069-0.223 1.956-0.868 2.497-1.749l0.009-0.017c0.165-0.366 0.261-0.793 0.261-1.242 0-0.185-0.016-0.366-0.047-0.542l0.003 0.019c-0.092-0.155-0.34-0.247-0.712-0.434z"
+                      ></path>
+                    </svg>
+                  </a>
+                </li> -->
+              </ul>
+              <button class="close-button" clsBttn>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path
+                    d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </dialog>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody th:fragment="subjectTableBody(dataObj)">
+      <tr th:if="${dataObj.isEmpty()}">
+        <td>There are no subjects...</td>
+      </tr>
+      <tr th:each="entity : ${dataObj}">
+        <td>
+          <p th:text="${entity.id}"></p>
+        </td>
+        <td>
+          <h2 th:text="${entity.subjectTitle}"></h2>
+        </td>
+        <td class="description">
+          <h2 th:text="${entity.subjectDescription}"></h2>
+        </td>
+        <td>
+          <button
+            class="delete-user"
+            commonDialog
+            dialog="deleteSubject"
+            style="background-color: transparent"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+              />
+            </svg>
+          </button>
+          <dialog deleteSubject>
+            <div class="wrapper">
+              <h2>Are You Sure You Want To Delete The Subject?</h2>
+              <form
+                th:action="@{/admin/deleteSubject/{id}(id=${entity.id})}"
+                method="post"
+                data-spa-form
+              >
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+                <button
+                  type="submit"
+                  style="background-color: red; border-radius: 10px"
+                >
+                  Delete Subject
+                </button>
+                <button type="button" style="border-radius: 10px" clsBttn>
+                  Cancel
+                </button>
+              </form>
+            </div>
+            <button class="close-button" clsBttn>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e8eaed"
+              >
+                <path
+                  d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+                />
+              </svg>
+            </button>
+          </dialog>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody th:fragment="courseOfferingTableBody(dataObj)" dataCourseOffering>
+      <tr th:each="entity : ${dataObj}">
+        <td>
+          <p th:text="${entity.id}"></p>
+        </td>
+        <td class="description">
+          <h2 th:text="${entity.firstName + ' ' + entity.lastName}"></h2>
+        </td>
+        <td>
+          <p th:text="${entity.email}"></p>
+        </td>
+        <td>
+          <p th:text="${entity.affiliatedSince}">xx-xx-xxxx</p>
+        </td>
+        <td>
+          <input
+            class="js-student"
+            type="checkbox"
+            th:name="'student[' + ${entity.id} + ']'"
+            th:value="${entity.id}"
+            th:attr="data-id=${entity.id}"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody th:fragment="courseEnrollmentTableBody(dataObj)" dataCourseOffering>
+      <tr th:each="entity : ${dataObj}">
+        <td>
+          <p th:text="${entity.id}"></p>
+        </td>
+        <td class="description">
+          <h2 th:text="${entity.firstName + ' ' + entity.lastName}"></h2>
+        </td>
+        <td>
+          <p th:text="${entity.email}"></p>
+        </td>
+        <td>
+          <p th:text="${entity.affiliatedSince}">xx-xx-xxxx</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- id="pagination" -->
+  <nav
+    th:fragment="pagination(basePath, entitiesOnPage, pages, pageIndex)"
+    class="pagination"
+    th:if="${entitiesOnPage.totalPages > 1}"
+  >
+    <ul>
+      <!-- class="disabled" -->
+      <li>
+        <a
+          data-spa
+          tabindex="-1"
+          th:if="${entitiesOnPage.hasPrevious()}"
+          th:href="@{${basePath}(__${pageIndex}__=${entitiesOnPage.number})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
+          </svg>
+        </a>
+      </li>
+      <li th:each="page : ${pages}" th:class="${page.isActive}">
+        <a
+          data-spa
+          th:href="@{${basePath}(perPage=${page.perPage}, ${pageIndex}=${page.pageIndex}, direction=${page.direction})}"
+          th:text="${page.pageIndex}"
+          class="js-page"
+        ></a>
+      </li>
+      <li>
+        <a
+          data-spa
+          th:if="${entitiesOnPage.hasNext()}"
+          th:href="@{${basePath}(__${pageIndex}__=${entitiesOnPage.number+2})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <nav
+    th:fragment="courseOfferingPagination(basePath, entitiesOnPage, pages, pageIndex)"
+    class="pagination"
+    th:if="${entitiesOnPage.totalPages > 1}"
+  >
+    <ul>
+      <!-- class="disabled" -->
+      <li>
+        <a
+          tabindex="-1"
+          th:if="${entitiesOnPage.hasPrevious()}"
+          th:href="@{${basePath}(__${pageIndex}__=${entitiesOnPage.number})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
+          </svg>
+        </a>
+      </li>
+      <li th:each="page : ${pages}" th:class="${page.isActive}">
+        <a
+          th:href="@{${basePath}(perPage=${page.perPage}, ${pageIndex}=${page.pageIndex}, direction=${page.direction})}"
+          th:text="${page.pageIndex}"
+          class="js-page"
+        ></a>
+      </li>
+      <li>
+        <a
+          th:if="${entitiesOnPage.hasNext()}"
+          th:href="@{${basePath}(__${pageIndex}__=${entitiesOnPage.number+2})}"
+          class="js-page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

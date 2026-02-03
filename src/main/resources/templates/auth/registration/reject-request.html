@@ -42,16 +42,16 @@
           >
             <tr>
               <td class="p-24" style="padding: 24px">
-                <h2 style="margin: 12px 0 12px 0; color: red">
+                <h2 style="margin: 12px 0 12px 0; color: red" th:text="#{email.requestRejected.title}">
                   Your request has been Rejected :(
                 </h2>
 
-                <p style="margin: 0 0 16px 0; color: #000000">
+                <p style="margin: 0 0 16px 0; color: #000000" th:utext="#{email.requestRejected.message(${name})}">
                   Hi <b th:text="${name}">Name</b>... Sorry about that! You can
                   try again!
                 </p>
 
-                <p style="margin: 16px 0 0 0; color: #666; font-size: 12px">
+                <p style="margin: 16px 0 0 0; color: #666; font-size: 12px" th:text="#{email.common.ignore}">
                   If you didn't request this, ignore this email.
                 </p>
 
@@ -67,14 +67,16 @@
                     text-align: center;
                     color: #000000;
                   "
+                  th:attr="href=#{brand.homeLink}"
                 >
                   <img
                     alt="Code World"
                     width="120"
                     src="cid:logo"
                     style="display: block; margin: auto"
+                    th:attr="alt=#{brand.alt}"
                   />
-                  Code World
+                  <span th:text="#{brand.name}">Code World</span>
                 </a>
               </td>
             </tr>
@@ -99,22 +101,22 @@
                 class="p-24"
                 style="padding: 24px; margin: 50px;"
               >
-                <p style="margin: 0 0 16px 0; color: #ffffff">
+                <p style="margin: 0 0 16px 0; color: #ffffff" th:text="#{email.footer.companyLine}">
                   Code World Inc | Absheron | 2025 | Baku
                 </p>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.facebook}">
                   FaceBook
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.twitter}">
                   Twitter
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.linkedin}">
                   LinkedIn
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.youtube}">
                   Youtube
                 </a>
-                <a href="#" style="color: #ffffff; text-decoration: none">
+                <a href="#" style="color: #ffffff; text-decoration: none" th:text="#{social.instagram}">
                   Instagram
                 </a>
                 <br />
@@ -126,6 +128,8 @@
                     color: #ffffff;
                     text-decoration: none;
                   "
+                  th:text="#{email.footer.privacyPolicy}"
+                  th:attr="href=#{email.footer.privacyLink}"
                 >
                   Privacy Policy
                 </a>
