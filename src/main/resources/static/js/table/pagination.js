@@ -17,18 +17,19 @@ function cacheElements() {
 
 async function handleFragment(fetchUrl, { push = true } = {}) {
   try {
-    const res = await fetch(fetchUrl, { credentials: "same-origin" });
-
-    if (!res.ok) return;
-
-    const html = await res.text();
-
+    
     const loading = document.createElement("div");
     loading.classList.add("loading");
     loading.textContent = 'loading';
     document.body.appendChild(loading);
 
     await new Promise(r => setTimeout(r, 10000));
+
+    const res = await fetch(fetchUrl, { credentials: "same-origin" });
+
+    if (!res.ok) return;
+
+    const html = await res.text();
 
     console.log(html);
 

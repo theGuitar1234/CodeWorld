@@ -10,6 +10,13 @@ async function navigate(url, { push = true } = {}) {
   const fetchUrl = new URL(mergedUrl);
   fetchUrl.searchParams.set("fragment", "true");
 
+  const loading = document.createElement("div");
+  loading.classList.add("loading");
+  loading.textContent = 'loading';
+  document.body.appendChild(loading);
+
+  await new Promise(r => setTimeout(r, 1000));
+
   const res = await fetch(fetchUrl, { credentials: "same-origin" });
   if (!res.ok) return;
 
@@ -22,6 +29,8 @@ async function navigate(url, { push = true } = {}) {
 
   spaRoot.replaceWith(incomingRoot);
   spaRoot = incomingRoot;
+
+  document.body.removeChild(loading);
 
   mergedUrl.searchParams.delete("fragment");
 
@@ -69,6 +78,13 @@ async function handleFragmentForm(e) {
   const token = document.querySelector('meta[name="_csrf"]').content;
   const header = document.querySelector('meta[name="_csrf_header"]').content;
 
+  const loading = document.createElement("div");
+  loading.classList.add("loading");
+  loading.textContent = 'loading';
+  document.body.appendChild(loading);
+
+  await new Promise(r => setTimeout(r, 10000));
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -89,6 +105,8 @@ async function handleFragmentForm(e) {
 
   spaRoot.replaceWith(incomingRoot);
   spaRoot = incomingRoot;
+
+  document.body.removeChild(loading);
 
   document.dispatchEvent(new CustomEvent("spa:navigated", { detail: { url } }));
 }
