@@ -147,6 +147,8 @@ public class AccountController {
                         "accountSettings", accountSettings,
                         "emailAddresses", emailAddresses,
                         "phone", phone));
+        
+        model.addAttribute("timeZones", timeZoneService.getTimeZones());
 
         if (fragment)
             switch (section) {

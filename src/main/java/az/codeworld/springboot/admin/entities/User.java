@@ -165,6 +165,9 @@ public class User extends AuditedEntity {
     @Column
     private String zoneId;
 
+    // @Column
+    // private String countryId;
+
     // @Column(nullable = true)
     // @Pattern(regexp = "^\\d{4}\\d{4}\\d{4}\\d{4}")
     // private String cardNumber;
@@ -223,7 +226,7 @@ public class User extends AuditedEntity {
     }
 
     public String getTimeZone() {
-        String zone = this.zoneId.split(" ")[1];
+        String zone = this.zoneId.substring(this.zoneId.lastIndexOf(' ') + 1);
         ZoneId zoneId = ZoneId.of(zone == null ? ZONE : zone);
         ZoneOffset zoneOffset = zoneId.getRules().getOffset(Instant.now());
 
