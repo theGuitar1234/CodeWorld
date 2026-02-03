@@ -64,7 +64,7 @@ import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
-
+import az.codeworld.springboot.utilities.WriteLog;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.contenttypes;
 import az.codeworld.springboot.utilities.constants.dtotype;
@@ -76,6 +76,7 @@ import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.web.dtos.ProfilePayloadDTO;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.services.ProfileService;
+import az.codeworld.springboot.web.services.TimeZoneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -98,6 +99,7 @@ public class UserController {
 
     private final UserService userService;
     private final ProfileService profileService;
+    private final TimeZoneService timeZoneService;
 
     private Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -110,14 +112,14 @@ public class UserController {
     private final ApplicationProperties applicationProperties;
 
     public UserController(
-        TransactionService transactionService,
-        RequestService requestService,
-        LogoutService logoutService,
-        RegistrationService registrationService,
-        UserService userService,
-        ProfileService profileService,
-        ApplicationProperties applicationProperties
-    ) {
+            TransactionService transactionService,
+            RequestService requestService,
+            LogoutService logoutService,
+            RegistrationService registrationService,
+            UserService userService,
+            ProfileService profileService,
+            ApplicationProperties applicationProperties,
+            TimeZoneService timeZoneService) {
         this.transactionService = transactionService;
         this.requestService = requestService;
         this.logoutService = logoutService;
@@ -125,6 +127,7 @@ public class UserController {
         this.userService = userService;
         this.profileService = profileService;
         this.applicationProperties = applicationProperties;
+        this.timeZoneService = timeZoneService;
     }
 
     @GetMapping("/login")
@@ -135,10 +138,9 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(Principal principal, HttpServletRequest request, HttpServletResponse response) {
         logoutService.exterminate(
-            (userService.getUserProjectionByUserName(principal.getName(), UserLogoutProjection.class)).getId(), 
-            request, 
-            response
-        );
+                (userService.getUserProjectionByUserName(principal.getName(), UserLogoutProjection.class)).getId(),
+                request,
+                response);
         return "redirect:/restricted/";
     }
 
@@ -187,16 +189,14 @@ public class UserController {
 
         UserDashboardDTO userDashboardDTO = (UserDashboardDTO) userService.getUserByUserName(principal.getName(),
                 dtotype.DASHBOARD);
-        
+
         model.addAllAttributes(
-            Map.of(
-            //"user", userDashboardDTO,
-            "transactions", transactionService.getRecentTransactions(userDashboardDTO.getId()),
-            "transactionsOnPage", Page.empty(),
-            "pages", Page.empty(),
-            "mode", "PREVIEW"
-            )
-        );
+                Map.of(
+                        // "user", userDashboardDTO,
+                        "transactions", transactionService.getRecentTransactions(userDashboardDTO.getId()),
+                        "transactionsOnPage", Page.empty(),
+                        "pages", Page.empty(),
+                        "mode", "PREVIEW"));
         return "dashboard/dashboard.html";
     }
 
@@ -222,14 +222,14 @@ public class UserController {
                 .getPaginatedTransactions(
                         Optional.ofNullable(startDate).orElseGet(() -> LocalDate.ofEpochDay(0))
                                 .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
-                        Optional.ofNullable(endDate).orElseGet(() -> LocalDate.now().plusDays(1))
+                        Optional.ofNullable(endDate).orElseGet(() -> LocalDate.now())
+                                .plusDays(1)
                                 .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant(),
                         userDashboardDTO.getId(),
                         pageIndex - 1,
                         perPage,
                         sortBy,
-                        direction
-                    );
+                        direction);
 
         TransactionLinkRecord linkRecord;
         List<TransactionLinkRecord> pages = new ArrayList<>();
@@ -242,20 +242,28 @@ public class UserController {
             pages.add(linkRecord);
         }
 
-        model.addAllAttributes(
-                Map.of(
-                        //"user", userDashboardDTO,
-                        "transactions", transactionsOnPage.getContent(),
-                        "transactionsOnPage", transactionsOnPage,
-                        "mode", "VIEW_ALL",
-                        "pages", pages));
-        
-        model.addAllAttributes(
-            Map.of(
-                "sortBy", sortBy,
-                "direction", direction.name()
-            )
-        );
+        model.addAttribute("transactions", transactionsOnPage.getContent());
+        model.addAttribute("transactionsOnPage", transactionsOnPage);
+        model.addAttribute("pages", pages);
+
+        model.addAttribute("perPage", perPage);
+        model.addAttribute("pageIndex", pageIndex);
+        model.addAttribute("role", role);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("direction", direction.name());
+        model.addAttribute("startDate", startDate); 
+        model.addAttribute("endDate", endDate);
+
+        model.addAttribute("mode", "VIEW_ALL");
+
+        WriteLog.main("pageIndex=" + pageIndex
+            + " perPage=" + perPage
+            + " returned=" + transactionsOnPage.getNumberOfElements()
+            + " totalElements=" + transactionsOnPage.getTotalElements()
+            + " totalPages=" + transactionsOnPage.getTotalPages()
+            + " userId=" + userDashboardDTO.getId()
+            + " start=" + startDate
+            + " endExclusive=" + endDate, UserController.class);
 
         if (report)
             return transactionsOnPage.get().toString();
@@ -333,6 +341,8 @@ public class UserController {
                         "emailAddresses", emailAddresses,
                         "phone", phone));
 
+        model.addAttribute("timeZones", timeZoneService.getTimeZones());
+
         if (fragment)
             switch (section) {
                 case "personalDetails":
@@ -390,12 +400,11 @@ public class UserController {
 
     @PostMapping("/updatePassword")
     public String updatePassword(
-        Principal principal,
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestParam String password,
-        @RequestParam String password2
-    ) {
+            Principal principal,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam String password,
+            @RequestParam String password2) {
         String userName = principal.getName();
         try {
             Long userId = null;
@@ -409,7 +418,6 @@ public class UserController {
             return "user/account_security?error=" + exceptionmessages.getDefault();
         }
     }
-    
 
     @PostMapping(value = "/addProfilePicture", consumes = "Application/JSON")
     public ResponseEntity<?> addProfilePicture(
@@ -472,7 +480,7 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(profilePayloadDTO);
-                    
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity
@@ -550,14 +558,18 @@ public class UserController {
     }
 
     private void deleteLocalDefault(String urlPath, Path uploadsRoot) {
-        if (urlPath == null || urlPath.isBlank()) return;
-        if (!urlPath.startsWith("/uploads/")) return;
+        if (urlPath == null || urlPath.isBlank())
+            return;
+        if (!urlPath.startsWith("/uploads/"))
+            return;
         try {
             Path p = uploadsRoot.resolve(urlPath.substring(1).replaceFirst("^uploads/", "")).normalize();
-            
-            if (!p.toAbsolutePath().startsWith(uploadsRoot.toAbsolutePath())) return;
+
+            if (!p.toAbsolutePath().startsWith(uploadsRoot.toAbsolutePath()))
+                return;
             Files.deleteIfExists(p);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
 }

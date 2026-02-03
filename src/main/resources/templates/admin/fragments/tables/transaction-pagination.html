@@ -1,6 +1,9 @@
 <div th:fragment="transaction-pagination">
   <table>
     <tbody th:fragment="tableBody(dataObj)">
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="4" th:text="#{transactions.none}">No transactions found.</td>
+      </tr>
       <tr
         th:each="entityTransaction : ${dataObj}"
         th:data-amount="${entityTransaction.transactionAmount}"

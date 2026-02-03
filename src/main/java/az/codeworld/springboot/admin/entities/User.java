@@ -172,6 +172,7 @@ public class User extends AuditedEntity {
     // @Column(nullable = true)
     // private String bankAccount;
 
+    @NotNull
     @Column
     private Instant nextDate;
 
@@ -222,19 +223,20 @@ public class User extends AuditedEntity {
     }
 
     public String getTimeZone() {
-        ZoneId zone = ZoneId.of(this.zoneId == null ? ZONE : this.zoneId);
-        ZoneOffset zoneOffset = zone.getRules().getOffset(Instant.now());
+        String zone = this.zoneId.split(" ")[1];
+        ZoneId zoneId = ZoneId.of(zone == null ? ZONE : zone);
+        ZoneOffset zoneOffset = zoneId.getRules().getOffset(Instant.now());
 
-        String city = zone.getId().contains("/")
-                ? zone.getId().substring(zone.getId().lastIndexOf('/') + 1).replace('_', ' ')
-                : zone.getId();
+        // String city = zoneId.getId().contains("/")
+        //         ? zoneId.getId().substring(zoneId.getId().lastIndexOf('/') + 1).replace('_', ' ')
+        //         : zoneId.getId();
 
         boolean isUtc = zoneOffset.equals(ZoneOffset.UTC);
 
         String prefix = isUtc ? "UTC" : "GMT";
         String offText = isUtc ? "+00:00" : zoneOffset.getId();
 
-        return "(" + prefix + offText + ") " + city;
+        return "(" + prefix + offText + ") " + zoneId.getId();
     }
 
     public boolean hasPhoneNumber() {

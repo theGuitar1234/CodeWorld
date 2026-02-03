@@ -54,6 +54,7 @@ import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.auth.JpaUserDetails;
 import az.codeworld.springboot.security.services.authservices.OtpService;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
+import az.codeworld.springboot.utilities.WriteLog;
 import az.codeworld.springboot.utilities.constants.contenttypes;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.mode;
@@ -63,6 +64,7 @@ import az.codeworld.springboot.web.dtos.ProfilePayloadDTO;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.services.NotificationService;
 import az.codeworld.springboot.web.services.ProfileService;
+import az.codeworld.springboot.web.services.TimeZoneService;
 import az.codeworld.springboot.web.services.serviceImpl.NotificationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -100,6 +102,8 @@ public class AccountController {
 
     private final OtpService otpService;
 
+    private final TimeZoneService timeZoneService;
+
     public AccountController(
             TransactionService transactionService,
             RequestService requestService,
@@ -108,7 +112,9 @@ public class AccountController {
             UserService userService,
             ProfileService profileService,
             OtpService otpService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            TimeZoneService timeZoneService
+        ) {
         this.transactionService = transactionService;
         this.requestService = requestService;
         this.logoutService = logoutService;
@@ -117,6 +123,7 @@ public class AccountController {
         this.profileService = profileService;
         this.otpService = otpService;
         this.notificationService = notificationService;
+        this.timeZoneService = timeZoneService;
     }
 
     @GetMapping({ "", "/" })

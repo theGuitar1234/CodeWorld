@@ -281,7 +281,7 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.TEACHER);
-            transaction.setTransactionTime(Instant.now().plus(Duration.ofHours(j)));
+            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
@@ -362,7 +362,7 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
                 transaction.setBelongsTo(roles.TEACHER);
-                transaction.setTransactionTime(Instant.now().plus(Duration.ofHours(j)));
+                transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
 
                 transactionService.saveTransaction(transaction);
                 transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
@@ -454,7 +454,7 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.STUDENT);
-            transaction.setTransactionTime(Instant.now().plus(Duration.ofHours(j)));
+            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
@@ -545,7 +545,7 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
                 transaction.setBelongsTo(roles.STUDENT);
-                transaction.setTransactionTime(Instant.now().plus(Duration.ofHours(j)));
+                transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
 
                 transactionService.saveTransaction(transaction);
                 transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
@@ -630,7 +630,7 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.ADMIN);
-            transaction.setTransactionTime(Instant.now().plus(Duration.ofHours(j)));
+            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(admin.getUserName(), Set.of(transaction.getTransactionId()));

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
+import io.lettuce.core.dynamic.annotation.Param;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -22,9 +23,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 SELECT t FROM Transaction t
                 JOIN t.user u
                 WHERE u.id = :id
-                AND t.transactionTime BETWEEN :startTime AND :endTime
+                AND t.transactionTime >= :startTime 
+                AND t.transactionTime < :endTime
             """)
-    Page<Transaction> findByUser_Id(Instant startTime, Instant endTime, Long id, Pageable pageable);
+    Page<Transaction> findByUser_Id(Instant startTime, Instant endTime, @Param("id") Long id, Pageable pageable);
 
     @Query("""
                 SELECT t FROM Transaction t

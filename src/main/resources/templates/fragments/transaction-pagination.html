@@ -1,9 +1,10 @@
 <div th:fragment="transaction-pagination">
   <table>
     <tbody th:fragment="tableBody" pagination-table-root>
-      <!-- Optional: show a friendly empty-state row -->
-      <tr th:if="${transactions == null or #lists.isEmpty(transactions)}">
-        <td colspan="4" th:text="#{transactions.none}">No transactions found.</td>
+      <tr th:if="${transactionsOnPage == null or #lists.isEmpty(transactionsOnPage)}">
+        <td colspan="4" th:text="#{transactions.none}">
+          No transactions found.
+        </td>
       </tr>
 
       <tr
@@ -29,20 +30,44 @@
         <td status-icon>
           <div class="checked-unchecked">
             <div class="pending">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-                <path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"
+                />
               </svg>
             </div>
 
             <div class="checkbox">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e8eaed"
+              >
+                <path
+                  d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"
+                />
               </svg>
             </div>
 
             <div class="rejected">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-                <path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+                />
               </svg>
             </div>
           </div>
@@ -68,7 +93,11 @@
       <h3 th:text="#{transactions.title}">Transactions</h3>
     </div>
 
-    <input type="number" name="perPage" th:placeholder="#{transactions.perPage}" />
+    <input
+      type="number"
+      name="perPage"
+      th:placeholder="#{transactions.perPage}"
+    />
 
     <div class="panel transactions">
       <div class="wrapper">
@@ -80,7 +109,9 @@
           <input type="date" name="endDate" id="end-date" />
         </div>
 
-        <div th:replace="~{fragments/statements.html :: statements('/user/transactions/getReport')}"></div>
+        <div
+          th:replace="~{fragments/statements.html :: statements('/user/transactions/getReport')}"
+        ></div>
       </div>
 
       <div class="drop-down">
@@ -88,9 +119,21 @@
 
         <label for="create" role="menu" aria-haspopup="true" tabindex="0">
           <span th:text="#{transactions.sortBy}">Sort By</span>
-          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg)">
-            <path d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="transform: rotate(90deg)"
+          >
+            <path
+              d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M2 14H8M9 8H15M16 16H22"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </label>
 
@@ -163,18 +206,16 @@
   <!-- Pagination -->
   <nav
     th:fragment="pagination"
-    th:if="${transactionsOnPage.totalPages > 1 && mode == 'VIEW_ALL'}"
+    th:if="${transactionsOnPage.getTotalPages() > 1 && mode == 'VIEW_ALL'}"
     class="pagination"
-    pagination-link-root
+    pagination-nav-root
   >
     <ul>
-      <li>
+      <li th:if="${transactionsOnPage.hasPrevious()}">
         <a
-          tabindex="-1"
-          th:if="${transactionsOnPage.hasPrevious()}"
           th:href="@{/user/transactions(
             perPage=${perPage},
-            pageIndex=${transactionsOnPage.number},
+            pageIndex=${pageIndex - 1},
             direction=${direction},
             sortBy=${sortBy},
             startDate=${startDate},
@@ -184,35 +225,43 @@
           class="js-page"
           data-pagination
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
           </svg>
         </a>
       </li>
 
-      <li th:each="page : ${pages}" th:classappend="${page.isActive} ? 'active' : ''">
+      <li
+        th:each="p : ${pages}"
+        th:classappend="${p.isActive == 'current' ? 'current' : ''}"
+      >
         <a
           th:href="@{/user/transactions(
-            perPage=${page.perPage},
-            pageIndex=${page.pageIndex},
-            direction=${page.direction},
+            perPage=${p.perPage()},
+            pageIndex=${p.pageIndex()},
+            direction=${p.direction()},
             sortBy=${sortBy},
             startDate=${startDate},
             endDate=${endDate},
-            role=${page.role}
+            role=${p.role()}
           )}"
-          th:text="${page.pageIndex}"
+          th:text="${p.pageIndex()}"
           class="js-page"
           data-pagination
         ></a>
       </li>
 
-      <li>
+      <li th:if="${transactionsOnPage.hasNext()}">
         <a
-          th:if="${transactionsOnPage.hasNext()}"
           th:href="@{/user/transactions(
             perPage=${perPage},
-            pageIndex=${transactionsOnPage.number + 2},
+            pageIndex=${pageIndex + 1},
             direction=${direction},
             sortBy=${sortBy},
             startDate=${startDate},
@@ -222,14 +271,24 @@
           class="js-page"
           data-pagination
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
           </svg>
         </a>
       </li>
     </ul>
 
-    <a class="view-less" th:href="@{/user/dashboard}" th:text="#{transactions.viewLess}">
+    <a
+      class="view-less"
+      th:href="@{/user/dashboard}"
+      th:text="#{transactions.viewLess}"
+    >
       View less &lt;
     </a>
   </nav>

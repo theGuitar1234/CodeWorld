@@ -1,0 +1,18 @@
+<main data-spa-root th:fragment="create-user-main" th:if="${spa == 'CREATE_USER'}">
+  
+  <div th:replace="admin/fragments/error/error.html :: error"></div>
+  <div th:replace="admin/fragments/success/success.html :: success"></div>
+
+  <div
+    th:replace="~{admin/fragments/main/header/create-user-header.html :: create-user-header}"
+  ></div>
+  <div class="wrapper">
+    <div class="containers">
+      <div class="container" id="container9">
+        <div
+          th:replace="~{admin/fragments/main/form/create-user.html :: create-user}"
+        ></div>
+      </div>
+    </div>
+  </div>
+</main>

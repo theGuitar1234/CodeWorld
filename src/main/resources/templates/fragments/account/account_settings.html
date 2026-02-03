@@ -36,7 +36,8 @@
           th:attr="data-attr=#{account.settings.timeZoneLabel}"
           th:text="${user.timeZone}"
           >(GMT-06:00) Central America</span
-        ><br />
+        >
+        <br />
         <span
           data-attr="Status :"
           class="stts"
@@ -79,11 +80,22 @@
           class="tz"
           th:attr="data-attr=#{account.settings.timeZoneLabel}"
         >
-          <input
+          <!-- <input
             type="text"
             th:placeholder="${user.timeZone}"
             th:field="*{timeZone}"
-          />
+          /> -->
+          <select 
+            name="" 
+            id=""
+            th:field="*{timeZone}"
+          >
+            <option 
+              th:each="t : ${timeZones}"
+              th:text="${t.label}"
+              th:value="${t.label}"
+            ></option>
+          </select>
         </span>
         <br />
         <span

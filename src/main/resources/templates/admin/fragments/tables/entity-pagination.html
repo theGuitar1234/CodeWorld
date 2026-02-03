@@ -1,6 +1,9 @@
 <div th:fragment="entity-pagination">
   <table style="border-collapse: collapse">
     <tbody th:fragment="tableBody(dataObj)">
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="6" th:text="#{users.none}">No Users found.</td>
+      </tr>
       <tr th:each="entity : ${dataObj}">
         <td>
           <p th:text="${entity.id}"></p>
@@ -100,6 +103,9 @@
   </table>
   <table>
     <tbody th:fragment="payableTableBody(dataObj)">
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="5" th:text="#{dataObj.none}">Nothing is here yet...</td>
+      </tr>
       <tr th:each="entity : ${dataObj}">
         <td>
           <p th:text="${entity.id}"></p>
@@ -327,8 +333,8 @@
   </table>
   <table>
     <tbody th:fragment="subjectTableBody(dataObj)">
-      <tr th:if="${dataObj.isEmpty()}">
-        <td>There are no subjects...</td>
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="3" th:text="#{subjects.none}">No Subjects found.</td>
       </tr>
       <tr th:each="entity : ${dataObj}">
         <td>
@@ -403,6 +409,9 @@
   </table>
   <table>
     <tbody th:fragment="courseOfferingTableBody(dataObj)" dataCourseOffering>
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="4" th:text="#{courseOfferings.none}">No CourseOfferings found.</td>
+      </tr>
       <tr th:each="entity : ${dataObj}">
         <td>
           <p th:text="${entity.id}"></p>
@@ -430,6 +439,9 @@
   </table>
   <table>
     <tbody th:fragment="courseEnrollmentTableBody(dataObj)" dataCourseOffering>
+      <tr th:if="${dataObj == null or #lists.isEmpty(dataObj)}">
+        <td colspan="4" th:text="#{courseEntollments.none}">No CourseEnrollments found.</td>
+      </tr>
       <tr th:each="entity : ${dataObj}">
         <td>
           <p th:text="${entity.id}"></p>

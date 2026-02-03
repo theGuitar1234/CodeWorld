@@ -1,0 +1,117 @@
+<!-- th:if="${user != null}" -->
+<!-- style="display: contents;" -->
+<div th:fragment="create-user" class="fetch-user">
+  <!-- <input type="hidden" th:value="${userId}" id="hidden-user-id" /> -->
+
+  <div class="help" id="password-help" th:text="#{auth.password.help}">
+    At least 1 uppercase, lowercase character, number and a special character
+    is required.
+  </div>
+  <div class="help" id="email-help" th:text="#{auth.email.help}">
+    Emails must contain @ symbol, usually follows the format of "example@email.com"
+    where "example" will be your email's name.
+  </div>
+
+
+  <form 
+    action="/admin/createUser" 
+    method="POST" 
+    id="update-user" 
+    data-spa-form
+  >
+    <fieldset>
+      <legend>USER</legend>
+      <label for="firstName">FirstName : </label>
+      <input 
+        id="firstName" 
+        type="text" 
+        name="firstName" 
+        placeholder="John" 
+        autocomplete="name"/>
+      
+      <label for="lastName">LastName : </label>
+      <input 
+        id="lastName" 
+        type="text" 
+        name="lastName" 
+        placeholder="Doe" 
+        autocomplete="name"/>
+
+      <label 
+        for="email"
+        data-invalid="Invalid Email"
+        data-empty="Input an Email"
+        data-valid="Email is Valid"
+      >
+        Email : 
+      </label>
+      <input 
+        id="email"
+        type="email" 
+        name="email" 
+        required 
+        placeholder="example@email.com" 
+        aria-describedby="email-help"
+        pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9._%+-]+\\.[A-Za-z]{2,6}$"
+        autocomplete="email"
+      />
+
+      <label
+        for="password"
+        data-invalid="Invalid Password"
+        data-empty="Input a Password"
+        data-valid="Password is Valid"
+      >
+        Enter New Password :
+        <input
+          type="password"
+          id="password"
+          aria-describedby="password-help"
+          placeholder="password"
+          pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+          name="password"
+          autocomplete="new-password"
+        />
+      </label>
+      <label
+        for="password2"
+        data-invalid="Invalid Password"
+        data-empty="Input a Password"
+        data-valid="Password is Valid"
+      >
+        Enter The New Password Again :
+        <input
+          type="password"
+          id="password2"
+          aria-describedby="password-help"
+          placeholder="password"
+          pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+          name="password2"
+          autocomplete="new-password"
+        />
+      </label>
+      <div class="show-password">
+        <input type="checkbox" aria-checked="false" id="show-password" />
+        <label for="show-password">Show Password</label>
+      </div>
+      <label for="payment">User Payment : </label>
+      <input
+        id="payment"
+        type="number"
+        name="payment"
+      />
+      <label for="payment-date">Payment Date : </label>
+      <input
+        type="date"
+        name="nextDate"
+        id="payment-date"
+      />
+      <label for="affiliation-date">Affiliation Date : </label>
+      <input
+        type="date"
+        id="affiliation-date"
+      />
+    </fieldset>
+    <button type="submit">Submit</button>
+  </form>
+</div>

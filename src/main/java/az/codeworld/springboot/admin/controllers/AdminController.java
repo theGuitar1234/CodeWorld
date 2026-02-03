@@ -240,7 +240,7 @@ public class AdminController {
         model.addAllAttributes(
                 Map.of(
                         "chartPoints", transactionService.getChartPoints(),
-                        "requests", requestService.getRecentRequests(),
+                        "reque9sts", requestService.getRecentRequests(),
                         "studentTransactions", transactionService.getRecentTransactions(roles.STUDENT),
                         "teacherTransactions", transactionService.getRecentTransactions(roles.TEACHER)));
 
@@ -505,6 +505,8 @@ public class AdminController {
 
         boolean spaRequest = isSpaRequest(fragment, request);
 
+        WriteLog.main("This has to be an SPA request, is it? : " + spaRequest, AdminController.class);
+
         fetchPaginatedUsers(pageIndex, perPage, sortBy, direction, payablePageIndex, payableSortBy, role, model);
 
         return render(model, spa.TEACHERS, spaRequest, "admin/fragments/main/teachers-main.html :: teachers-main");
@@ -622,6 +624,18 @@ public class AdminController {
         }
 
         return render(model, spa.USERS, spaRequest, "admin/fragments/main/users-main.html :: users-main");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/createUser")
+    public String createUser(
+            @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
+            HttpServletRequest request,
+            Model model) {
+
+        boolean spaRequest = isSpaRequest(fragment, request);
+
+        return render(model, spa.CREATE_USER, spaRequest, "admin/fragments/main/create-user-main.html :: create-user-main");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -1342,6 +1356,8 @@ public class AdminController {
             String payableSortBy,
             roles role,
             Model model) {
+        
+        WriteLog.main("Made it to fetchPaginatedUsers(), current role must be teacher, the current role is : " + role.getRoleNameString(), AdminController.class);
 
         Set<String> allowedSort = Set.of("affiliationDate", "id", "payment", "nextDate");
         Pagination pagination = normalizePagination(pageIndex, perPage, sortBy, payableSortBy, allowedSort, "id");
@@ -1358,11 +1374,18 @@ public class AdminController {
 
         switch (role) {
             case TEACHER -> {
+
+                WriteLog.main("This is a teacher and the switch case made it here as it should", AdminController.class);
+
                 usersOnPage = teacherService.getPaginatedTeachers(
                         pageIndex - 1,
                         perPage,
                         sortBy,
                         direction);
+
+                usersOnPage.forEach(u -> {
+                    WriteLog.main("Results : " + u.toString(), AdminController.class);
+                });
             }
             case STUDENT -> {
                 usersOnPage = studentService.getPaginatedStudents(

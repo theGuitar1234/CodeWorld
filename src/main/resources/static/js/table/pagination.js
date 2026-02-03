@@ -1,10 +1,7 @@
-let 
-  paginationTableRoot,
-  paginationFilterRoot,
-  paginationLinkRoot;
+let paginationTableRoot, paginationFilterRoot, paginationLinkRoot;
 
 const tableRootSelector = "tbody[pagination-table-root]";
-const linkRootSelector = "[pagination-link-root]";
+const linkRootSelector = "[pagination-nav-root]";
 const filterRootSelector = "[pagination-filter-root]";
 const linkPaginationSelector = "a[data-pagination]";
 
@@ -18,9 +15,62 @@ function cacheElements() {
   console.log(paginationTableRoot);
 }
 
-async function handleFragment(e, { push = true } = {}) {
-  const link = e.target.closest(linkPaginationSelector);
+async function handleFragment(fetchUrl, { push = true } = {}) {
+  try {
+    const res = await fetch(fetchUrl, { credentials: "same-origin" });
 
+    if (!res.ok) return;
+
+    const html = await res.text();
+
+    console.log(html);
+
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    if (!doc) return;
+
+    const oldPaginationFilterRoot = paginationFilterRoot.firstElementChild;
+    const newPaginationFilterRoot = doc.querySelector(filterRootSelector);
+
+    oldPaginationFilterRoot
+      ? oldPaginationFilterRoot.replaceWith(newPaginationFilterRoot)
+      : paginationFilterRoot.appendChild(newPaginationFilterRoot);
+
+    const oldPaginationTableRoot = paginationTableRoot;
+    const newPaginationTableRoot = doc.querySelector(tableRootSelector);
+    oldPaginationTableRoot.replaceChildren(...newPaginationTableRoot.children);
+    // oldPaginationTableRoot.replaceWith(newPaginationTableRoot);
+    // oldPaginationTableRoot = newPaginationTableRoot;
+
+    const oldPaginationLinkRoot = paginationLinkRoot.firstElementChild;
+    let newPaginationLinkRoot = doc.querySelector(linkRootSelector);
+
+    if (!newPaginationLinkRoot)
+      newPaginationLinkRoot = document.createElement("div");
+
+    oldPaginationLinkRoot
+      ? oldPaginationLinkRoot.replaceWith(newPaginationLinkRoot)
+      : paginationLinkRoot.appendChild(newPaginationLinkRoot);
+  } catch (e) {
+    alert(`Something went wrong while fetching ${e}`);
+    console.error(e);
+  }
+
+  //mergedUrl.searchParams.set("fragment", "false");
+  fetchUrl.searchParams.delete("fragment");
+  if (push) history.pushState({}, "", fetchUrl.toString());
+
+  document.dispatchEvent(
+    new CustomEvent("pagination:navigated", { detail: { mergedUrl } }),
+  );
+}
+
+function canRender() {
+  return paginationFilterRoot && paginationLinkRoot && paginationTableRoot;
+}
+
+function handleClick(e) {
+  const link = e.target.closest(linkPaginationSelector);
   if (!link) return;
 
   e.preventDefault();
@@ -44,53 +94,14 @@ async function handleFragment(e, { push = true } = {}) {
   fetchUrl.searchParams.set("fragment", "true");
   fetchUrl.searchParams.set("mode", "VIEW_ALL");
 
-  const res = await fetch(fetchUrl, { credentials: "same-origin" });
-  
-  if (!res.ok) return;
-
-  const html = await res.text();
-
-  const doc = new DOMParser().parseFromString(html, "text/html");
-
-  if (!doc) return;
-
-  const oldPaginationFilterRoot = paginationFilterRoot.firstElementChild;
-  const newPaginationFilterRoot = doc.querySelector(filterRootSelector);
-  
-  (oldPaginationFilterRoot) ?
-    oldPaginationFilterRoot.replaceWith(newPaginationFilterRoot) :  
-    paginationFilterRoot.appendChild(newPaginationFilterRoot);
-
-  const oldPaginationTableRoot = paginationTableRoot;
-  const newPaginationTableRoot = doc.querySelector(tableRootSelector);
-  oldPaginationTableRoot.replaceChildren(...newPaginationTableRoot.children);
-  // oldPaginationTableRoot.replaceWith(newPaginationTableRoot);
-  // oldPaginationTableRoot = newPaginationTableRoot;
-  
-  const oldPaginationLinkRoot = paginationLinkRoot.firstElementChild;
-  const newPaginationLinkRoot = doc.querySelector(linkRootSelector);
-
-  (oldPaginationLinkRoot) ?
-    oldPaginationLinkRoot.replaceWith(newPaginationLinkRoot) :
-    paginationLinkRoot.appendChild(newPaginationLinkRoot);
-
-  //mergedUrl.searchParams.set("fragment", "false");
-  mergedUrl.searchParams.delete("fragment");
-  if (push) history.pushState({}, "", mergedUrl.toString());
-
-  document.dispatchEvent(new CustomEvent("pagination:navigated", { detail: { mergedUrl } }));
+  handleFragment(mergedUrl, { push: true });
 }
 
-function canRender() {
-  return (
-    paginationFilterRoot &&
-    paginationLinkRoot &&
-    paginationTableRoot
-  );
+function handlePopState() {
+  handleFragment(new URL(window.location.href), { push: false });
 }
 
 function initPagination() {
-
   console.log("Initializing Fragment");
 
   cacheElements();
@@ -99,12 +110,9 @@ function initPagination() {
 
   console.log("Can render");
 
-  // window.addEventListener("popstate", (e) => {
-  //   handleFragment(e, { push: false });
-  // });
-
+  window.addEventListener("popstate", handlePopState);
   document.addEventListener("click", (e) => {
-    handleFragment(e);
+    handleClick(e);
   });
 }
 

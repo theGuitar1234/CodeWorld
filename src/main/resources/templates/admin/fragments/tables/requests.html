@@ -16,7 +16,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="request : ${transactionsOnPage}">
+        <tr th:if="${requests == null or #lists.isEmpty(requests)}">
+          <td colspan="7" th:text="#{requests.none}">No Requests yet...</td>
+        </tr>
+        <tr th:each="request : ${requests}">
           <td>
             <p th:text="${request.requestId}"></p>
           </td>
