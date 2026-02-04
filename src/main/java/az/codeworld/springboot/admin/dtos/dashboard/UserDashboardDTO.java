@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.entities.Money;
+import az.codeworld.springboot.aop.validations.UsernameValidation;
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,8 @@ public class UserDashboardDTO {
     @NotNull
     @NotBlank
     @Length(min = 13, max = 13)
-    @Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\\d{1,}$")
+    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{1}$")
+    @UsernameValidation
     private String userName;
 
     @NotBlank

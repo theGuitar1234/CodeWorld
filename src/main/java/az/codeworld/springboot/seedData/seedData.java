@@ -218,7 +218,7 @@ public class SeedData implements ApplicationRunner {
         teacher.setFirstName("Thomas");
         teacher.setLastName("Dhones");
         teacher.setEmail("exampleTEACHER@email.com");
-        teacher.setPassword(passwordEncoder.encode("1234Aa@"));
+        teacher.setPassword(passwordEncoder.encode("1234Aa@as"));
         teacher.setPhoneNumber("+994519889192");
 
         teacher.setDepartment("Biology");
@@ -302,7 +302,7 @@ public class SeedData implements ApplicationRunner {
             teacher.setFirstName("Thomas");
             teacher.setLastName("Dhones");
             teacher.setEmail("example" + i + "@email.com");
-            teacher.setPassword(passwordEncoder.encode("1234Aa@"));
+            teacher.setPassword(passwordEncoder.encode("1234Aa@as"));
             teacher.setPhoneNumber("+994519889192");
 
             teacher.setDepartment("Biology");
@@ -383,13 +383,13 @@ public class SeedData implements ApplicationRunner {
         student.setFirstName("James");
         student.setLastName("Dhones");
         student.setEmail("exampleSTUDENT@email.com");
-        student.setPassword(passwordEncoder.encode("1234Aa@"));
+        student.setPassword(passwordEncoder.encode("1234Aa@as"));
         student.setPhoneNumber("+994519889192");
 
         student.setGroupName("684.23e");
         student.setYear(2);
         student.setMajor("IT");
-        student.setAffiliationDate(LocalDate.now());
+        student.setAffiliationDate(LocalDate.of(2005, 12, 4));
         student.setGpa(89.99);
         student.setPayment(new Money(new BigDecimal("200.89"), currency.EURO));
         student.setNextDate(Instant.now().minus(Duration.ofDays(1)));
@@ -474,13 +474,13 @@ public class SeedData implements ApplicationRunner {
             student.setFirstName("James");
             student.setLastName("Dhones");
             student.setEmail("example" + i + 5 + "@email.com");
-            student.setPassword(passwordEncoder.encode("1234Aa@"));
+            student.setPassword(passwordEncoder.encode("1234Aa@as"));
             student.setPhoneNumber("+994519889192");
 
             student.setGroupName("684.23e");
             student.setYear(2);
             student.setMajor("IT");
-            student.setAffiliationDate(LocalDate.now());
+            student.setAffiliationDate(LocalDate.of(2005, 12, 4));
             student.setGpa(89.99);
             student.setPayment(new Money(new BigDecimal("200.89"), currency.EURO));
             student.setNextDate(Instant.now().minus(Duration.ofDays(1)));
@@ -592,7 +592,7 @@ public class SeedData implements ApplicationRunner {
         admin.setLastName("Admin");
         admin.setUserName("A-AAAA-AAAA-A");
         admin.setEmail("admin@admin.com");
-        admin.setPassword(passwordEncoder.encode("1234Aa@"));
+        admin.setPassword(passwordEncoder.encode("1234Aa@as"));
         admin.setNextDate(Instant.now().minus(Duration.ofDays(1)));
         admin.setBillingEnabled(false);
         admin.setPhoneNumber("+994519889192");

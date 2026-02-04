@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.aop.validations.EmailValidation;
+import az.codeworld.springboot.aop.validations.UsernameValidation;
 import az.codeworld.springboot.security.dtos.AuditDTO;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Max;
@@ -31,7 +32,8 @@ public class UserDTO extends AuditDTO {
     @NotNull
     @NotBlank
     @Length(min = 13, max = 13)
-    @Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\\d{1,}$")
+    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{1}$")
+    @UsernameValidation
     private String userName;
 
     @NotBlank

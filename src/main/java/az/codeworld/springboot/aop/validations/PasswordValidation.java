@@ -16,7 +16,7 @@ import az.codeworld.springboot.aop.validators.PasswordValidator;
 @Retention(RetentionPolicy.RUNTIME)                
 public @interface PasswordValidation {
 
-    String message() default "Invalid password! According to proper password validation, a password must include at least: 1 lowercase letter, 1 uppercase letter and 1 special character";     
+    String message() default "Invalid password! According to proper password validation, a password must include at least: 1 lowercase letter, 1 uppercase letter and 1 special character, at least 8 characters long";     
 
     Class<?>[] groups() default {};               
 

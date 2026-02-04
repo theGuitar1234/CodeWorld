@@ -6,7 +6,11 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordValidator implements ConstraintValidator<PasswordValidation, String> {
 
-    private static final String PASSWORD_PATTERN_STRING = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+    //^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]).{8,}$
+    //Disallows spaces : ^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])\S{8,}$
+    //^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$
+
+    private static final String PASSWORD_PATTERN_STRING = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_])\\S{8,}$";
 
     @Override
     public boolean isValid(String passwordString, ConstraintValidatorContext context) {

@@ -25,7 +25,7 @@ public class UserRequestDTO {
     @NotNull
     @NotBlank
     @Length(min = 13, max = 13)
-    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\\d{1,}$")
+    //@Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{1}$")
     @UsernameValidation
     private String username;
 }

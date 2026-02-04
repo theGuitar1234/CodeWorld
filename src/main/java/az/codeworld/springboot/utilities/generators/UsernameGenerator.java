@@ -43,11 +43,13 @@ public class UsernameGenerator {
             default:
                 throw new IllegalArgumentException("Invalid role: " + role);
         }
+        
         stringBuilder.append('-');
-        for (int i = 0; i<2; i++) {
-            appendRandom(stringBuilder, 4);
-            stringBuilder.append('-');
-        }
+        appendRandom(stringBuilder, 4);
+        stringBuilder.append('-');
+        appendRandom(stringBuilder, 4);
+        stringBuilder.append('-');
+        appendRandom(stringBuilder, 1);
 
         // stringBuilder.append(counter);
         // counter++;
