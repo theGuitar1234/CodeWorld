@@ -91,20 +91,21 @@ public class SeedData implements ApplicationRunner {
     private final CourseOfferingRepository courseOfferingRepository;
 
     public SeedData(
-            PasswordEncoder passwordEncoder,
-            AuthorityService authorityService,
-            RoleService roleService,
-            UserService userService,
-            JpaUserDetailsService jpaUserDetailsService,
-            TransactionService transactionService,
-            GenericWebService genericWebService,
-            RequestService requestService,
-            RegistrationServiceImpl registrationService,
-            ProfileService profileService,
-            NotificationService notificationService,
-            SubjectEntrollmentRepository subjectEntrollmentRepository,
-            CourseEnrollmentRepository courseEnrollmentRepository,
-            CourseOfferingRepository courseOfferingRepository) {
+        PasswordEncoder passwordEncoder,
+        AuthorityService authorityService,
+        RoleService roleService,
+        UserService userService,
+        JpaUserDetailsService jpaUserDetailsService,
+        TransactionService transactionService,
+        GenericWebService genericWebService,
+        RequestService requestService,
+        RegistrationServiceImpl registrationService,
+        ProfileService profileService,
+        NotificationService notificationService,
+        SubjectEntrollmentRepository subjectEntrollmentRepository,
+        CourseEnrollmentRepository courseEnrollmentRepository,
+        CourseOfferingRepository courseOfferingRepository
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
         this.roleService = roleService;
@@ -606,7 +607,7 @@ public class SeedData implements ApplicationRunner {
         admin.setLanguage("English (United States)");
         admin.setZoneId("America/Guatemala");
 
-        // admin.setTwoFactorEnabled(true);
+        admin.setTwoFactorEnabled(true);
 
         profilePicture = new ProfilePicture();
         profilePicture.setProfileTitle("Silly Profile Picture");

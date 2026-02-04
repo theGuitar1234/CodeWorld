@@ -15,7 +15,7 @@ async function navigate(url, { push = true } = {}) {
   loading.textContent = 'loading';
   document.body.appendChild(loading);
 
-  await new Promise(r => setTimeout(r, 1000));
+  //await new Promise(r => setTimeout(r, 1000));
 
   const res = await fetch(fetchUrl, { credentials: "same-origin" });
   if (!res.ok) return;
@@ -83,7 +83,7 @@ async function handleFragmentForm(e) {
   loading.textContent = 'loading';
   document.body.appendChild(loading);
 
-  await new Promise(r => setTimeout(r, 1000));
+  //await new Promise(r => setTimeout(r, 1000));
 
   const res = await fetch(url, {
     method: "POST",

@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Serves files stored on disk under {user.dir}/${app.upload-root} at the URL path /uploads/**.
- *
- * This is required for the local profile picture feature to work.
- */
 @Configuration
 public class UploadResourceConfiguration implements WebMvcConfigurer {
 

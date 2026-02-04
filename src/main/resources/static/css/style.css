@@ -3832,7 +3832,7 @@ body.layout.error {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: black;
+  background: rgb(141, 48, 48);
 }
 body.layout.error h1 {
   margin: 0;

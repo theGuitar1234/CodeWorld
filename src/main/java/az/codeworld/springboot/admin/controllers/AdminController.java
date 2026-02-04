@@ -428,7 +428,7 @@ public class AdminController {
 
             model.addAllAttributes(
                     Map.of(
-                            "transactions", transactionsOnPage.getContent(),
+                            "requests", transactionsOnPage.getContent(),
                             "transactionsOnPage", transactionsOnPage,
                             "pages", pages,
                             "sortBy", sortBy,
