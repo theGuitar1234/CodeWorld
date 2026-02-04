@@ -1,11 +1,18 @@
 package az.codeworld.springboot.admin.dtos.create;
 
-import org.hibernate.validator.constraints.Length;
-import org.springframework.stereotype.Component;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
+import az.codeworld.springboot.admin.entities.Money;
+import az.codeworld.springboot.aop.validations.EmailValidation;
+import az.codeworld.springboot.aop.validations.PasswordValidation;
+import az.codeworld.springboot.utilities.constants.currency;
+import az.codeworld.springboot.utilities.constants.roles;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,15 +22,38 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Component
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCreateDTO {
 
+    @Pattern(regexp = "^[A-Z]{1}[a-z]{1,14}$")
+    private String firstName;
+
+    @Pattern(regexp = "^[A-Z]{1}[a-z]{1,20}$")
+    private String lastName;
+
     @NotNull
-    @NotBlank
-    @Length(min = 13, max = 13)
-    @Pattern(regexp = "^[STA]-[A-Z0-9]{4}-[A-Z0-9]{4}-\\d{1,}$")
-    private String username;
+    @PasswordValidation
+    private String password;
+
+    @NotNull
+    @PasswordValidation
+    private String password2;
+
+    private BigDecimal amount;
+
+    @Past
+    private LocalDate affiliationDate;
+
+    private LocalDate nextDate;
+
+    @EmailValidation
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private roles role;
+
+    @Enumerated(EnumType.STRING)
+    private currency currency;
 }

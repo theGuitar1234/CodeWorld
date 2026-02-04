@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
 import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
@@ -36,6 +37,8 @@ import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import az.codeworld.springboot.admin.services.UserService;
+import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
+import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
 import az.codeworld.springboot.security.entities.Role;
@@ -146,7 +149,7 @@ public class JpaUserServiceImplDev implements UserService {
 
     @Override
     @Transactional
-    public Object createNewUser(UserAuthDTO userAuthDTO, dtotype dtotype) {
+    public Object createNewRequestUser(UserAuthDTO userAuthDTO, dtotype dtotype) {
         User user = new User();
         user.setUserName(UsernameGenerator.generateUsername(userAuthDTO.getRole().getRoleNameString()));
         user.setFirstName(userAuthDTO.getFirstName());
@@ -160,6 +163,26 @@ public class JpaUserServiceImplDev implements UserService {
                 Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
 
         return UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+    }
+
+    @Override
+    @Transactional
+    public void createNewUserAdmin(UserCreateDTO userCreateDTO) throws PasswordsMustMatchException, PasswordsMustBePresentException {
+        User user = new User();
+        user.setUserName(UsernameGenerator.generateUsername(userCreateDTO.getRole().getRoleNameString()));
+        user.setFirstName(userCreateDTO.getFirstName());
+        user.setLastName(userCreateDTO.getLastName());
+        user.setEmail(userCreateDTO.getEmail());
+
+        saveUser(user);
+
+        roleService.addRolesToUser(user.getId(),
+                Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));
+
+        if (userCreateDTO.getPassword() == null && userCreateDTO.getPassword2() == null) throw new PasswordsMustBePresentException();
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getPassword2())) throw new PasswordsMustMatchException();
+
+        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
     }
 
     @Override
@@ -351,5 +374,8 @@ public class JpaUserServiceImplDev implements UserService {
             .map(u -> new UserLatestRecord(u.getEmail(), u.getCreatedAt(), u.getProfilePicture().getProfilePhoto()))
             .toList();
     }
+
+    @Override
+    public Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException { return null; }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
 import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
@@ -17,6 +18,8 @@ import az.codeworld.springboot.admin.projections.UserAdminProjection;
 import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
+import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
+import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
 import az.codeworld.springboot.utilities.constants.accountstatus;
@@ -44,7 +47,7 @@ public interface UserService {
     void deleteUserByUserName(String userName);
     void removeUser(User user);
 
-    Object createNewUser(UserAuthDTO userAuthDTO, dtotype dtotype);
+    Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException;
 
     LoginAuditDTO getUserAudit(String email);
 
@@ -76,4 +79,8 @@ public interface UserService {
 
     <T> T getUserProjectionById(Long id, Class<T> type);
     <T> T getUserProjectionByUserName(String userName, Class<T> type);
+
+    void createNewUserAdmin(UserCreateDTO userCreateDTO) throws PasswordsMustMatchException, PasswordsMustBePresentException;
+
+    Object createNewRequestUser(UserAuthDTO userAuthDTO, dtotype dtotype);
 }

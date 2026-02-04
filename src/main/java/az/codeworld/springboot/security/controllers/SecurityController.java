@@ -23,7 +23,7 @@ import az.codeworld.springboot.security.services.authservices.OtpService;
 import az.codeworld.springboot.security.services.authservices.PasswordResetTokenService;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.roles;
-import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
 import az.codeworld.springboot.admin.records.RequestRecord;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 

@@ -18,7 +18,7 @@ import jakarta.persistence.PrePersist;
 @Component
 public class UsernameGenerator {
 
-    private static long counter = 0;
+    // private static long counter = 0;
 
     private static final SecureRandom secureRandom = new SecureRandom();
 
@@ -49,8 +49,8 @@ public class UsernameGenerator {
             stringBuilder.append('-');
         }
 
-        stringBuilder.append(counter);
-        counter++;
+        // stringBuilder.append(counter);
+        // counter++;
         //appendRandom(stringBuilder, 1);
 
         return stringBuilder.toString();

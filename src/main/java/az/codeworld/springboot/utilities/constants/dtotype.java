@@ -3,10 +3,10 @@ package az.codeworld.springboot.utilities.constants;
 public enum dtotype {
     TRANSACTION("TRANSACTION"), 
     DASHBOARD("DASHBOARD"), 
-    CREATE("CREATE"),
     PAYABLE("PAYABLE"),
     LOGIN_AUDIT("LOGIN_AUDIT"),
-    FULL("FULL");
+    FULL("FULL"),
+    REQUEST("REQUEST");
 
     String dtoTypeString;
 

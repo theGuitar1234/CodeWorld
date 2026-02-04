@@ -1,7 +1,9 @@
 package az.codeworld.springboot.utilities.constants;
 
 public enum accountsuccess {
-    ACCOUNT_ADDED("ACCOUNT_ADDED");
+    ACCOUNT_ADDED("Successfully added the account"),
+    ACCEPT_REQUEST_SUCCESS("Successfully sent the acceptance email"),
+    REJECT_REQUEST_SUCCESS("Successfully sent the rejection email");
 
     private String accountSuccessString;
 

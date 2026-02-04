@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
 import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
@@ -33,6 +34,8 @@ import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import az.codeworld.springboot.admin.services.UserService;
+import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
+import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
 import az.codeworld.springboot.security.entities.Role;
@@ -153,7 +156,7 @@ public class JpaUserServiceImplProd implements UserService {
 
     @Override
     @Transactional
-    public Object createNewUser(UserAuthDTO userAuthDTO, dtotype dtotype) {
+    public Object createNewRequestUser(UserAuthDTO userAuthDTO, dtotype dtotype) {
         User user = new User();
         user.setUserName(UsernameGenerator.generateUsername(userAuthDTO.getRole().getRoleNameString()));
         user.setFirstName(userAuthDTO.getFirstName());
@@ -161,12 +164,39 @@ public class JpaUserServiceImplProd implements UserService {
         user.setEmail(userAuthDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userAuthDTO.getPassword()));
 
-        saveUser(user);
+        //saveUser(user);
+        userRepository.save(user);
 
         roleService.addRolesToUser(user.getId(),
                 Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
 
         return UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void createNewUserAdmin(UserCreateDTO userCreateDTO) throws PasswordsMustMatchException, PasswordsMustBePresentException {
+        User user = new User();
+        user.setUserName(UsernameGenerator.generateUsername(userCreateDTO.getRole().getRoleNameString()));
+        user.setFirstName(userCreateDTO.getFirstName());
+        user.setLastName(userCreateDTO.getLastName());
+        user.setEmail(userCreateDTO.getEmail());
+        user.setPayment(new Money(userCreateDTO.getAmount(), userCreateDTO.getCurrency()));
+        user.setNextDate(userCreateDTO.getNextDate().atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant());
+
+        if (
+            (userCreateDTO.getPassword() == null && userCreateDTO.getPassword().isEmpty()) && 
+            (userCreateDTO.getPassword2() == null && userCreateDTO.getPassword2().isEmpty())) 
+            throw new PasswordsMustBePresentException();
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getPassword2())) throw new PasswordsMustMatchException();
+
+        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
+
+        //saveUser(user);
+        userRepository.save(user);
+
+        roleService.addRolesToUser(user.getId(),
+                Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));
     }
 
     @Override
@@ -378,5 +408,8 @@ public class JpaUserServiceImplProd implements UserService {
             .map(u -> new UserLatestRecord(u.getEmail(), u.getCreatedAt(), u.getProfilePicture().getProfilePhoto()))
             .toList();
     }
+
+    @Override
+    public Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException { return null; }
 
 }

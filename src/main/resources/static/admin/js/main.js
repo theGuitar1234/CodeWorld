@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initShowPassword();
 
     initContactMain();
-
+    
     mountAdminPage();
 
     document.addEventListener("spa:navigated", () => {

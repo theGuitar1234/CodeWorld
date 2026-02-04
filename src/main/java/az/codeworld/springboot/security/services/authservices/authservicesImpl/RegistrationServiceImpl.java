@@ -12,10 +12,12 @@ import org.thymeleaf.TemplateEngine;
 import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
 import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImplDev;
 import az.codeworld.springboot.aop.LogExecutionTime;
+import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.security.entities.EmailOutbox;
 import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
@@ -103,7 +105,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @LogExecutionTime("registerUser")
     public void registerUser(UserAuthDTO userAuthDTO) {
 
-        UserCreateDTO userCreateDTO = (UserCreateDTO) userService.createNewUser(userAuthDTO, dtotype.CREATE);
+        UserRequestDTO userRequestDTO = (UserRequestDTO) userService.createNewRequestUser(userAuthDTO, dtotype.REQUEST);
 
         String url = "http://localhost:" + port + "/";
 
@@ -112,7 +114,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             Map.of(
                 "name", userAuthDTO.getFirstName(),
                 "url", url,
-                "username", userCreateDTO.getUsername()
+                "username", userRequestDTO.getUsername()
             )
         );
 

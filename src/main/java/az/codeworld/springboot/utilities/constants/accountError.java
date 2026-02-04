@@ -1,13 +1,16 @@
 package az.codeworld.springboot.utilities.constants;
 
-public enum accountError {
-    TOKEN_GENERATION_ERROR("TOKEN_GENERATION_ERROR"),
-    ADD_ACCOUNT_ERROR("ADD_ACCOUNT_ERROR"),
-    ACCOUNT_BANNED("The Account is Banned");
+public enum accounterror {
+    ACCOUNT_BANNED("The User Account is Banned"),
+    ACCOUNT_IS_BANNED("The Account is Banned"),
+    PASSWORDS_MUST_MATCH("Passwords didn't match"),
+    PASSWORDS_MUST_BE_PRESENT("Passwords, both the written and repeated one, must not be null or empty, or blank"),
+    ACCEPT_REQUEST_ERROR("Failed to send the request email"),
+    REJECT_REQUEST_ERROR("Failed to send the request email");
 
     private String accountErrorString;
 
-    private accountError(String accountErrorString) {
+    private accounterror(String accountErrorString) {
         this.accountErrorString = accountErrorString;
     }
 

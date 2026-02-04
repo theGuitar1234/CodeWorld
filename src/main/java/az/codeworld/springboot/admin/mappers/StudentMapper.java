@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import az.codeworld.springboot.admin.dtos.StudentDTO;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
-import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserTransactionDTO;
 import az.codeworld.springboot.admin.entities.Student;

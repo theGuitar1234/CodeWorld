@@ -14,6 +14,9 @@ async function handleDecide(e) {
 
   btn.disabled = true;
 
+  const row = btn.closest("tr");
+  row?.remove();
+
   const url = btn.dataset.url;
   if (!url) return;
 
@@ -33,13 +36,25 @@ async function handleDecide(e) {
 
     if (!res.ok) throw new Error(`Fetch Failed: ${res.status}`);
 
-    const row = btn.closest("tr");
-    row?.remove();
+    const html = await res.text();
+
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const incomingRoot = doc.querySelector("[body]");
+    const spaRoot = document.querySelector("[data-spa-root]") || doc.querySelector("main");
+
+    if (!incomingRoot) return
+
+    console.log(incomingRoot);
+
+    spaRoot.appendChild(incomingRoot);
+    
   } catch (e) {
     btn.disabled = false;
     alert(`Something went wrong, try again: ${e}`);
     console.error(e);
   }
+
+  document.dispatchEvent(new CustomEvent("spa:navigated", { detail: { url } }));
 }
 
 function initDecide() {

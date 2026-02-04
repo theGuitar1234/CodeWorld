@@ -11,6 +11,7 @@ import org.h2.command.ddl.DeallocateProcedure;
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.dtos.UserDTO;
+import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
 import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
@@ -97,8 +98,8 @@ public class UserMapper {
                     .builder()
                     .transactions(user.getTransactions())
                     .build();
-            case "CREATE":
-                return UserCreateDTO
+            case "REQUEST":
+                return UserRequestDTO
                     .builder()
                     .username(user.getUserName())
                     .build();

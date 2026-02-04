@@ -1768,7 +1768,11 @@ input[disabled]::placeholder {
   visibility: hidden;
 }
 
-:is(input[type="email"], input[type="password"], input[type="tel"]):invalid {
+/* :is(input[type="email"], input[type="password"], input[type="tel"]):invalid {
+  color: red;
+  text-decoration: underline wavy 1px;
+} */
+:is(input[type="email"], input[type="password"], input[type="tel"]):invalid:not(:focus):not(:placeholder-shown) {
   color: red;
   text-decoration: underline wavy 1px;
 }
@@ -1792,7 +1796,10 @@ label {
   width: 100%;
 }
 
-label:has(input:invalid) {
+/* label:has(input:invalid) {
+  color: red;
+} */
+label:has(input:invalid:not(:focus):not(:placeholder-shown)) {
   color: red;
 }
 label:has(input:invalid)::before {
@@ -2381,5 +2388,15 @@ button[type="submit"].deleteUser {
     grid-column: 1 / -1;
     grid-row: auto;
     flex-direction: column;
+  }
+}
+
+@supports selector(:user-invalid) {
+  label:has(input::user-invalid) {
+    color: red;
+  }
+  :is(input[type="email"], input[type="password"], input[type="tel"]):user-invalid {
+    color: red;
+    text-decoration: underline wavy 1px;
   }
 }

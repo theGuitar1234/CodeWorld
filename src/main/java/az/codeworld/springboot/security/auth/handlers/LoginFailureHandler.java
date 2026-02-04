@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import az.codeworld.springboot.admin.services.ActivityService;
 import az.codeworld.springboot.admin.services.serviceImpl.ActivityServiceImpl;
 import az.codeworld.springboot.security.services.auditservices.AuditService;
-import az.codeworld.springboot.utilities.constants.accountError;
+import az.codeworld.springboot.utilities.constants.accounterror;
 import az.codeworld.springboot.utilities.constants.eventtype;
 import az.codeworld.springboot.utilities.constants.exceptionmessages;
 import az.codeworld.springboot.utilities.constants.source;
@@ -75,7 +75,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
             // response.setContentType("text/plain;charset=UTF-8");
             // response.getWriter().write("User is Banned");
             // return;
-            setDefaultFailureUrl("/restricted/?error=" + accountError.ACCOUNT_BANNED.getAccountErrorString());
+            setDefaultFailureUrl("/restricted/?error=" + accounterror.ACCOUNT_BANNED.getAccountErrorString());
         }
 
         if (authException instanceof LockedException) {

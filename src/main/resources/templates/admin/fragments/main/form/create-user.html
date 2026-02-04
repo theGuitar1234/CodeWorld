@@ -4,57 +4,93 @@
   <!-- <input type="hidden" th:value="${userId}" id="hidden-user-id" /> -->
 
   <div class="help" id="password-help" th:text="#{auth.password.help}">
-    At least 1 uppercase, lowercase character, number and a special character
-    is required.
+    At least 1 uppercase, lowercase character, number and a special character is
+    required.
   </div>
   <div class="help" id="email-help" th:text="#{auth.email.help}">
-    Emails must contain @ symbol, usually follows the format of "example@email.com"
-    where "example" will be your email's name.
+    Emails must contain @ symbol, usually follows the format of
+    "example@email.com" where "example" will be your email's name.
+  </div>
+  <div class="help" id="first-name-help-request" th:text="#{auth.firstName.help}">
+    You must enter your valid real first name
+  </div>
+  <div class="help" id="last-name-help-request" th:text="#{auth.lastName.help}">
+    You must enter your valid real last name
+  </div>
+  <div class="help" id="last-name-help-request" th:text="#{auth.lastName.help}">
+    You must enter your valid real last name
   </div>
 
-
-  <form 
-    action="/admin/createUser" 
-    method="POST" 
-    id="update-user" 
-    data-spa-form
-  >
+  <form action="/admin/createUser" method="POST" id="update-user" data-spa-form>
     <fieldset>
-      <legend>USER</legend>
-      <label for="firstName">FirstName : </label>
-      <input 
-        id="firstName" 
-        type="text" 
-        name="firstName" 
-        placeholder="John" 
-        autocomplete="name"/>
-      
-      <label for="lastName">LastName : </label>
-      <input 
-        id="lastName" 
-        type="text" 
-        name="lastName" 
-        placeholder="Doe" 
-        autocomplete="name"/>
+      <legend>
+        <select name="role" required>
+          <option disabled selected>USER</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="STUDENT">STUDENT</option>
+          <option value="TEACHER">TEACHER</option>
+        </select>
+      </legend>
 
       <label 
+        for="firstName"
+        data-invalid="Invalid First Name"
+        data-empty="Enter your First Name"
+        data-valid="Valid First Name"
+        th:attr="data-invalid=#{auth.firstName.invalid}, data-empty=#{auth.firstName.empty}, data-valid=#{auth.firstName.valid}"
+      >
+        FirstName :
+        <input
+          id="firstName"
+          type="text"
+          name="firstName"
+          placeholder="John"
+          aria-describedby="first-name-help-request"
+          pattern="^[A-Z]{1}[a-z]{1,14}$"
+          maxlength="15"
+          autocomplete="given-name"
+        /> 
+      </label>
+
+      <label 
+        for="lastName"
+        data-invalid="Invalid Last Name"
+        data-empty="Enter your Last Name"
+        data-valid="Valid Last Name"
+        th:attr="data-invalid=#{auth.lastName.invalid}, data-empty=#{auth.lastName.empty}, data-valid=#{auth.lastName.valid}"
+      >
+        LastName :
+        <input
+          id="lastName"
+          type="text"
+          name="lastName"
+          placeholder="Doe"
+          aria-describedby="last-name-help-request"
+          autocomplete="family-name"
+          pattern="^[A-Z]{1}[a-z]{1,19}$"
+          maxlength="20"
+        /> 
+      </label>
+
+      <label
         for="email"
         data-invalid="Invalid Email"
         data-empty="Input an Email"
         data-valid="Email is Valid"
       >
-        Email : 
+        Email :
+        <!-- \. is how you escape in Browser Regex -->
+        <input
+          id="email"
+          type="email"
+          name="email"
+          required
+          placeholder="example@email.com"
+          aria-describedby="email-help"
+          pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9._%+-]+\.[A-Za-z]{2,6}$"
+          autocomplete="email"
+        />
       </label>
-      <input 
-        id="email"
-        type="email" 
-        name="email" 
-        required 
-        placeholder="example@email.com" 
-        aria-describedby="email-help"
-        pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9._%+-]+\\.[A-Za-z]{2,6}$"
-        autocomplete="email"
-      />
 
       <label
         for="password"
@@ -71,6 +107,7 @@
           pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
           name="password"
           autocomplete="new-password"
+          required
         />
       </label>
       <label
@@ -88,6 +125,7 @@
           pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
           name="password2"
           autocomplete="new-password"
+          required
         />
       </label>
       <div class="show-password">
@@ -95,22 +133,24 @@
         <label for="show-password">Show Password</label>
       </div>
       <label for="payment">User Payment : </label>
-      <input
-        id="payment"
-        type="number"
-        name="payment"
-      />
+      <input id="payment" type="number" name="amount" />
+      <label for="currency">Currency : </label>
+      <select name="currency" id="currency" required>
+        <option value="USD">USD</option>
+        <option value="AZN">AZN</option>
+        <option value="TRY">TRY</option>
+        <option value="EURO">EURO</option>
+      </select>
+      <!-- <label for="roles">Role : </label>
+      <select name="role">
+        <option value="ADMIN">ADMIN</option>
+        <option value="STUDENT">STUDENT</option>
+        <option value="TEACHER">TEACHER</option>
+      </select> -->
       <label for="payment-date">Payment Date : </label>
-      <input
-        type="date"
-        name="nextDate"
-        id="payment-date"
-      />
+      <input type="date" name="nextDate" id="payment-date" />
       <label for="affiliation-date">Affiliation Date : </label>
-      <input
-        type="date"
-        id="affiliation-date"
-      />
+      <input type="date" id="affiliation-date" />
     </fieldset>
     <button type="submit">Submit</button>
   </form>

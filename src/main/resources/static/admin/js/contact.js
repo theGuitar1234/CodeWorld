@@ -42,6 +42,7 @@ async function handleContact(e) {
 
     // history.pushState({}, "", mergedUrl.toString());
 
+    document.dispatchEvent(new CustomEvent("spa:navigated", { detail: { url } }));
   } catch (e) {
     alert(`Failed to contact ${e}`);
     console.error(e);

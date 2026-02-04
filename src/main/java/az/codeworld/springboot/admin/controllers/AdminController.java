@@ -58,6 +58,7 @@ import az.codeworld.springboot.admin.dtos.StudentDTO;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.create.TransactionCreateDTO;
+import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
@@ -85,6 +86,8 @@ import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.admin.services.serviceImpl.ActivityServiceImpl;
 
 import az.codeworld.springboot.exceptions.CourseOfferingAlreadyExistsException;
+import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
+import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.SubjectAlreadyExistsException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 
@@ -97,7 +100,9 @@ import az.codeworld.springboot.security.services.sessionservices.SessionKiller;
 import az.codeworld.springboot.utilities.WriteLog;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties.Payriff;
+import az.codeworld.springboot.utilities.constants.accounterror;
 import az.codeworld.springboot.utilities.constants.accountstatus;
+import az.codeworld.springboot.utilities.constants.accountsuccess;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.emailstatus;
 import az.codeworld.springboot.utilities.constants.eventtype;
@@ -240,7 +245,7 @@ public class AdminController {
         model.addAllAttributes(
                 Map.of(
                         "chartPoints", transactionService.getChartPoints(),
-                        "reque9sts", requestService.getRecentRequests(),
+                        "requests", requestService.getRecentRequests(),
                         "studentTransactions", transactionService.getRecentTransactions(roles.STUDENT),
                         "teacherTransactions", transactionService.getRecentTransactions(roles.TEACHER)));
 
@@ -255,22 +260,36 @@ public class AdminController {
         return "admin/admin.html";
     }
 
-    @ResponseBody
+    //@ResponseBody
     @DeleteMapping("/rejectRequest/{requestId}")
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
-    public void rejectRequest(@PathVariable("requestId") Long requestId) {
-        RequestDTO requestDTO = requestService.getRequestById(requestId);
-        requestService.deleteRequestByRequestId(requestId);
-        registrationService.sendRejectionEmail(requestDTO);
+    public String rejectRequest(@PathVariable("requestId") Long requestId, Model model) {
+        try {
+            RequestDTO requestDTO = requestService.getRequestById(requestId);
+            requestService.deleteRequestByRequestId(requestId);
+            registrationService.sendRejectionEmail(requestDTO);
+            model.addAttribute("success", accountsuccess.REJECT_REQUEST_SUCCESS.getAccountSuccessString());
+            return "admin/fragments/success/success.html :: success";
+        } catch (Exception e) {
+            model.addAttribute("error", accounterror.REJECT_REQUEST_ERROR.getAccountErrorString());
+            return "admin/fragments/error/error.html :: error";
+        }
     }
 
-    @ResponseBody
+    //@ResponseBody
     @DeleteMapping("/acceptRequest/{requestId}")
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
-    public void acceptRequest(@PathVariable("requestId") Long requestId) {
-        RequestDTO requestDTO = requestService.getRequestById(requestId);
-        requestService.deleteRequestByRequestId(requestId);
-        registrationService.sendAcceptanceEmail(requestDTO);
+    public String acceptRequest(@PathVariable("requestId") Long requestId, Model model) {
+        try {
+            RequestDTO requestDTO = requestService.getRequestById(requestId);
+            requestService.deleteRequestByRequestId(requestId);
+            registrationService.sendAcceptanceEmail(requestDTO);
+            model.addAttribute("success", accountsuccess.ACCEPT_REQUEST_SUCCESS.getAccountSuccessString());
+            return "admin/fragments/success/success.html :: success";
+        } catch (Exception e) {
+            model.addAttribute("error", accounterror.ACCEPT_REQUEST_ERROR.getAccountErrorString());
+            return "admin/fragments/error/error.html :: error";
+        }
     }
 
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
@@ -632,6 +651,30 @@ public class AdminController {
             @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
             HttpServletRequest request,
             Model model) {
+
+        boolean spaRequest = isSpaRequest(fragment, request);
+
+        return render(model, spa.CREATE_USER, spaRequest, "admin/fragments/main/create-user-main.html :: create-user-main");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/createUser")
+    public String createUser(
+            @ModelAttribute @Valid UserCreateDTO userCreateDTO,
+            @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
+            HttpServletRequest request,
+            Model model) throws PasswordsMustBePresentException {
+
+        try {
+            userService.createNewUserAdmin(userCreateDTO);
+            model.addAttribute("success", accountsuccess.ACCOUNT_ADDED.getAccountSuccessString());
+        } catch(DataIntegrityViolationException e) {
+            model.addAttribute("error", e.getLocalizedMessage());
+        } catch(PasswordsMustBePresentException e) {
+            model.addAttribute("error", e.getExceptionMessage());
+        } catch(PasswordsMustMatchException e) {
+            model.addAttribute("error", e.getExceptionMessage());
+        }
 
         boolean spaRequest = isSpaRequest(fragment, request);
 

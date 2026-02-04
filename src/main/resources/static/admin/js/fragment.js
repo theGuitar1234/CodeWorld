@@ -83,7 +83,7 @@ async function handleFragmentForm(e) {
   loading.textContent = 'loading';
   document.body.appendChild(loading);
 
-  await new Promise(r => setTimeout(r, 10000));
+  await new Promise(r => setTimeout(r, 1000));
 
   const res = await fetch(url, {
     method: "POST",

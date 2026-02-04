@@ -96,7 +96,7 @@ public class User extends AuditedEntity {
     @NotBlank
     // @Length(min = 13, max = 13)
     @Column(nullable = false, unique = true)
-    //@UsernameValidation
+    @UsernameValidation
     private String userName;
 
     @NotBlank
@@ -207,6 +207,7 @@ public class User extends AuditedEntity {
     @Column
     private Instant profileImageUpdatedAt;
 
+    @Past
     @Column
     private LocalDate affiliationDate;
 
