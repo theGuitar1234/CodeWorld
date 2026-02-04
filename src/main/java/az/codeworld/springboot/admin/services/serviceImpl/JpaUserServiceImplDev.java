@@ -173,16 +173,19 @@ public class JpaUserServiceImplDev implements UserService {
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setEmail(userCreateDTO.getEmail());
-
-        saveUser(user);
-
-        roleService.addRolesToUser(user.getId(),
-                Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));
+        user.setPayment(new Money(userCreateDTO.getAmount(), userCreateDTO.getCurrency()));
+        user.setNextDate(userCreateDTO.getNextDate().atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant());
 
         if (userCreateDTO.getPassword() == null && userCreateDTO.getPassword2() == null) throw new PasswordsMustBePresentException();
         if (!userCreateDTO.getPassword().equals(userCreateDTO.getPassword2())) throw new PasswordsMustMatchException();
 
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
+
+        //saveUser(user);
+        userRepository.save(user);
+
+        roleService.addRolesToUser(user.getId(),
+                Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));
     }
 
     @Override

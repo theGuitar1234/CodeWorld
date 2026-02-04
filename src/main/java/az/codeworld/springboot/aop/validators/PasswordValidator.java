@@ -10,7 +10,7 @@ public class PasswordValidator implements ConstraintValidator<PasswordValidation
     //Disallows spaces : ^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])\S{8,}$
     //^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$
 
-    private static final String PASSWORD_PATTERN_STRING = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_])\\S{8,}$";
+    private static final String PASSWORD_PATTERN_STRING = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$";
 
     @Override
     public boolean isValid(String passwordString, ConstraintValidatorContext context) {
