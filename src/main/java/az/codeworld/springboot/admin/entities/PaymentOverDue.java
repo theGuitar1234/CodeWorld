@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+import az.codeworld.springboot.utilities.constants.paymentDueStatus;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +52,7 @@ public class PaymentOverDue {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private transactionstatus transactionstatus;
+    private paymentDueStatus paymentDueStatus;
 
     @Column
     private Instant createdAt;

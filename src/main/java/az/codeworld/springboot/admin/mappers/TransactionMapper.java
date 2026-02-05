@@ -11,22 +11,24 @@ import org.springframework.stereotype.Component;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.admin.entities.Transaction;
+import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
 
 @Component
 public class TransactionMapper {
 
-    private static final String ZONE = "Asia/Baku";
-    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
+    // private static final String ZONE = "Asia/Baku";
+    // private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
 
     public static TransactionDTO toTransactionDTO(
         Transaction transaction
     ) {
+        ApplicationProperties applicationProperties = new ApplicationProperties();
         return TransactionDTO
             .builder()
             .transactionId(transaction.getTransactionId())
-            .transactionTime(LocalDateTime.ofInstant(transaction.getTransactionTime(), ZoneId.of(ZONE)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)))
+            .transactionTime(LocalDateTime.ofInstant(transaction.getTransactionTime(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())))
             .transactionPaidBy(transaction.getTransactionPaidBy())
             .transactionDescription(transaction.getTransactionDescription())
             .transactionDetails(transaction.getTransactionDetails())

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import az.codeworld.springboot.admin.entities.PaymentOverDue;
 import az.codeworld.springboot.admin.entities.Teacher;
+import az.codeworld.springboot.admin.records.PaymentOverDueRecord;
 import az.codeworld.springboot.admin.repositories.PaymentOverDueRepository;
 import az.codeworld.springboot.admin.repositories.TeacherRepository;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
+import az.codeworld.springboot.utilities.constants.paymentDueStatus;
 import az.codeworld.springboot.utilities.services.paymentservices.PaymentOverDueService;
 import jakarta.transaction.Transactional;
 
@@ -23,7 +26,6 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
 
     private final TeacherRepository teacherRepository;
     private final PaymentOverDueRepository paymentOverDueRepository;
-
     private final ApplicationProperties applicationProperties;
 
     private static final int GRACE_DAYS = 7;
@@ -37,12 +39,6 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
         this.teacherRepository = teacherRepository;
         this.paymentOverDueRepository = paymentOverDueRepository;
         this.applicationProperties = applicationProperties;
-    }
-
-    @Override
-    @Scheduled(cron = "0 5 0 * * *")
-    public void synchPaymentOverDues() {
-        synchAllTeacherPayDues();
     }
 
     @Override
@@ -81,6 +77,30 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
 
         // teacherRepository.save(teacher);
         // teacherRepository.flush();
+    }
+
+    @Override
+    public List<PaymentOverDueRecord> listPaymentOverDues(paymentDueStatus paymentDueStatus) {
+        return paymentOverDueRepository.findTop10ByPaymentDueStatusOrderByDueDateAsc(paymentDueStatus)
+            .stream()
+            .map(p -> new PaymentOverDueRecord(
+                            p.getId(), 
+                            p.getTeacher().getId(), 
+                            p.getCycleYear(), 
+                            p.getCycleMonth(), 
+                            p.getDueDate()
+                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
+                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), 
+                            p.getAmount(), 
+                            p.getPaymentDueStatus().name(), 
+                            p.getCreatedAt()
+                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
+                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), 
+                            p.getPaidAt()
+                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
+                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat()))
+                        ))
+            .toList();
     }
 
     

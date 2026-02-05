@@ -112,14 +112,15 @@ public class UserController {
     private final ApplicationProperties applicationProperties;
 
     public UserController(
-            TransactionService transactionService,
-            RequestService requestService,
-            LogoutService logoutService,
-            RegistrationService registrationService,
-            UserService userService,
-            ProfileService profileService,
-            ApplicationProperties applicationProperties,
-            TimeZoneService timeZoneService) {
+        TransactionService transactionService,
+        RequestService requestService,
+        LogoutService logoutService,
+        RegistrationService registrationService,
+        UserService userService,
+        ProfileService profileService,
+        ApplicationProperties applicationProperties,
+        TimeZoneService timeZoneService
+    ) {
         this.transactionService = transactionService;
         this.requestService = requestService;
         this.logoutService = logoutService;

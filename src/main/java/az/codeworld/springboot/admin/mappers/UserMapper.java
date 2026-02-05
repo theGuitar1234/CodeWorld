@@ -27,8 +27,8 @@ import az.codeworld.springboot.utilities.constants.roles;
 public class UserMapper {
 
     private static final String DEFAULT_PROFILE_PHOTO = "/assets/sprites/profile-thumb.jpg";
-    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy";
-    private static final String ZONE = "Asia/Baku";
+    //private static final String DATE_TIME_FORMAT = "dd-MM-yyyy";
+    //private static final String ZONE = "Asia/Baku";
 
     private static String resolveProfilePhoto(User user) {
         if (user == null) return DEFAULT_PROFILE_PHOTO;
@@ -49,6 +49,7 @@ public class UserMapper {
         User user,
         String dtoTypeString
     ) {
+        ApplicationProperties applicationProperties = new ApplicationProperties();
         switch (dtoTypeString.toUpperCase(Locale.ROOT)) {
             case "FULL":
                 return UserDTO
@@ -59,7 +60,7 @@ public class UserMapper {
                     .email(user.getEmail())
                     .createdAt(user.getCreatedAt().toString())
                     .payment(user.getPayment())
-                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(ZONE)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)).toString())
+                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())).toString())
                     .birthDate(user.getBirthDate().toString())
                     .street(user.getStreet())
                     .city(user.getCity())
@@ -81,7 +82,7 @@ public class UserMapper {
                     .userName(user.getUserName())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
-                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(ZONE)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)).toString())
+                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())).toString())
                     .payment(user.getPayment())
                     .isEmailAdded(user.hasEmail())
                     .isPhoneAdded(user.hasPhoneNumber())
@@ -110,7 +111,7 @@ public class UserMapper {
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .payment(user.getPayment())
-                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(ZONE)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)).toString())
+                    .nextDate(LocalDate.ofInstant(user.getNextDate(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())).toString())
                     .role(user.getRoles().stream().anyMatch(r -> roles.TEACHER.getRoleNameString().equals(r.getRoleNameString())) ? roles.TEACHER : roles.STUDENT)
                     .phoneNumber(user.getPhoneNumber())
                     .build();

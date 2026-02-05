@@ -77,6 +77,8 @@ public class JpaUserServiceImplProd implements UserService {
     public void saveUser(User user) {
         if (user.getCreatedAt() == null) {
             user.setCreatedAt(Instant.now());
+        } if (user.getZoneId() == null) {
+            user.setZoneId(applicationProperties.getTime().getZone());
         }
         userRepository.save(user);
         userRepository.flush();
@@ -164,8 +166,8 @@ public class JpaUserServiceImplProd implements UserService {
         user.setEmail(userAuthDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userAuthDTO.getPassword()));
 
-        //saveUser(user);
-        userRepository.save(user);
+        saveUser(user);
+        //userRepository.save(user);
 
         roleService.addRolesToUser(user.getId(),
                 Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
@@ -192,8 +194,8 @@ public class JpaUserServiceImplProd implements UserService {
 
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
 
-        //saveUser(user);
-        userRepository.save(user);
+        saveUser(user);
+        //userRepository.save(user);
 
         roleService.addRolesToUser(user.getId(),
                 Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));

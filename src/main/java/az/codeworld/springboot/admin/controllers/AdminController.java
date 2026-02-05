@@ -73,6 +73,8 @@ import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.ActivityRecord;
 import az.codeworld.springboot.admin.records.GenericLinkRecord;
 import az.codeworld.springboot.admin.records.Pagination;
+import az.codeworld.springboot.admin.records.PaymentDueRecord;
+import az.codeworld.springboot.admin.records.PaymentOverDueRecord;
 import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.records.UserCombineRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
@@ -107,10 +109,11 @@ import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.emailstatus;
 import az.codeworld.springboot.utilities.constants.eventtype;
 import az.codeworld.springboot.utilities.constants.mode;
+import az.codeworld.springboot.utilities.constants.paymentDueStatus;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.spa;
 import az.codeworld.springboot.utilities.services.contactservices.ContactService;
-
+import az.codeworld.springboot.utilities.services.paymentservices.PaymentOverDueService;
 import az.codeworld.springboot.web.dtos.CourseEnrollmentDTO;
 import az.codeworld.springboot.web.dtos.CourseOfferingDTO;
 import az.codeworld.springboot.web.dtos.SubjectDTO;
@@ -160,6 +163,7 @@ public class AdminController {
     private final ContactService contactService;
     private final CourseOfferingRepository courseOfferingRepository;
     private final CourseOfferingService courseOfferingService;
+    private final PaymentOverDueService paymentOverDueService;
     
     public AdminController(
         RequestService requestService,
@@ -180,7 +184,8 @@ public class AdminController {
         ApplicationProperties applicationProperties,
         ContactService contactService,
         CourseOfferingRepository courseOfferingRepository,
-        CourseOfferingService courseOfferingService
+        CourseOfferingService courseOfferingService,
+        PaymentOverDueService paymentOverDueService
     ) {
         this.requestService = requestService;
         this.transactionService = transactionService;
@@ -201,6 +206,7 @@ public class AdminController {
         this.contactService = contactService;
         this.courseOfferingRepository = courseOfferingRepository;
         this.courseOfferingService = courseOfferingService;
+        this.paymentOverDueService = paymentOverDueService;
     }
 
     @GetMapping({ "", "/" })
@@ -518,6 +524,7 @@ public class AdminController {
             @RequestParam(required = false, name = "pageIndex", defaultValue = "1") int pageIndex,
             @RequestParam(required = false, name = "payablePageIndex", defaultValue = "1") int payablePageIndex,
             @RequestParam(required = false, name = "direction", defaultValue = "ASC") Direction direction,
+            @RequestParam(required = false, name = "paymentDueStatus", defaultValue = "DUE") paymentDueStatus paymentDueStatus,
             @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
             HttpServletRequest request,
             Model model) {
@@ -527,6 +534,7 @@ public class AdminController {
         WriteLog.main("This has to be an SPA request, is it? : " + spaRequest, AdminController.class);
 
         fetchPaginatedUsers(pageIndex, perPage, sortBy, direction, payablePageIndex, payableSortBy, role, model);
+        listPaymentOverDues(paymentDueStatus, model);
 
         return render(model, spa.TEACHERS, spaRequest, "admin/fragments/main/teachers-main.html :: teachers-main");
     }
@@ -1345,6 +1353,14 @@ public class AdminController {
     private String render(Model model, spa spa, boolean spaRequest, String fragmentView) {
         model.addAttribute("spa", spa.getSpaString());
         return spaRequest ? fragmentView : "admin/admin.html";
+    }
+
+    private void listPaymentOverDues(
+        paymentDueStatus paymentDueStatus,
+        Model model
+    ) {
+        List<PaymentOverDueRecord> paymentOverDueRecords = paymentOverDueService.listPaymentOverDues(paymentDueStatus);
+        model.addAttribute("paymentOverDues", paymentOverDueRecords);
     }
 
     private Page<SubjectDTO> fetchPaginatedSubjects(

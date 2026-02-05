@@ -27,6 +27,7 @@ import az.codeworld.springboot.security.entities.LoginAudit;
 import az.codeworld.springboot.security.entities.OtpCode;
 import az.codeworld.springboot.security.entities.PasswordResetToken;
 import az.codeworld.springboot.security.entities.Role;
+import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import jakarta.persistence.AttributeOverride;
@@ -85,7 +86,7 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends AuditedEntity {
 
-    private final String ZONE = "Asia/Baku";
+    //private final String ZONE = "Asia/Baku";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
@@ -162,7 +163,7 @@ public class User extends AuditedEntity {
     @Column
     private String language;
 
-    @Column
+    @Column(nullable = false)
     private String zoneId;
 
     // @Column
@@ -184,9 +185,9 @@ public class User extends AuditedEntity {
 
     public void updateNextPaymentDate() {
         this.nextDate = LocalDate
-            .ofInstant(nextDate == null ? Instant.now() : nextDate, ZoneId.of(ZONE))
+            .ofInstant(nextDate == null ? Instant.now() : nextDate, ZoneId.of(this.zoneId))
             .plusMonths(1)
-            .atStartOfDay(ZoneId.of(ZONE)).toInstant();
+            .atStartOfDay(ZoneId.of(this.zoneId)).toInstant();
     }
 
     @Embedded
@@ -228,7 +229,7 @@ public class User extends AuditedEntity {
 
     public String getTimeZone() {
         String zone = this.zoneId.substring(this.zoneId.lastIndexOf(' ') + 1);
-        ZoneId zoneId = ZoneId.of(zone == null ? ZONE : zone);
+        ZoneId zoneId = ZoneId.of(zone == null ? this.zoneId : zone);
         ZoneOffset zoneOffset = zoneId.getRules().getOffset(Instant.now());
 
         // String city = zoneId.getId().contains("/")

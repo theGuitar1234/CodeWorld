@@ -98,10 +98,15 @@ public class ApplicationProperties {
 
     public static class Time {
         private String zone;
+        private String dateTimeFormat;
 
         public String getZone() { return zone; }
 
         public void setZone(String zone) { this.zone = zone; }
+
+        public String getDateTimeFormat() { return dateTimeFormat; }
+
+        public void setDateTimeFormat(String dateTimeFormat) { this.dateTimeFormat = dateTimeFormat; }
         
     }
 

@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy";
+    //private static final String DATE_TIME_FORMAT = "dd-MM-yyyy";
 
     private final ApplicationProperties applicationProperties;
     private final NotificationRepository notificationRepository;
@@ -28,8 +28,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     public NotificationServiceImpl(
         NotificationRepository notificationRepository,
-        NotificationRecipientRepository notificationRecipientRepository
-    , ApplicationProperties applicationProperties) {
+        NotificationRecipientRepository notificationRecipientRepository, 
+        ApplicationProperties applicationProperties
+    ) {
         this.notificationRepository = notificationRepository;
         this.notificationRecipientRepository = notificationRecipientRepository;
         this.applicationProperties = applicationProperties;
@@ -87,7 +88,7 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationRecord> getLatestNotifications(Long userId) {
         return notificationRepository.findLatestNotifications(userId)
             .stream()
-            .map(n -> new NotificationRecord(n.getId(), n.getNotificationContent(), LocalDateTime.ofInstant(n.getCreatedAt(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)), n.getLink()))
+            .map(n -> new NotificationRecord(n.getId(), n.getNotificationContent(), LocalDateTime.ofInstant(n.getCreatedAt(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), n.getLink()))
             .toList();
     }
 

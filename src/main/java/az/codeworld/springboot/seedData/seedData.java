@@ -41,6 +41,7 @@ import az.codeworld.springboot.security.services.authservices.RegistrationServic
 import az.codeworld.springboot.security.services.authservices.authservicesImpl.RegistrationServiceImpl;
 import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
+import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
@@ -67,6 +68,8 @@ import az.codeworld.springboot.web.services.ProfileService;
 @Component
 @Profile("dev")
 public class SeedData implements ApplicationRunner {
+
+    private final ApplicationProperties applicationProperties;
 
     private static final Logger log = LoggerFactory.getLogger(SecurityController.class);
 
@@ -104,7 +107,8 @@ public class SeedData implements ApplicationRunner {
         NotificationService notificationService,
         SubjectEntrollmentRepository subjectEntrollmentRepository,
         CourseEnrollmentRepository courseEnrollmentRepository,
-        CourseOfferingRepository courseOfferingRepository
+        CourseOfferingRepository courseOfferingRepository, 
+        ApplicationProperties applicationProperties
     ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
@@ -120,6 +124,7 @@ public class SeedData implements ApplicationRunner {
         this.subjectEntrollmentRepository = subjectEntrollmentRepository;
         this.courseEnrollmentRepository = courseEnrollmentRepository;
         this.courseOfferingRepository = courseOfferingRepository;
+        this.applicationProperties = applicationProperties;
     }
 
     @Override
@@ -605,7 +610,7 @@ public class SeedData implements ApplicationRunner {
         admin.setPostalCode(99999);
         admin.setCountry("Example");
         admin.setLanguage("English (United States)");
-        admin.setZoneId("America/Guatemala");
+        //admin.setZoneId(applicationProperties.getTime().getZone());
 
         admin.setTwoFactorEnabled(true);
 

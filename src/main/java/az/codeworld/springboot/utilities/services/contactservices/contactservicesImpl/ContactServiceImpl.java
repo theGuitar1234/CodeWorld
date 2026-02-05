@@ -43,13 +43,14 @@ public class ContactServiceImpl implements ContactService {
     private final TeacherRepository teacherRepository;
 
     public ContactServiceImpl(
-            ThymeleafService thymeleafService,
-            StudentRepository studentRepository,
-            ApplicationProperties applicationProperties,
-            EmailOutboxService emailOutboxService,
-            ApplicationEventPublisher applicationEventPublisher,
-            UserRepository userRepository,
-            TeacherRepository teacherRepository) {
+        ThymeleafService thymeleafService,
+        StudentRepository studentRepository,
+        ApplicationProperties applicationProperties,
+        EmailOutboxService emailOutboxService,
+        ApplicationEventPublisher applicationEventPublisher,
+        UserRepository userRepository,
+        TeacherRepository teacherRepository
+    ) {
         this.thymeleafService = thymeleafService;
         this.studentRepository = studentRepository;
         this.applicationProperties = applicationProperties;
