@@ -612,7 +612,7 @@ public class SeedData implements ApplicationRunner {
         admin.setLanguage("English (United States)");
         //admin.setZoneId(applicationProperties.getTime().getZone());
 
-        admin.setTwoFactorEnabled(true);
+        //admin.setTwoFactorEnabled(true);
 
         profilePicture = new ProfilePicture();
         profilePicture.setProfileTitle("Silly Profile Picture");

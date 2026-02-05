@@ -28,10 +28,14 @@ import az.codeworld.springboot.admin.records.RequestRecord;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
+    private final RequestMapper requestMapper;
 
     public RequestServiceImpl(
-            RequestRepository requestRepository) {
+        RequestRepository requestRepository,
+        RequestMapper requestMapper
+    ) {
         this.requestRepository = requestRepository;
+        this.requestMapper = requestMapper;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class RequestServiceImpl implements RequestService {
         Optional<Request> requestOptional = requestRepository.findById(requestId);
         Request request = requestOptional.orElseThrow(() -> new RuntimeException("Request Not Found"));
 
-        return RequestMapper.toRequestDTO(
+        return requestMapper.toRequestDTO(
                 request.getId(),
                 request.getFirstName(),
                 request.getLastName(),
@@ -82,7 +86,7 @@ public class RequestServiceImpl implements RequestService {
                 .map(requestOptional -> {
                     if (requestOptional.isPresent()) {
                         Request request = requestOptional.get();
-                        return RequestMapper.toRequestDTO(
+                        return requestMapper.toRequestDTO(
                             request.getId(),
                             request.getFirstName(),
                             request.getLastName(),
@@ -106,7 +110,7 @@ public class RequestServiceImpl implements RequestService {
                 .map(requestOptional -> {
                     if (requestOptional.isPresent()) {
                         Request request = requestOptional.get();
-                        return RequestMapper.toRequestDTO(
+                        return requestMapper.toRequestDTO(
                                 request.getId(),
                                 request.getFirstName(),
                                 request.getLastName(),
@@ -130,7 +134,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestDTO getRequestByRequestToken(String token) {
         Request request = requestRepository.findByRequestToken(token).orElseThrow(() -> new RuntimeException("Request Not Found"));
-        return RequestMapper.toRequestDTO(
+        return requestMapper.toRequestDTO(
             request.getId(), 
             request.getFirstName(), 
             request.getLastName(), 
@@ -147,7 +151,7 @@ public class RequestServiceImpl implements RequestService {
         if (!(requestOptional.isPresent() && requestOptional.get().getExpiresAt() > System.currentTimeMillis()))
             throw new InvalidRequestTokenException("token: " + token);
         Request request = requestOptional.get();
-        RequestDTO requestDTO = RequestMapper.toRequestDTO(
+        RequestDTO requestDTO = requestMapper.toRequestDTO(
             request.getId(), 
             request.getFirstName(), 
             request.getLastName(), 
@@ -164,7 +168,7 @@ public class RequestServiceImpl implements RequestService {
             Direction direction) {
         return requestRepository
                 .findAll(PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy))
-                .map(r -> RequestMapper.toRequestDTO(r.getId(), r.getFirstName(), r.getLastName(), r.getEmail(), r.getRole(), r.getRequestToken(), r.getExpiresAt()));
+                .map(r -> requestMapper.toRequestDTO(r.getId(), r.getFirstName(), r.getLastName(), r.getEmail(), r.getRole(), r.getRequestToken(), r.getExpiresAt()));
     }
 
 }

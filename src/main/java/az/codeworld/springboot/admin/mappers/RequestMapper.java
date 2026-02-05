@@ -16,13 +16,13 @@ public class RequestMapper {
 
     private final ApplicationProperties applicationProperties;
 
-    RequestMapper(ApplicationProperties applicationProperties) {
+    public RequestMapper(ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
     }
 
     //private static final String ZONE = "Asia/Baku";
 
-    public static RequestDTO toRequestDTO(
+    public RequestDTO toRequestDTO(
         Long requestId,
         String firstName,
         String lastName,
@@ -31,7 +31,6 @@ public class RequestMapper {
         String requestToken,
         long expiresAt
     ) {
-        ApplicationProperties applicationProperties = new ApplicationProperties();
         return RequestDTO
             .builder()
             .requestId(requestId)

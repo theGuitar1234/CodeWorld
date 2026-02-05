@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.h2.mvstore.tx.TransactionMap;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,15 +38,18 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final TeacherRepository teacherRepository;
+    private final TransactionMapper transactionMapper;
 
     public TransactionServiceImpl(
         TransactionRepository transactionRepository,
         UserRepository userRepository,
-        TeacherRepository teacherRepository
+        TeacherRepository teacherRepository,
+        TransactionMapper transactionMapper
     ) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
         this.teacherRepository = teacherRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
             .findAllTransactionsByBelongsTo(role)
             .stream()
             .map(transaction -> {
-                return TransactionMapper.toTransactionDTO(
+                return transactionMapper.toTransactionDTO(
                     transaction
                 );
             })
@@ -98,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
             .findTop10ByBelongsToOrderByTransactionTimeDesc(role)
             .stream()
             .map(transaction -> {
-                return TransactionMapper.toTransactionDTO(
+                return transactionMapper.toTransactionDTO(
                     transaction
                 );
             })
@@ -111,7 +115,7 @@ public class TransactionServiceImpl implements TransactionService {
             .findTop10ByUserIdOrderByTransactionTimeDesc(userId)
             .stream()
             .map(transaction -> {
-                return TransactionMapper.toTransactionDTO(
+                return transactionMapper.toTransactionDTO(
                     transaction
                 );
             })
@@ -136,7 +140,7 @@ public class TransactionServiceImpl implements TransactionService {
                 PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
             )
             .map(t -> {
-                return TransactionMapper.toTransactionDTO(
+                return transactionMapper.toTransactionDTO(
                     t
                 );
             });
@@ -160,7 +164,7 @@ public class TransactionServiceImpl implements TransactionService {
                 PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
             )
             .map(t -> {
-                return TransactionMapper.toTransactionDTO(
+                return transactionMapper.toTransactionDTO(
                     t
                 );
             });

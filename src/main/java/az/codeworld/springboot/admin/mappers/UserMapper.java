@@ -26,11 +26,18 @@ import az.codeworld.springboot.utilities.constants.roles;
 @Component
 public class UserMapper {
 
-    private static final String DEFAULT_PROFILE_PHOTO = "/assets/sprites/profile-thumb.jpg";
+    private final String DEFAULT_PROFILE_PHOTO = "/assets/sprites/profile-thumb.jpg";
+    private final ApplicationProperties applicationProperties;
     //private static final String DATE_TIME_FORMAT = "dd-MM-yyyy";
     //private static final String ZONE = "Asia/Baku";
 
-    private static String resolveProfilePhoto(User user) {
+    public UserMapper(
+        ApplicationProperties applicationProperties
+    ) {
+        this.applicationProperties = applicationProperties;
+    }
+
+    private String resolveProfilePhoto(User user) {
         if (user == null) return DEFAULT_PROFILE_PHOTO;
         if (user.getProfilePicture() != null && user.getProfilePicture().getProfilePhoto() != null
                 && !user.getProfilePicture().getProfilePhoto().isBlank()) {
@@ -45,11 +52,10 @@ public class UserMapper {
         return "";
     }
 
-    public static Object toUserDTO(
+    public Object toUserDTO(
         User user,
         String dtoTypeString
     ) {
-        ApplicationProperties applicationProperties = new ApplicationProperties();
         switch (dtoTypeString.toUpperCase(Locale.ROOT)) {
             case "FULL":
                 return UserDTO

@@ -21,10 +21,16 @@ public class TransactionMapper {
     // private static final String ZONE = "Asia/Baku";
     // private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
 
-    public static TransactionDTO toTransactionDTO(
+    private final ApplicationProperties applicationProperties;
+
+    public TransactionMapper(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
+    }
+
+
+    public TransactionDTO toTransactionDTO(
         Transaction transaction
     ) {
-        ApplicationProperties applicationProperties = new ApplicationProperties();
         return TransactionDTO
             .builder()
             .transactionId(transaction.getTransactionId())

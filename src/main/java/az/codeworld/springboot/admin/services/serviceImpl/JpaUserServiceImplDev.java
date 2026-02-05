@@ -59,17 +59,20 @@ public class JpaUserServiceImplDev implements UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationProperties applicationProperties;
+    private final UserMapper userMapper;
 
     public JpaUserServiceImplDev(
         UserRepository userRepository,
         RoleService roleService,
         PasswordEncoder passwordEncoder,
-        ApplicationProperties applicationProperties
+        ApplicationProperties applicationProperties,
+        UserMapper userMapper
     ) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.applicationProperties = applicationProperties;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -91,7 +94,7 @@ public class JpaUserServiceImplDev implements UserService {
     public Object getUserById(Long id, dtotype dtotype) {
         Optional<User> userOptional = userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User not Found By ID"));
-        return UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+        return userMapper.toUserDTO(user, dtotype.getDtoTypeString());
     }
 
     @Override
@@ -99,7 +102,7 @@ public class JpaUserServiceImplDev implements UserService {
         Optional<User> userOptional = userRepository.findByUserName(userName);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Found By Username"));
 
-        return UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+        return userMapper.toUserDTO(user, dtotype.getDtoTypeString());
     }
 
     @Override
@@ -113,7 +116,7 @@ public class JpaUserServiceImplDev implements UserService {
     public UserDTO getUserByEmail(String email, dtotype dtotype) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Found By Email"));
-        return (UserDTO) UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+        return (UserDTO) userMapper.toUserDTO(user, dtotype.getDtoTypeString());
     }
 
     @Override
@@ -164,7 +167,7 @@ public class JpaUserServiceImplDev implements UserService {
         roleService.addRolesToUser(user.getId(),
                 Set.of(roles.USER.getRoleId(), userAuthDTO.getRole().getRoleId()));
 
-        return UserMapper.toUserDTO(user, dtotype.getDtoTypeString());
+        return userMapper.toUserDTO(user, dtotype.getDtoTypeString());
     }
 
     @Override
@@ -212,7 +215,7 @@ public class JpaUserServiceImplDev implements UserService {
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user = userOptional.orElseThrow(() -> new RuntimeException("User Not Found By Email"));
         if (user.getLoginAudit() != null) {
-            return (LoginAuditDTO) UserMapper.toUserDTO(user, dtotype.LOGIN_AUDIT.getDtoTypeString());
+            return (LoginAuditDTO) userMapper.toUserDTO(user, dtotype.LOGIN_AUDIT.getDtoTypeString());
         }
         return null;
     }
@@ -238,7 +241,7 @@ public class JpaUserServiceImplDev implements UserService {
 
         saveUser(user);
 
-        return (UserDTO) UserMapper.toUserDTO(user, dtotype.FULL.getDtoTypeString());
+        return (UserDTO) userMapper.toUserDTO(user, dtotype.FULL.getDtoTypeString());
     }
 
     public String getProfileImageId(String userName) {
@@ -278,7 +281,7 @@ public class JpaUserServiceImplDev implements UserService {
                 true,
                 PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
             )
-            .map(u -> (UserPayableDTO) UserMapper.toUserDTO(u, dtotype.PAYABLE.getDtoTypeString()));
+            .map(u -> (UserPayableDTO) userMapper.toUserDTO(u, dtotype.PAYABLE.getDtoTypeString()));
     }
 
     
