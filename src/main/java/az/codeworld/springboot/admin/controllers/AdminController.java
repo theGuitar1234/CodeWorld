@@ -288,7 +288,7 @@ public class AdminController {
     public String acceptRequest(@PathVariable("requestId") Long requestId, Model model) {
         try {
             RequestDTO requestDTO = requestService.getRequestById(requestId);
-            requestService.deleteRequestByRequestId(requestId);
+            //requestService.deleteRequestByRequestId(requestId);
             registrationService.sendAcceptanceEmail(requestDTO);
             model.addAttribute("success", accountsuccess.ACCEPT_REQUEST_SUCCESS.getAccountSuccessString());
             return "admin/fragments/success/success.html :: success";

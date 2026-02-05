@@ -153,6 +153,7 @@ public class UserController {
         try {
             RequestDTO requestDTO = requestService.validateRequest(token);
             model.addAttribute("request", requestDTO);
+            model.addAttribute("success", "You have been successfully registered! Check your email!");
             return "auth/registration/register";
         } catch (InvalidRequestTokenException e) {
             e.printStackTrace();

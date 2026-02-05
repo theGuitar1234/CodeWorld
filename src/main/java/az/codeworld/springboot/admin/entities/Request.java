@@ -35,6 +35,9 @@ public class Request {
     @Column
     private String lastName;
 
+    @Column
+    private String userName;
+
     @Column(unique = true)
     private String email;
 

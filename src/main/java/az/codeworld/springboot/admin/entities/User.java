@@ -176,7 +176,7 @@ public class User extends AuditedEntity {
     // @Column(nullable = true)
     // private String bankAccount;
 
-    @NotNull
+    //@NotNull
     @Column
     private Instant nextDate;
 
