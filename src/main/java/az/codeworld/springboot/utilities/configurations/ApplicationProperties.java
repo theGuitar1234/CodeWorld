@@ -38,11 +38,11 @@ public class ApplicationProperties {
         private long touchThrottleSeconds;
         private long onlineWindowMinutes;
 
-        public long getTouchThrottle() { return touchThrottleSeconds; }
-        public void setTouchThrottle(long touchThrottleSeconds) { this.touchThrottleSeconds = touchThrottleSeconds; }
+        public long getTouchThrottleSeconds() { return touchThrottleSeconds; }
+        public void setTouchThrottleSeconds(long touchThrottleSeconds) { this.touchThrottleSeconds = touchThrottleSeconds; }
 
-        public long getOnlineWindow() { return onlineWindowMinutes; }
-        public void setOnlineWindow(long onlineWindowMinutes) { this.onlineWindowMinutes = onlineWindowMinutes; }
+        public long getOnlineWindowMinutes() { return onlineWindowMinutes; }
+        public void setOnlineWindowMinutes(long onlineWindowMinutes) { this.onlineWindowMinutes = onlineWindowMinutes; }
     }
 
     public static class Login {
@@ -99,6 +99,7 @@ public class ApplicationProperties {
     public static class Time {
         private String zone;
         private String dateTimeFormat;
+        private String dateFormat;
 
         public String getZone() { return zone; }
 
@@ -107,6 +108,10 @@ public class ApplicationProperties {
         public String getDateTimeFormat() { return dateTimeFormat; }
 
         public void setDateTimeFormat(String dateTimeFormat) { this.dateTimeFormat = dateTimeFormat; }
+
+        public String getDateFormat() { return dateFormat; }
+
+        public void setDateFormat(String dateFormat) { this.dateFormat = dateFormat; }
         
     }
 

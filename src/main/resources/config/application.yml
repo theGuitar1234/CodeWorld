@@ -24,3 +24,4 @@ application:
   time:
     zone: "Asia/Baku"
     date-time-format: "dd-MM-yyyy HH:mm:ss"
+    date-format: "dd-MM-yyyy"

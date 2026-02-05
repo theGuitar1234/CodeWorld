@@ -13,8 +13,11 @@
 
   --border-radius-very-low: 2px;
   --border-radius-low: 10px;
+  --border-radius-medium: 12px;
   --border-radius-high: 15px;
   --border-radius-very-high: 50px;
+
+  --dialog-backdrop-blur: 12px;
 
   --jumpy-transition: cubic-bezier(0.42, 0, 0.44, 1.68);
 }
@@ -151,6 +154,8 @@ img {
   object-fit: cover;
 }
 
+/* Dialogs Start */
+
 dialog {
   border: none;
   font-family:
@@ -165,15 +170,8 @@ dialog {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
-  /* display: flex; */
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  /* display: none; */
   padding: 0;
   margin: auto;
-  min-height: 50vh;
-  aspect-ratio: 1;
   border-radius: var(--border-radius-high);
 }
 dialog h2 {
@@ -181,8 +179,87 @@ dialog h2 {
   font-weight: 100;
 }
 dialog::backdrop {
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(--dialog-backdrop-blur);
 }
+
+dialog:not(#transaction-dialog):not([pay]) {
+  min-height: 50vh;
+  aspect-ratio: 1;
+}
+:is(#transaction-dialog, dialog[pay]) {
+  opacity: 0;
+  transform: translateY(-15%);
+  transition:
+    transform 0.4s ease-out,
+    opacity 0.4s ease-out;
+}
+:is(#transaction-dialog, dialog[pay]).is-open {
+  transform: translateY(0%);
+  opacity: 1;
+}
+:is(#transaction-dialog, dialog[pay]) {
+  aspect-ratio: unset;
+  border-radius: 0px;
+}
+:is(#transaction-dialog, dialog[pay]) {
+  border: none;
+  padding: 0;
+  margin: auto;
+  height: clamp(min(200px, 100vh), 50vh, 500px);
+  font-family: inherit;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  gap: 0;
+
+  flex-direction: row;
+  align-items: unset;
+  justify-content: unset;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper > * {
+  border-radius: 0px;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction {
+  background-color: var(--dialog-accent);
+  flex-grow: 1;
+  padding: 2em 5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  height: 100%;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction svg {
+  height: 25%;
+  width: 100%;
+  aspect-ratio: 1;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction svg path {
+  fill: white;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction h3 {
+  font-weight: 400;
+  color: var(--base-color);
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction h1 {
+  font-weight: 600;
+  color: white;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction small {
+  color: white;
+}
+:is(#transaction-dialog, dialog[pay]) .wrapper .transaction-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: var(--dialog-surface);
+  height: 100%;
+  padding: 1em 0.5em;
+}
+
 dialog .wrapper {
   width: 100%;
   height: 100%;
@@ -214,7 +291,7 @@ dialog .wrapper .courseOfferingForm {
   flex-direction: column;
 }
 
-#wrapper {
+/* #wrapper {
   flex-direction: column;
   display: flex;
   padding: 1em;
@@ -229,7 +306,7 @@ dialog .wrapper .courseOfferingForm {
   align-items: center;
   justify-content: center;
   width: 100%;
-}
+} */
 .delete-user {
   width: fit-content;
 }
@@ -271,6 +348,41 @@ dialog .wrapper .courseOfferingForm {
   display: flex;
   flex-direction: column;
 }
+
+dialog button {
+  font-family: inherit;
+}
+
+dialog .close-button {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1em;
+  padding: 1em;
+  cursor: pointer;
+}
+
+dialog .close-button svg path {
+  fill: var(--svg-fill-color);
+}
+
+dialog .close-button:hover {
+  background: none;
+}
+
+dialog .cancel {
+  background-color: var(--accent-color);
+  padding: 0.2em 1em;
+  border-radius: var(--border-radius-very-low);
+  border: none;
+  color: white;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 
 /* Header Start */
 header {
@@ -1425,74 +1537,17 @@ main .wrapper .activity .checked-unchecked .checkbox {
   padding: 0;
   margin: auto;
   height: clamp(min(200px, 100vh), 50vh, 500px);
-  transform: translateY(-15%);
-  opacity: 0;
-  transition:
-    transform 0.4s ease-out,
-    opacity 0.4s ease-out;
   font-family: inherit;
-  aspect-ratio: unset;
-  border-radius: 0px;
-}
-#transaction-dialog::backdrop {
-  backdrop-filter: blur(2px);
-}
-#transaction-dialog .wrapper {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  gap: 0;
-}
-#transaction-dialog .wrapper > * {
-  border-radius: 0px;
-}
-#transaction-dialog .wrapper .transaction {
-  background-color: var(--accent-color);
-  flex-grow: 1;
-  padding: 2em 5em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5em;
-  height: 100%;
-}
-#transaction-dialog .wrapper .transaction svg {
-  height: 25%;
-  /* max-height: 50px; */
-  width: 100%;
-  aspect-ratio: 1;
-}
-#transaction-dialog .wrapper .transaction svg path {
-  fill: white;
-}
-#transaction-dialog .wrapper .transaction h3 {
-  font-weight: 400;
-  color: var(--base-color);
-}
-#transaction-dialog .wrapper .transaction h1 {
-  font-weight: 600;
-  color: white;
-}
-#transaction-dialog .wrapper .transaction small {
-  color: white;
 }
 #transaction-dialog .wrapper .transaction-details {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background-color: var(--background-color);
-  height: 100%;
   padding: 0 0.5em;
 }
-
 #transaction-dialog .wrapper .transaction-details .others {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 0.5em 0;
 }
-
 #transaction-dialog .transaction-details .header {
   display: flex;
   align-items: center;
@@ -1517,7 +1572,6 @@ main .wrapper .activity .checked-unchecked .checkbox {
 #transaction-dialog .transaction-details .header button svg path {
   fill: var(--svg-fill-color);
 }
-
 #transaction-dialog .transaction-details .amount-details {
   border-bottom: 1px solid var(--line-color);
   display: flex;
@@ -1546,10 +1600,6 @@ main .wrapper .activity .checked-unchecked .checkbox {
   font-weight: 500;
 }
 
-#transaction-dialog.is-open {
-  transform: translateY(0%);
-  opacity: 1;
-}
 #dialog-wrapper {
   display: flex;
   flex-direction: row;
@@ -3333,80 +3383,18 @@ dialog[pay] {
   padding: 0;
   margin: auto;
   height: clamp(min(200px, 100vh), 50vh, 500px);
-  transform: translateY(-15%);
-  opacity: 0;
-  transition:
-    transform 0.4s ease-out,
-    opacity 0.4s ease-out;
-}
-dialog[pay]::backdrop {
-  backdrop-filter: blur(2px);
-}
-dialog[pay] .wrapper {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  gap: 0;
-  display: flex;
-  align-items: unset;
-  justify-content: unset;
-  flex-direction: row;
-}
-dialog[pay] .wrapper > * {
-  border-radius: 0px;
-}
-dialog[pay] .wrapper .transaction {
-  background-color: var(--accent-color);
-  flex-grow: 1;
-  padding: 2em 5em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5em;
-}
-dialog[pay] .wrapper .transaction svg {
-  height: 25%;
-  width: 100%;
-  aspect-ratio: 1;
-}
-dialog[pay] .wrapper .transaction svg path {
-  fill: white;
-}
-dialog[pay] .wrapper .transaction h3 {
-  font-weight: 400;
-  color: var(--base-color);
-}
-dialog[pay] .wrapper .transaction h1 {
-  font-weight: 600;
-  color: white;
-}
-dialog[pay] .wrapper .transaction small {
-  color: white;
-}
-
-dialog[pay] .wrapper .transaction-details {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background-color: var(--background-color);
-  height: 100%;
-  padding: 1em 0.5em;
-  gap: 0;
 }
 dialog[pay] .wrapper .transaction-details button[type="submit"] {
   margin-top: auto;
   padding: 1em 1.5em;
   font-family: inherit;
 }
-
 dialog[pay] .wrapper .transaction-details .others {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 0.5em 0;
 }
-
 dialog[pay] .transaction-details .amount-details {
   border-bottom: 1px solid var(--line-color);
   display: flex;
@@ -3450,18 +3438,6 @@ dialog[pay] .transfer-details .data {
 dialog[pay] .transaction-details h3 {
   font-size: clamp(0.5rem, calc(0.5rem + 0.7vw), 1rem);
   font-weight: 500;
-}
-
-dialog[pay] {
-  transform: translateY(-15%);
-  opacity: 0;
-}
-dialog[pay].is-open {
-  transform: translateY(0%);
-  opacity: 1;
-}
-#dialog-wrapper {
-  display: flex;
 }
 
 button[clsBttn] {
