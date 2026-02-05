@@ -85,12 +85,14 @@ public class StudentController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     public String students(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "classDate", required = false) LocalDate classdate,
             @RequestParam(name = "subject", required = false, defaultValue = "0") int subject,
             Principal principal,
             Model model) {
+
+        WriteLog.main("After ClassSection is added, it is supposed to be received with a new date, the current date is : " + classdate, StudentController.class);
 
         String userName = principal.getName();
         UserDTO userDTO = (UserDTO) userService.getUserByUserName(userName, dtotype.FULL);
@@ -149,7 +151,7 @@ public class StudentController {
                     subjectId,
                     teacherUserName,
                     attendance);
-            return "redirect:/students/?success=Class%20Section%20Successfully%20Added&?classDate=" + classDate;
+            return "redirect:/students/?classDate=" + classDate + "&success=Class%20Section%20Successfully%20Added";
         } catch (ClassSectionAlreadyExistsException e) {
             model.addAttribute("error", e.getExceptionMessage());
             return "redirect:/students/?error=" + e.getExceptionMessage();
