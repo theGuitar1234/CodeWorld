@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,7 @@ public class PaymentOverDue {
     @Column(nullable = false)
     private Instant dueDate;
 
+    @Size(min = 6)
     @Column(nullable = false)
     private BigDecimal amount;
 
