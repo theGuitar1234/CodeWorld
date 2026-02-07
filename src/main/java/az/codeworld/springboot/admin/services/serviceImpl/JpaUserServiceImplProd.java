@@ -269,28 +269,28 @@ public class JpaUserServiceImplProd implements UserService {
         return (UserDTO) userMapper.toUserDTO(user, dtotype.FULL.getDtoTypeString());
     }
 
-    @Cacheable(
-        cacheNames = "profileImageIdByUsername",
-        key = "#userName",
-        unless = "#result == null"
-    )
-    public String getProfileImageId(String userName) {
-        return userRepository.findByUserName(userName)
-                .map(User::getProfileImageId)
-                .orElse(null);
-    }
+    // @Cacheable(
+    //     cacheNames = "profileImageIdByUsername",
+    //     key = "#userName",
+    //     unless = "#result == null"
+    // )
+    // public String getProfileImageId(String userName) {
+    //     return userRepository.findByUserName(userName)
+    //             .map(User::getProfileImageId)
+    //             .orElse(null);
+    // }
 
-    @Caching(evict = {
-        @CacheEvict(cacheNames = "profileImageIdByUsername", key = "#userName"),
-        @CacheEvict(cacheNames = "usersByUsernameFull", key = "#userName")
-    })
-    public void updateProfileImageId(String userName, String imageId) {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
-        user.setProfileImageId(imageId);
-        user.setProfileImageUpdatedAt(java.time.Instant.now());
-        saveUser(user);
-    }
+    // @Caching(evict = {
+    //     @CacheEvict(cacheNames = "profileImageIdByUsername", key = "#userName"),
+    //     @CacheEvict(cacheNames = "usersByUsernameFull", key = "#userName")
+    // })
+    // public void updateProfileImageId(String userName, String imageId) {
+    //     User user = userRepository.findByUserName(userName)
+    //             .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
+    //     user.setProfileImageId(imageId);
+    //     user.setProfileImageUpdatedAt(java.time.Instant.now());
+    //     saveUser(user);
+    // }
 
     @Override
     @CacheEvict(cacheNames = "usersByUsernameFull", key = "#userName")

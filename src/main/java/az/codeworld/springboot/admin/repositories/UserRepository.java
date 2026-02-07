@@ -26,7 +26,7 @@ import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, RevisionRepository<User, Long, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
     
     Optional<User> findByEmail(String email);
     Optional<User> findByUserName(String userName);

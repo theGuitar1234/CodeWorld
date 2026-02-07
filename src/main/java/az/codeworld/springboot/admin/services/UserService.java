@@ -53,9 +53,9 @@ public interface UserService {
 
     void updateLastActiveAtByUserName(String userName);
 
-    String getProfileImageId(String userName);
+    // String getProfileImageId(String userName);
 
-    void updateProfileImageId(String userName, String imageId);
+    // void updateProfileImageId(String userName, String imageId);
 
     Long updatePassword(String userName, String password);
 

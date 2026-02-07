@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -180,7 +181,10 @@ public class SecurityConfiguration {
                                 .requestMatchers(ADMIN).hasRole(roles.ADMIN.getRoleNameString())
                                 .anyRequest().access((authentication, context) -> {
                                         Authentication auth = authentication.get();
-                                        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) 
+                                        if (auth == null || 
+                                           !auth.isAuthenticated() || 
+                                            auth instanceof AnonymousAuthenticationToken ||
+                                            auth instanceof LockedException) 
                                                 return new AuthorizationDecision(false);
                                         if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_BANNED")))
                                                 return new AuthorizationDecision(false);
@@ -217,7 +221,9 @@ public class SecurityConfiguration {
                         )
                         .exceptionHandling(exception -> exception.authenticationEntryPoint(
                                 (request, response, authenticationException) -> {
-                                        if (authenticationException instanceof BadCredentialsException) {
+                                        if (authenticationException instanceof BadCredentialsException ||
+                                            authenticationException instanceof LockedException
+                                        ) {
                                                 response.sendRedirect("/restricted/?error=" + authenticationException.getMessage());
                                         } else {
                                                 response.sendRedirect("/restricted/?error=" + exceptionmessages.getDefault());

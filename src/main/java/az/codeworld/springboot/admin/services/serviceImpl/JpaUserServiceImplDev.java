@@ -244,19 +244,19 @@ public class JpaUserServiceImplDev implements UserService {
         return (UserDTO) userMapper.toUserDTO(user, dtotype.FULL.getDtoTypeString());
     }
 
-    public String getProfileImageId(String userName) {
-        return userRepository.findByUserName(userName)
-                .map(User::getProfileImageId)
-                .orElse(null);
-    }
+    // public String getProfileImageId(String userName) {
+    //     return userRepository.findByUserName(userName)
+    //             .map(User::getProfileImageId)
+    //             .orElse(null);
+    // }
 
-    public void updateProfileImageId(String userName, String imageId) {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
-        user.setProfileImageId(imageId);
-        user.setProfileImageUpdatedAt(java.time.Instant.now());
-        saveUser(user);
-    }
+    // public void updateProfileImageId(String userName, String imageId) {
+    //     User user = userRepository.findByUserName(userName)
+    //             .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
+    //     user.setProfileImageId(imageId);
+    //     user.setProfileImageUpdatedAt(java.time.Instant.now());
+    //     saveUser(user);
+    // }
 
     @Override
     public Long updatePassword(String userName, String password) {

@@ -73,7 +73,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Audited(withModifiedFlag = true)
+// @Audited(withModifiedFlag = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS", indexes = {
@@ -84,13 +84,18 @@ import lombok.Setter;
 // @DiscriminatorColumn(name = "dtype")
 // @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User extends AuditedEntity {
+public class User /*extends AuditedEntity*/ {
 
     //private final String ZONE = "Asia/Baku";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
-    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_sequence", allocationSize = 50, initialValue = 1000)
+    @SequenceGenerator(
+        name = "user_id_generator", 
+        sequenceName = "user_id_sequence", 
+        allocationSize = 50, 
+        initialValue = 1947872546
+    )
     private Long id;
 
     @NotNull
@@ -202,17 +207,17 @@ public class User extends AuditedEntity {
     private Instant lastActiveAt;
 
     //https://imagedelivery.net/<ACCOUNT_HASH>/<IMAGE_ID>/<VARIANT>
-    @Column
-    private String profileImageId;
+    // @Column
+    // private String profileImageId;
     
-    @Column
-    private Instant profileImageUpdatedAt;
+    // @Column
+    // private Instant profileImageUpdatedAt;
 
     @Past
     @Column
     private LocalDate affiliationDate;
 
-    @NotAudited
+    //@NotAudited
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ProfilePicture profilePicture;
@@ -286,7 +291,7 @@ public class User extends AuditedEntity {
     }
 
     // @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @NotAudited
+    //@NotAudited
     @JsonIgnore
     // @NotEmpty
     @ManyToMany(fetch = FetchType.EAGER)
@@ -303,7 +308,7 @@ public class User extends AuditedEntity {
         role.removeUser(this);
     }
 
-    @NotAudited
+    //@NotAudited
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Transaction> transactions = new ArrayList<>();
@@ -313,17 +318,17 @@ public class User extends AuditedEntity {
         transaction.setUser(this);
     }
 
-    @NotAudited
+    //@NotAudited
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private PasswordResetToken passwordResetToken;
 
-    @NotAudited
+    //@NotAudited
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private OtpCode otpCode;
 
-    @NotAudited
+    //@NotAudited
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private LoginAudit loginAudit;
 
