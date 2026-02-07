@@ -1,8 +1,7 @@
-package az.codeworld.springboot.applications;
+package az.codeworld.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.persistence.autoconfigure.EntityScan;
 
 @SpringBootApplication
 /*(scanBasePackages = "az.codeworld.springboot")*/
@@ -12,3 +11,4 @@ public class SpringbootApplication {
 		SpringApplication.run(SpringbootApplication.class, args);
 	}
 }
+

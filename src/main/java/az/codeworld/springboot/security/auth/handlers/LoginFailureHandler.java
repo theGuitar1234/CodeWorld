@@ -33,7 +33,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         AuditService auditService,
         ActivityService activityService
     ) {
-        setDefaultFailureUrl("/restricted/?error=Login%20Failure");
+        //setDefaultFailureUrl("/restricted/?error=Login%20Failure");
 
         this.auditService = auditService;
         this.activityService = activityService;
@@ -49,87 +49,14 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         HttpServletRequest modifiedRequest = request;
 
         if (authException instanceof DisabledException) {
-            // modifiedRequest = new HttpServletRequestWrapper(request) {
-            //     @Override
-            //     public String getParameter(String name) {
-            //         if ("error".equals(name)) return accountError.ACCOUNT_BANNED.getAccountErrorString();
-            //         return super.getParameter(name);
-            //     }
-
-            //     @Override
-            //     public Map<String, String[]> getParameterMap() {
-            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
-            //         map.putIfAbsent("error", new String[] { accountError.ACCOUNT_BANNED.getAccountErrorString() });
-            //         return map;
-            //     }
-
-            //     @Override
-            //     public String[] getParameterValues(String name) {
-            //         if ("error".equals(name)) return new String[] { accountError.ACCOUNT_BANNED.getAccountErrorString() };
-            //         return super.getParameterValues(name);
-            //     }
-            // };
-
-            // response.sendRedirect("/restricted/?error=" + accountError.ACCOUNT_BANNED.getAccountErrorString());
-            // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            // response.setContentType("text/plain;charset=UTF-8");
-            // response.getWriter().write("User is Banned");
-            // return;
             setDefaultFailureUrl("/restricted/?error=" + accounterror.ACCOUNT_BANNED.getAccountErrorString());
         }
 
         if (authException instanceof LockedException) {
-            // modifiedRequest = new HttpServletRequestWrapper(request) {
-            //     @Override
-            //     public String getParameter(String name) {
-            //         if ("error".equals(name)) return exceptionmessages.USER_BLOCKED.getExceptionMessageString();
-            //         return super.getParameter(name);
-            //     }
-
-            //     @Override
-            //     public Map<String, String[]> getParameterMap() {
-            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
-            //         map.putIfAbsent("error", new String[] { exceptionmessages.USER_BLOCKED.getExceptionMessageString() });
-            //         return map;
-            //     }
-
-            //     @Override
-            //     public String[] getParameterValues(String name) {
-            //         if ("error".equals(name)) return new String[] { exceptionmessages.USER_BLOCKED.getExceptionMessageString() };
-            //         return super.getParameterValues(name);
-            //     }
-            // };
-
-            // response.sendRedirect("/restricted/?error=" + exceptionmessages.USER_BLOCKED.getExceptionMessageString());
-            // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            // response.setContentType("text/plain;charset=UTF-8");
-            // response.getWriter().write("User is Locked");
-            // return;
             setDefaultFailureUrl("/restricted/?error=" + exceptionmessages.USER_BLOCKED.getExceptionMessageString());
         }
 
         if (authException instanceof BadCredentialsException) {
-            // modifiedRequest = new HttpServletRequestWrapper(request) {
-            //     @Override
-            //     public String getParameter(String name) {
-            //         if ("error".equals(name)) return authException.getLocalizedMessage();
-            //         return super.getParameter(name);
-            //     }
-
-            //     @Override
-            //     public Map<String, String[]> getParameterMap() {
-            //         Map<String, String[]> map = new HashMap<>(super.getParameterMap());
-            //         map.putIfAbsent("error", new String[] { authException.getLocalizedMessage() });
-            //         return map;
-            //     }
-
-            //     @Override
-            //     public String[] getParameterValues(String name) {
-            //         if ("error".equals(name)) return new String[] { authException.getLocalizedMessage() };
-            //         return super.getParameterValues(name);
-            //     }
-            // };
-            //response.sendRedirect("/restricted/?error=" + authException.getLocalizedMessage());
             setDefaultFailureUrl("/restricted/?error=" + authException.getLocalizedMessage());
         }
 
