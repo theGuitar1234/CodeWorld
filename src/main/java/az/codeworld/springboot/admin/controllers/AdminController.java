@@ -539,6 +539,13 @@ public class AdminController {
         return render(model, spa.TEACHERS, spaRequest, "admin/fragments/main/teachers-main.html :: teachers-main");
     }
 
+    @ResponseBody
+    @PostMapping("/catchup/run")
+    public String runCatchUpNow() {
+        paymentOverDueService.synchAllTeacherPayDues();
+        return "Catch-up executed.";
+    }
+
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
     @GetMapping("/teachers/getReport")
     public ResponseEntity<List<UserCombineRecord>> getReportTeachers(

@@ -16,6 +16,7 @@ import az.codeworld.springboot.admin.entities.Teacher;
 import az.codeworld.springboot.admin.records.PaymentOverDueRecord;
 import az.codeworld.springboot.admin.repositories.PaymentOverDueRepository;
 import az.codeworld.springboot.admin.repositories.TeacherRepository;
+import az.codeworld.springboot.utilities.DateUtil;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.paymentDueStatus;
 import az.codeworld.springboot.utilities.services.paymentservices.PaymentOverDueService;
@@ -50,7 +51,10 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
     @Override
     @Transactional
     public void synchTeacherPayDue(Long teacherId) {
-        Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
+
+        final ZoneId ZONE = ZoneId.of(applicationProperties.getTime().getZone());
+        
+        Optional<Teacher> teacherOptional = teacherRepository.lockById(teacherId);
         Teacher teacher = teacherOptional.orElseThrow(() -> new RuntimeException("Teacher not found by ID"));
 
         int loops = 0;
@@ -59,8 +63,8 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
             if (++loops > MAX_SYNCH_PAYMENT_OVER_DUE_MONTHS) throw new IllegalStateException("Can't synch months beyond the safety limits for Teacher with ID of : " + teacherId);
             
             Instant dueDate = teacher.getNextDate();
-            int year = dueDate.atZone(ZoneId.of(applicationProperties.getTime().getZone())).toLocalDate().getYear();
-            int month = dueDate.atZone(ZoneId.of(applicationProperties.getTime().getZone())).toLocalDate().getMonthValue();
+            int year = dueDate.atZone(ZONE).toLocalDate().getYear();
+            int month = dueDate.atZone(ZONE).toLocalDate().getMonthValue();
             
             PaymentOverDue paymentOverDue = new PaymentOverDue();
 
@@ -69,10 +73,14 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
             paymentOverDue.setCycleMonth(month);
             paymentOverDue.setDueDate(dueDate);
             paymentOverDue.setAmount(teacher.getPayment().getAmount());
+            paymentOverDue.setPaymentDueStatus(paymentDueStatus.DUE);
 
             paymentOverDueRepository.save(paymentOverDue);
 
-            teacher.updateNextPaymentDate();
+            teacher.setNextDate(DateUtil.addOneMonthClamped(
+                    dueDate.atZone(ZONE).toLocalDate()
+                ).atStartOfDay(ZONE).toInstant()
+            );
         }
 
         // teacherRepository.save(teacher);
@@ -81,30 +89,28 @@ public class PaymentOverDueServiceImpl implements PaymentOverDueService {
 
     @Override
     public List<PaymentOverDueRecord> listPaymentOverDues(paymentDueStatus paymentDueStatus) {
+        final ZoneId ZONE = ZoneId.of(applicationProperties.getTime().getZone());
+        final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat());
         return paymentOverDueRepository.findTop10ByPaymentDueStatusOrderByDueDateAsc(paymentDueStatus)
             .stream()
             .map(p -> new PaymentOverDueRecord(
                             p.getId(), 
-                            p.getTeacher().getId(), 
+                            p.getTeacher().getFirstName() + ' ' + p.getTeacher().getLastName(), 
                             p.getCycleYear(), 
                             p.getCycleMonth(), 
                             p.getDueDate()
-                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
-                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), 
+                                .atZone(ZONE)
+                                .toLocalDateTime().format(DATE_TIME_FORMAT), 
                             p.getAmount(), 
                             p.getPaymentDueStatus().name(), 
                             p.getCreatedAt()
-                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
-                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), 
+                                .atZone(ZONE)
+                                .toLocalDateTime().format(DATE_TIME_FORMAT), 
                             p.getPaidAt()
-                                .atZone(ZoneId.of(applicationProperties.getTime().getZone()))
-                                .toLocalDateTime().format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat()))
+                                .atZone(ZONE)
+                                .toLocalDateTime().format(DATE_TIME_FORMAT)
                         ))
             .toList();
     }
-
-    
-
-    
     
 }

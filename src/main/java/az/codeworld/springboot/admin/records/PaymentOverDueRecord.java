@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public record PaymentOverDueRecord(
     Long id,
-    Long teacherId,
+    String fullName,
     int cycleYear,
     int cycleMonth,
     String dueDate,
