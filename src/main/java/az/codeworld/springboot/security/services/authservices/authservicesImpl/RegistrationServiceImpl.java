@@ -1,23 +1,15 @@
 package az.codeworld.springboot.security.services.authservices.authservicesImpl;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-
 import az.codeworld.springboot.admin.dtos.RequestDTO;
-import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
-import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
 import az.codeworld.springboot.admin.services.UserService;
-import az.codeworld.springboot.admin.services.serviceImpl.JpaUserServiceImplDev;
 import az.codeworld.springboot.aop.LogExecutionTime;
-import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.security.entities.EmailOutbox;
 import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;

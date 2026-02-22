@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import az.codeworld.springboot.admin.entities.Student;
 import az.codeworld.springboot.admin.entities.Teacher;
 import jakarta.persistence.LockModeType;
 

@@ -1,18 +1,13 @@
 package az.codeworld.springboot.admin.services.serviceImpl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +24,7 @@ import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
 import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.mappers.UserMapper;
-import az.codeworld.springboot.admin.projections.AdminContactProjection;
 import az.codeworld.springboot.admin.projections.UserAdminProjection;
-import az.codeworld.springboot.admin.projections.UserIdProjection;
-import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.admin.repositories.UserRepository;
@@ -42,18 +34,20 @@ import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
 import az.codeworld.springboot.security.entities.Role;
-import az.codeworld.springboot.security.repositories.LoginAuditRepository;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.generators.UsernameGenerator;
+import az.codeworld.springboot.web.entities.ProfilePicture;
 import jakarta.transaction.Transactional;
 
 @Service
 @Profile("dev")
 public class JpaUserServiceImplDev implements UserService {
+
+    private static final String DEFAULT_PROFILE_PHOTO = "/assets/sprites/profile-thumb.jpg";
 
     private final UserRepository userRepository;
     private final RoleService roleService;
@@ -62,12 +56,11 @@ public class JpaUserServiceImplDev implements UserService {
     private final UserMapper userMapper;
 
     public JpaUserServiceImplDev(
-        UserRepository userRepository,
-        RoleService roleService,
-        PasswordEncoder passwordEncoder,
-        ApplicationProperties applicationProperties,
-        UserMapper userMapper
-    ) {
+            UserRepository userRepository,
+            RoleService roleService,
+            PasswordEncoder passwordEncoder,
+            ApplicationProperties applicationProperties,
+            UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
@@ -77,11 +70,15 @@ public class JpaUserServiceImplDev implements UserService {
 
     @Override
     public void saveUser(User user) {
-        if (user.getCreatedAt() == null) {
+        if (user.getCreatedAt() == null)
             user.setCreatedAt(Instant.now());
-        } if (user.getZoneId() == null) {
+        if (user.getZoneId() == null)
             user.setZoneId(applicationProperties.getTime().getZone());
-        }
+        if (user.getNextDate() == null)
+            user.updateNextPaymentDate();
+
+        ensureProfilePicture(user);
+
         userRepository.save(user);
         userRepository.flush();
     }
@@ -172,22 +169,26 @@ public class JpaUserServiceImplDev implements UserService {
 
     @Override
     @Transactional
-    public void createNewUserAdmin(UserCreateDTO userCreateDTO) throws PasswordsMustMatchException, PasswordsMustBePresentException {
+    public void createNewUserAdmin(UserCreateDTO userCreateDTO)
+            throws PasswordsMustMatchException, PasswordsMustBePresentException {
         User user = new User();
         user.setUserName(UsernameGenerator.generateUsername(userCreateDTO.getRole().getRoleNameString()));
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setEmail(userCreateDTO.getEmail());
         user.setPayment(new Money(userCreateDTO.getAmount(), userCreateDTO.getCurrency()));
-        user.setNextDate(userCreateDTO.getNextDate().atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant());
+        user.setNextDate(userCreateDTO.getNextDate().atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone()))
+                .toInstant());
 
-        if (userCreateDTO.getPassword() == null && userCreateDTO.getPassword2() == null) throw new PasswordsMustBePresentException();
-        if (!userCreateDTO.getPassword().equals(userCreateDTO.getPassword2())) throw new PasswordsMustMatchException();
+        if (userCreateDTO.getPassword() == null && userCreateDTO.getPassword2() == null)
+            throw new PasswordsMustBePresentException();
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getPassword2()))
+            throw new PasswordsMustMatchException();
 
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
 
         saveUser(user);
-        //userRepository.save(user);
+        // userRepository.save(user);
 
         roleService.addRolesToUser(user.getId(),
                 Set.of(roles.USER.getRoleId(), userCreateDTO.getRole().getRoleId()));
@@ -197,11 +198,10 @@ public class JpaUserServiceImplDev implements UserService {
     @Transactional
     public void updateLastActiveAtByUserName(String userName) {
         userRepository.updateLastActiveAtByUserName(
-            userName, 
-            Instant.now(), 
-            Instant.now()
-                .minusSeconds(30L)
-        );
+                userName,
+                Instant.now(),
+                Instant.now()
+                        .minusSeconds(30L));
     }
 
     @Override
@@ -225,19 +225,32 @@ public class JpaUserServiceImplDev implements UserService {
         Optional<User> userOptional = userRepository.findByUserName(userName);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException("User not Found"));
 
-        if (userUpdateDTO.getFirstName() != null && !userUpdateDTO.getFirstName().isEmpty()) user.setFirstName(userUpdateDTO.getFirstName());
-        if (userUpdateDTO.getLastName() != null && !userUpdateDTO.getLastName().isEmpty()) user.setLastName(userUpdateDTO.getLastName());
-        if (userUpdateDTO.getEmail() != null && !userUpdateDTO.getEmail().isEmpty()) user.setEmail(userUpdateDTO.getEmail());
-        if (userUpdateDTO.getBirthDate() != null && !userUpdateDTO.getBirthDate().isEmpty()) user.setBirthDate(LocalDate.parse(userUpdateDTO.getBirthDate()));
-        if (userUpdateDTO.getStreet() != null && !userUpdateDTO.getStreet().isEmpty()) user.setStreet(userUpdateDTO.getStreet());
-        if (userUpdateDTO.getCity() != null && !userUpdateDTO.getCity().isEmpty()) user.setCity(userUpdateDTO.getCity());
-        if (userUpdateDTO.getRegion() != null && !userUpdateDTO.getRegion().isEmpty()) user.setRegion(userUpdateDTO.getRegion());
-        if (userUpdateDTO.getPostalCode() != null) user.setPostalCode(userUpdateDTO.getPostalCode());
-        if (userUpdateDTO.getCountry() != null && !userUpdateDTO.getCountry().isEmpty()) user.setCountry(userUpdateDTO.getCountry());
-        if (userUpdateDTO.getLanguage() != null && !userUpdateDTO.getLanguage().isEmpty()) user.setLanguage(userUpdateDTO.getLanguage());
-        if (userUpdateDTO.getTimeZone() != null && !userUpdateDTO.getTimeZone().isEmpty()) user.setZoneId(userUpdateDTO.getTimeZone());
-        if (userUpdateDTO.getPhoneNumber() != null && !userUpdateDTO.getPhoneNumber().isEmpty()) user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
-        if (userUpdateDTO.getAge() != null) user.setAge(userUpdateDTO.getAge());
+        if (userUpdateDTO.getFirstName() != null && !userUpdateDTO.getFirstName().isEmpty())
+            user.setFirstName(userUpdateDTO.getFirstName());
+        if (userUpdateDTO.getLastName() != null && !userUpdateDTO.getLastName().isEmpty())
+            user.setLastName(userUpdateDTO.getLastName());
+        if (userUpdateDTO.getEmail() != null && !userUpdateDTO.getEmail().isEmpty())
+            user.setEmail(userUpdateDTO.getEmail());
+        if (userUpdateDTO.getBirthDate() != null && !userUpdateDTO.getBirthDate().isEmpty())
+            user.setBirthDate(LocalDate.parse(userUpdateDTO.getBirthDate()));
+        if (userUpdateDTO.getStreet() != null && !userUpdateDTO.getStreet().isEmpty())
+            user.setStreet(userUpdateDTO.getStreet());
+        if (userUpdateDTO.getCity() != null && !userUpdateDTO.getCity().isEmpty())
+            user.setCity(userUpdateDTO.getCity());
+        if (userUpdateDTO.getRegion() != null && !userUpdateDTO.getRegion().isEmpty())
+            user.setRegion(userUpdateDTO.getRegion());
+        if (userUpdateDTO.getPostalCode() != null)
+            user.setPostalCode(userUpdateDTO.getPostalCode());
+        if (userUpdateDTO.getCountry() != null && !userUpdateDTO.getCountry().isEmpty())
+            user.setCountry(userUpdateDTO.getCountry());
+        if (userUpdateDTO.getLanguage() != null && !userUpdateDTO.getLanguage().isEmpty())
+            user.setLanguage(userUpdateDTO.getLanguage());
+        if (userUpdateDTO.getTimeZone() != null && !userUpdateDTO.getTimeZone().isEmpty())
+            user.setZoneId(userUpdateDTO.getTimeZone());
+        if (userUpdateDTO.getPhoneNumber() != null && !userUpdateDTO.getPhoneNumber().isEmpty())
+            user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
+        if (userUpdateDTO.getAge() != null)
+            user.setAge(userUpdateDTO.getAge());
 
         saveUser(user);
 
@@ -245,23 +258,23 @@ public class JpaUserServiceImplDev implements UserService {
     }
 
     // public String getProfileImageId(String userName) {
-    //     return userRepository.findByUserName(userName)
-    //             .map(User::getProfileImageId)
-    //             .orElse(null);
+    // return userRepository.findByUserName(userName)
+    // .map(User::getProfileImageId)
+    // .orElse(null);
     // }
 
     // public void updateProfileImageId(String userName, String imageId) {
-    //     User user = userRepository.findByUserName(userName)
-    //             .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
-    //     user.setProfileImageId(imageId);
-    //     user.setProfileImageUpdatedAt(java.time.Instant.now());
-    //     saveUser(user);
+    // User user = userRepository.findByUserName(userName)
+    // .orElseThrow(() -> new RuntimeException("User Not Found By Username"));
+    // user.setProfileImageId(imageId);
+    // user.setProfileImageUpdatedAt(java.time.Instant.now());
+    // saveUser(user);
     // }
 
     @Override
     public Long updatePassword(String userName, String password) {
         User user = userRepository.findByUserName(userName)
-            .orElseThrow(() -> new RuntimeException("User Not Found Bozo"));
+                .orElseThrow(() -> new RuntimeException("User Not Found Bozo"));
         user.setPassword(passwordEncoder.encode(password));
         user.getLoginAudit().updatePasswordLastUpdatedAt();
         saveUser(user);
@@ -271,20 +284,17 @@ public class JpaUserServiceImplDev implements UserService {
     @Override
     public Page<UserPayableDTO> getPaginatedPayableUsers(roles role, int pageIndex, int pageSize, String sortBy,
             Direction direction) {
-        
+
         Role roleEntity = roleService.getRoleByRoleId(role.getRoleId());
 
         return userRepository
-            .findByRolesAndBillingEnabledTrueAndNextDateLessThanEqual(
-                roleEntity,
-                Instant.now(), 
-                true,
-                PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
-            )
-            .map(u -> (UserPayableDTO) userMapper.toUserDTO(u, dtotype.PAYABLE.getDtoTypeString()));
+                .findByRolesAndBillingEnabledTrueAndNextDateLessThanEqual(
+                        roleEntity,
+                        Instant.now(),
+                        PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy))
+                .map(u -> (UserPayableDTO) userMapper.toUserDTO(u, dtotype.PAYABLE.getDtoTypeString()));
     }
 
-    
     @Override
     public void enable2FA(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -294,17 +304,23 @@ public class JpaUserServiceImplDev implements UserService {
     }
 
     @Override
-    public UserAdminProjection updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO, Long userId) throws UserNotFoundException {
+    public UserAdminProjection updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO, Long userId)
+            throws UserNotFoundException {
         Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException("User not Found"));
 
         if (userAdminUpdateDTO.getPassword() != null && !userAdminUpdateDTO.getPassword().isBlank()) {
-            if (!userAdminUpdateDTO.getPassword().equals(userAdminUpdateDTO.getPassword2())) throw new IllegalArgumentException("Passwords must match");
+            if (!userAdminUpdateDTO.getPassword().equals(userAdminUpdateDTO.getPassword2()))
+                throw new IllegalArgumentException("Passwords must match");
             user.setPassword(passwordEncoder.encode(userAdminUpdateDTO.getPassword()));
         }
-        if (userAdminUpdateDTO.getPayment() != null) user.setPayment(new Money(userAdminUpdateDTO.getPayment(), user.getPayment().getCurrency()));
-        if (userAdminUpdateDTO.getNextDate() != null) user.setNextDate(userAdminUpdateDTO.getNextDate().atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant());
-        if (userAdminUpdateDTO.getAffiliationDate() != null) user.setAffiliationDate(userAdminUpdateDTO.getAffiliationDate());
+        if (userAdminUpdateDTO.getPayment() != null)
+            user.setPayment(new Money(userAdminUpdateDTO.getPayment(), user.getPayment().getCurrency()));
+        if (userAdminUpdateDTO.getNextDate() != null)
+            user.setNextDate(userAdminUpdateDTO.getNextDate()
+                    .atStartOfDay(ZoneId.of(applicationProperties.getTime().getZone())).toInstant());
+        if (userAdminUpdateDTO.getAffiliationDate() != null)
+            user.setAffiliationDate(userAdminUpdateDTO.getAffiliationDate());
 
         saveUser(user);
 
@@ -317,9 +333,9 @@ public class JpaUserServiceImplDev implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException("User Not Found By ID"));
         boolean isBanned = user.getRoles()
-            .stream()
-            .anyMatch(r -> "BANNED".equals(r.getRoleNameString()));
-        
+                .stream()
+                .anyMatch(r -> "BANNED".equals(r.getRoleNameString()));
+
         if (isBanned) {
             roleService.removeRolesFromUser(userId, Set.of(roles.BANNED.getRoleId()));
             user.setBanned(false);
@@ -336,13 +352,13 @@ public class JpaUserServiceImplDev implements UserService {
     @Override
     public <T> T getUserProjectionById(Long id, Class<T> type) {
         return userRepository.findById(id, type)
-            .orElseThrow(() -> new RuntimeException("UserProjection Not Found By ID"));
+                .orElseThrow(() -> new RuntimeException("UserProjection Not Found By ID"));
     }
 
     @Override
     public <T> T getUserProjectionByUserName(String userName, Class<T> type) {
-       return userRepository.findByUserName(userName, type)
-        .orElseThrow(() -> new RuntimeException("UserProjection Not Found By Username"));
+        return userRepository.findByUserName(userName, type)
+                .orElseThrow(() -> new RuntimeException("UserProjection Not Found By Username"));
     }
 
     @Override
@@ -370,7 +386,7 @@ public class JpaUserServiceImplDev implements UserService {
 
     @Override
     public Long countAllUsers() {
-        return userRepository.countAll(); 
+        return userRepository.countAll();
     }
 
     @Override
@@ -378,12 +394,48 @@ public class JpaUserServiceImplDev implements UserService {
         ZoneId zone = ZoneId.of(applicationProperties.getTime().getZone());
         Instant cutoff = LocalDate.now(zone).atStartOfDay(zone).toInstant();
         return userRepository.findTop10ByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(cutoff)
-            .stream()
-            .map(u -> new UserLatestRecord(u.getEmail(), u.getCreatedAt(), u.getProfilePicture().getProfilePhoto()))
-            .toList();
+                .stream()
+                .map(u -> new UserLatestRecord(u.getEmail(), u.getCreatedAt(), u.getProfilePicture().getProfilePhoto()))
+                .toList();
     }
 
     @Override
-    public Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException { return null; }
+    public Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void disable2FA(String userName) {
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new RuntimeException("User not found by username"));
+        user.setTwoFactorEnabled(false);
+        saveUser(user);
+    }
+
+    private void ensureProfilePicture(User user) {
+        if (user == null)
+            return;
+
+        ProfilePicture pp = user.getProfilePicture();
+
+        if (pp == null) {
+            pp = new ProfilePicture();
+            pp.setProfileTitle("Default Profile Picture");
+            pp.setDescription("Auto-created default profile picture");
+            pp.setProfilePhoto(DEFAULT_PROFILE_PHOTO);
+            pp.setUser(user);
+            user.setProfilePicture(pp);
+            return;
+        }
+
+        if (pp.getUser() == null) {
+            pp.setUser(user);
+        }
+
+        if (pp.getProfilePhoto() == null || pp.getProfilePhoto().isBlank()) {
+            pp.setProfilePhoto(DEFAULT_PROFILE_PHOTO);
+        }
+    }
 
 }

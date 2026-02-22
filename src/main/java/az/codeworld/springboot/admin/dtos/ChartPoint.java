@@ -12,7 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChartPoint {
-    private long timestamp;
-    //private String timestamp;
+    private int year;
+    private int month;
+    private long transactionCount;
     private BigDecimal transactionAmount;
 }

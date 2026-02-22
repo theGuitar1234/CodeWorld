@@ -1,14 +1,10 @@
 package az.codeworld.springboot.admin.dtos;
 
 import java.math.BigDecimal;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.aop.validations.EmailValidation;
 import az.codeworld.springboot.utilities.constants.roles;
-import az.codeworld.springboot.web.dtos.SubjectDTO;
-import az.codeworld.springboot.web.entities.CourseOffering;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

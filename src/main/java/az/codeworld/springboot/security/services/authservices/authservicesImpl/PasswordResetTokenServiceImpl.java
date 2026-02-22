@@ -2,7 +2,6 @@ package az.codeworld.springboot.security.services.authservices.authservicesImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import az.codeworld.springboot.admin.services.LogoutService;

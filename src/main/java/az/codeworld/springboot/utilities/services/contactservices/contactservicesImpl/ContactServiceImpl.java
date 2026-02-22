@@ -1,9 +1,7 @@
 package az.codeworld.springboot.utilities.services.contactservices.contactservicesImpl;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,13 +16,10 @@ import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.repositories.StudentRepository;
 import az.codeworld.springboot.admin.repositories.TeacherRepository;
 import az.codeworld.springboot.admin.repositories.UserRepository;
-import az.codeworld.springboot.admin.services.StudentService;
-import az.codeworld.springboot.admin.services.TeacherService;
 import az.codeworld.springboot.aop.LogExecutionTime;
 import az.codeworld.springboot.security.entities.EmailOutbox;
 import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.services.emailservices.EmailOutboxService;
-import az.codeworld.springboot.security.services.emailservices.emailservicesImpl.EmailOutboxServiceImpl;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.services.contactservices.ContactService;
 import az.codeworld.springboot.web.services.ThymeleafService;

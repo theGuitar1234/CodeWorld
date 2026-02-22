@@ -4,7 +4,7 @@
   <div class="logo">
     <a th:href="@{/admin/students}">
       <div class="icon"></div>
-      Students
+      <span th:text="#{admin.students.title}">Students</span>
     </a>
   </div>
   <div class="location">
@@ -21,7 +21,7 @@
         />
       </svg>
       <br />
-      / Students
+      <span th:text="#{admin.students.breadcrumb}">/ Students</span>
     </a>
   </div>
 </header>

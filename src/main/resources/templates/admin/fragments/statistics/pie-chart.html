@@ -1,9 +1,10 @@
 <div th:fragment="pie-chart" style="display: contents;">
   <div class="title">
-    <h3>User Health</h3>
+    <h3 th:text="#{admin.userHealth.title}">User Health</h3>
   </div>
   <div
     class="pie-chart"
+    th:attr="title=#{admin.userHealth.title}"
     title="User Health"
     element1="newThisMonth"
     element2="activeUsers"
@@ -28,16 +29,16 @@
   <div class="diff">
     <ul style="list-style-type: none;">
       <li style="--accent-color: black;">
-        Active Users : <span th:text="${newThisMonth}"></span> 
+        <span th:text="#{admin.userHealth.activeUsers}">Active Users</span> : <span th:text="${newThisMonth}"></span> 
       </li>
       <li style="--accent-color: orange;">
-        InActive Users : <span th:text="${activeUsers}"></span>
+        <span th:text="#{admin.userHealth.inactiveUsers}">InActive Users</span> : <span th:text="${activeUsers}"></span>
       </li>
       <li style="--accent-color: blue;">
-        Banned Users : <span th:text="${bannedUsers}"></span>
+        <span th:text="#{admin.userHealth.bannedUsers}">Banned Users</span> : <span th:text="${bannedUsers}"></span>
       </li>
       <li style="--accent-color: green;">
-        New This Month : <span th:text="${inActiveUsers}"></span> 
+        <span th:text="#{admin.userHealth.newThisMonth}">New This Month</span> : <span th:text="${inActiveUsers}"></span> 
       </li>
     </ul>
   </div>

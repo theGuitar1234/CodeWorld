@@ -13,7 +13,7 @@
     aria-haspopup="true"
     tabindex="0"
   >
-    Sort By
+    <span th:text="#{transactions.sortBy}">Sort By</span>
     <svg
       width="100%"
       height="100%"
@@ -42,7 +42,7 @@
           th:checked="${sortBy == 'transactionTime'}"
           autocomplete="off"
         />
-        <label for="transaction-date"><small>Date</small></label>
+        <label for="transaction-date"><small th:text="#{transactions.sort.date}">Date</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -53,7 +53,7 @@
           th:checked="${sortBy == 'transactionAmount'}"
           autocomplete="on"
         />
-        <label for="transaction-amount"><small>Amount</small></label>
+        <label for="transaction-amount"><small th:text="#{transactions.sort.amount}">Amount</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -64,7 +64,7 @@
           th:checked="${direction == 'ASC'}"
           autocomplete="on"
         />
-        <label for="direction-ascending"><small>Ascending</small></label>
+        <label for="direction-ascending"><small th:text="#{transactions.sort.ascending}">Ascending</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -75,7 +75,7 @@
           th:checked="${direction == 'DESC'}"
           autocomplete="off"
         />
-        <label for="direction-descending"><small>Descending</small></label>
+        <label for="direction-descending"><small th:text="#{transactions.sort.descending}">Descending</small></label>
       </li>
     </div>
   </ul>

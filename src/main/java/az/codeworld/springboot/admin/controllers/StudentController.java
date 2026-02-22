@@ -1,23 +1,13 @@
 package az.codeworld.springboot.admin.controllers;
 
-import java.awt.print.PrinterIOException;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,37 +22,26 @@ import az.codeworld.springboot.admin.dtos.StudentDTO;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.create.TransactionCreateDTO;
-import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.projections.UserIdProjection;
-import az.codeworld.springboot.admin.records.GenericLinkRecord;
-import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.services.TeacherService;
 import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.exceptions.ClassSectionAlreadyExistsException;
 import az.codeworld.springboot.utilities.WriteLog;
 import az.codeworld.springboot.utilities.constants.dtotype;
-import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.web.dtos.ClassSectionDTO;
 import az.codeworld.springboot.web.dtos.SubjectDTO;
-import az.codeworld.springboot.web.entities.ClassSection;
-import az.codeworld.springboot.web.entities.Subject;
 import az.codeworld.springboot.web.mappers.SubjectMapper;
 import az.codeworld.springboot.web.repositories.CourseOfferingRepository;
 import az.codeworld.springboot.web.services.ClassSectionService;
-import io.swagger.v3.oas.models.Paths;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/students")
 public class StudentController {
 
-    private final ClassSectionAlreadyExistsException classSectionAlreadyExistsException;
     private final TransactionService transactionService;
     private final UserService userService;
     private final TeacherService teacherService;
@@ -73,14 +52,12 @@ public class StudentController {
         UserService userService,
         TeacherService teacherService,
         ClassSectionService classSectionService,
-        ClassSectionAlreadyExistsException classSectionAlreadyExistsException,
         CourseOfferingRepository courseOfferingRepository,
         TransactionService transactionService
     ) {
         this.userService = userService;
         this.teacherService = teacherService;
         this.classSectionService = classSectionService;
-        this.classSectionAlreadyExistsException = classSectionAlreadyExistsException;
         this.courseOfferingRepository = courseOfferingRepository;
         this.transactionService = transactionService;
     }

@@ -8,21 +8,15 @@ import org.springframework.security.authentication.RememberMeAuthenticationToken
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.services.ActivityService;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.services.auditservices.AuditService;
-import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.eventtype;
 import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

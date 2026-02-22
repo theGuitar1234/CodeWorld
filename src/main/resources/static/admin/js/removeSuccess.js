@@ -1,25 +1,25 @@
-let 
-    successButton;
+let isBound = false;
 
-function cacheElements() {
-    successButton = document.querySelector("#success-button");
-}
+function removeSuccess(e) {
+  if (!e.target.closest("#success-button")) return;
 
-function removeSuccess() {
-  document.getElementById("success").remove();
+  e.preventDefault();
+  const box = document.getElementById("success");
+  if (!box) return;
+  box.remove();
+
   const url = new URL(window.location.href);
   url.searchParams.has("success") ? url.searchParams.delete("success") : "";
   history.replaceState({}, document.title, url);
 }
 
 function initRemoveSuccess() {
-    console.log("Initializing Remove Success");
+  console.log("Initializing Remove Success");
 
-    cacheElements();
+  if (isBound) return;
+  isBound = true;
 
-    if (!successButton) return;
-
-    successButton.addEventListener("click", removeSuccess);
+  document.addEventListener("click", removeSuccess);
 }
 
-export { initRemoveSuccess }
+export { initRemoveSuccess };

@@ -20,12 +20,16 @@
 
     <main>
       <div class="wrapper student">
-        <form class="students" th:action="@{/students/}" method="GET">
+        <form 
+          class="students-form" 
+          th:action="@{/students/}" 
+          method="GET"
+        >
           <div class="title">
             <h3 th:text="#{students.page.title}">Students</h3>
           </div>
 
-          <div class="panel students">
+          <div class="panel students-panel">
             <div class="wrapper">
               <input
                 type="date"
@@ -37,7 +41,6 @@
                 th:replace="~{fragments/statements.html :: statements('/students/getReport')}"
               ></div>
             </div>
-
             <div class="drop-down">
               <input
                 type="checkbox"
@@ -95,7 +98,10 @@
             </div>
           </div>
 
-          <button type="submit" th:text="#{common.load}">Load</button>
+          <button
+            type="submit" 
+            th:text="#{common.load}"
+          >Load</button>
         </form>
 
         <button
@@ -108,10 +114,11 @@
           Add New Class Section
         </button>
 
-        <dialog id="dialog" classSection commonDialog>
-          <div id="wrapper">
+        <dialog class="class-section-dialog" classSection commonDialog>
+          <div id="wrapper" class="wrapper">
             <form
               class="studentsForm"
+              id="students-form"
               th:action="@{/students/addClassSection}"
               method="POST"
             >
@@ -148,9 +155,13 @@
                 <div
                   th:replace="~{fragments/tables/students_table_form.html :: students-table-form}"
                 ></div>
-              </th:block>
 
-              <button type="submit" th:text="#{common.submit}">Submit</button>
+                <button
+                  th:if="${selectedSection != null and not #lists.isEmpty(selectedSection)}" 
+                  type="submit"
+                  th:text="#{common.submit}"
+                >Submit</button>
+              </th:block>
             </form>
 
             <button class="close-button" clsBttn>
@@ -210,9 +221,14 @@
                 th:value="${selectedSection.subjectId}"
               />
 
-              <div th:replace="~{fragments/tables/students.html :: students}"></div>
-
-              <button type="submit" th:text="#{common.submit}">Submit</button>
+              <div class="students-table-scroll" th:replace="~{fragments/tables/students.html :: students}"></div>
+              
+              <button 
+                th:if="${selectedSection != null and selectedSection.enrollments != null and not #lists.isEmpty(selectedSection.enrollments)}"
+                id="edit-class-section-submit" 
+                type="submit" 
+                th:text="#{common.submit}"
+              >Submit</button>
             </form>
           </th:block>
         </div>

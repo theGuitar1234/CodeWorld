@@ -1,12 +1,16 @@
-let 
-    errorButton;
+let isBound = false;
 
-function cacheElements() {
-    errorButton = document.querySelector("#error-button");
-}
+function removeError(e) {
+  
+  if (!e.target.closest("#error-button")) return;
 
-function removeError() {
-  document.getElementById("error").remove();
+  e.preventDefault();
+
+  const box = document.getElementById("error");
+  if (!box) return;
+
+  box.remove();
+
   const url = new URL(window.location.href);
   url.searchParams.has("error") ? url.searchParams.delete("error") : "";
   history.replaceState({}, document.title, url);
@@ -15,11 +19,10 @@ function removeError() {
 function initRemoveError() {
     console.log("Initializing Remove Error");
 
-    cacheElements();
+    if (isBound) return;
+    isBound = true;
 
-    if (!errorButton) return;
-
-    errorButton.addEventListener("click", removeError);
+    document.addEventListener("click", removeError);
 }
 
 export { initRemoveError }

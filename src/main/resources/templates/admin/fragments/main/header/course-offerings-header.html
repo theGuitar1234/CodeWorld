@@ -2,7 +2,7 @@
   <div class="logo">
     <a th:href="@{/admin/courseOfferings}">
       <div class="icon"></div>
-      Course Offerings
+      <span th:text="#{admin.courseOfferings.title}">Course Offerings</span>
     </a>
   </div>
   <div class="location">
@@ -19,7 +19,7 @@
         />
       </svg>
       <br />
-      / CourseOfferings
+      <span th:text="#{admin.courseOfferings.breadcrumb}">/ CourseOfferings</span>
     </a>
   </div>
 </header>

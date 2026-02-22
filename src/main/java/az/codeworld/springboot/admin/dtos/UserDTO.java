@@ -7,13 +7,13 @@ import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.aop.validations.EmailValidation;
 import az.codeworld.springboot.aop.validations.UsernameValidation;
 import az.codeworld.springboot.security.dtos.AuditDTO;
-import jakarta.persistence.Column;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,6 +71,8 @@ public class UserDTO extends AuditDTO {
 
     public boolean isPastPayment;
     public boolean isNearPayment;
+
+    private boolean is2FaEnabled;
 
     @Builder.Default
     private String profilePhoto = "/assets/sprites/profile-thumb.jpg";

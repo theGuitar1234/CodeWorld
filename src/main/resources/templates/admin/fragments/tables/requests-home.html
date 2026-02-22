@@ -1,16 +1,16 @@
 <div class="activity requests" th:fragment="requests-home">
   <div class="title">
-    <h1>Requests</h1>
+    <h1 th:text="#{admin.requests.title}">Requests</h1>
   </div>
   <div class="panel">
     <table requests-table>
       <thead>
         <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Decide</th>
+          <th th:text="#{admin.requests.table.firstName}">First Name</th>
+          <th th:text="#{admin.requests.table.lastName}">Last Name</th>
+          <th th:text="#{admin.table.email}">Email</th>
+          <th th:text="#{admin.requests.table.role}">Role</th>
+          <th th:text="#{admin.requests.table.decide}">Decide</th>
         </tr>
       </thead>
       <tbody>
@@ -34,12 +34,14 @@
             <button
               th:data-url="@{/admin/acceptRequest/{requestId}(requestId=${request.requestId})}"
               class="js-accept"
+              th:attr="aria-label=#{admin.requests.accept}"
             >
               ✓
             </button>
             <button
               th:data-url="@{/admin/rejectRequest/{requestId}(requestId=${request.requestId})}"
               class="js-reject"
+              th:attr="aria-label=#{admin.requests.reject}"
             >
               🗙
             </button>

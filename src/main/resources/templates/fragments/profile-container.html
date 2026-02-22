@@ -1,7 +1,7 @@
 <div class="profile-container" th:fragment="profile-container">
   <div class="icon-container">
     <div class="icon">
-      <img th:src="@{${user.profilePhoto}}" th:alt="#{profile.picture.alt}" />
+      <img th:src="@{${user != null ? user.profilePhoto : '/assets/sprites/profile-thumb.jpg'}}" alt="Profile photo">
 
       <form
         class="upload-pfp"

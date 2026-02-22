@@ -3,7 +3,6 @@ package az.codeworld.springboot.admin.entities;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -12,22 +11,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
-import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import az.codeworld.springboot.aop.validations.EmailValidation;
 import az.codeworld.springboot.aop.validations.PasswordValidation;
 import az.codeworld.springboot.aop.validations.UsernameValidation;
-import az.codeworld.springboot.security.entities.AuditedEntity;
 import az.codeworld.springboot.security.entities.LoginAudit;
 import az.codeworld.springboot.security.entities.OtpCode;
 import az.codeworld.springboot.security.entities.PasswordResetToken;
 import az.codeworld.springboot.security.entities.Role;
-import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import jakarta.persistence.AttributeOverride;
@@ -49,7 +42,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -60,11 +52,9 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -272,6 +262,7 @@ public class User /*extends AuditedEntity*/ {
         this.email = normalizeToNull(email);
         // this.cardNumber = normalizeToNull(cardNumber);
         // this.bankAccount = normalizeToNull(bankAccount);
+
     }
 
     private String normalizeToNull(String s) {

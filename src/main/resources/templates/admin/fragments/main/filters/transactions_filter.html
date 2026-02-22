@@ -11,11 +11,11 @@
     <!-- <p>Select Transactions from start date to end date</p> -->
     <div class="wrapper">
       <div class="inputs">
-        <label for="perPage">PerPage : </label>
+        <label for="perPage" th:text="#{transactions.filter.perPage}">PerPage : </label>
         <input type="number" name="perPage" />
-        <label for="start-date">From : </label>
+        <label for="start-date" th:text="#{transactions.filter.from}">From : </label>
         <input type="date" name="startDate" id="start-date" />
-        <label for="end-date">To : </label>
+        <label for="end-date" th:text="#{transactions.filter.to}">To : </label>
         <input type="date" name="endDate" id="end-date" />
       </div>
       <div
@@ -24,5 +24,5 @@
     </div>
     <div th:replace="~{admin/fragments/main/filters/sort_transactions_by.html :: sort-transactions-by}"></div>
   </div>
-  <button type="submit">Submit</button>
+  <button type="submit" th:text="#{common.submit}">Submit</button>
 </form>

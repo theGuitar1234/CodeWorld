@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.aop.validations.UsernameValidation;
-import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.utilities.constants.roles;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -58,5 +57,7 @@ public class UserDashboardDTO {
     public boolean isNearPayment;
 
     private roles role;
+
+    private boolean is2FaEnabled;
 
 }

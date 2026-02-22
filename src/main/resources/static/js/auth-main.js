@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initMatchPassword();
     initTheme();
     initShowPassword();
-    initIntercept();
     initRemoveError();
     initRemoveSuccess();
     initI18n();
+    initIntercept();
 });

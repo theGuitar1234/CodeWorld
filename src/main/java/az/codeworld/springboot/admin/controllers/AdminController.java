@@ -1,32 +1,22 @@
 package az.codeworld.springboot.admin.controllers;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.math.BigDecimal;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Stream;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -49,66 +39,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import az.codeworld.springboot.admin.dtos.ChartPoint;
 import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.StudentDTO;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.create.TransactionCreateDTO;
 import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
-import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.dtos.transactions.UserPayableDTO;
 import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
-import az.codeworld.springboot.admin.entities.Money;
-import az.codeworld.springboot.admin.entities.Request;
 import az.codeworld.springboot.admin.entities.Student;
 import az.codeworld.springboot.admin.entities.Teacher;
-import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.admin.projections.UserAdminProjection;
 import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.ActivityRecord;
 import az.codeworld.springboot.admin.records.GenericLinkRecord;
 import az.codeworld.springboot.admin.records.Pagination;
-import az.codeworld.springboot.admin.records.PaymentDueRecord;
 import az.codeworld.springboot.admin.records.PaymentOverDueRecord;
 import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.records.UserCombineRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.admin.services.ActivityService;
-import az.codeworld.springboot.admin.services.LogoutService;
 import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.admin.services.StudentService;
 import az.codeworld.springboot.admin.services.TeacherService;
 import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
-import az.codeworld.springboot.admin.services.serviceImpl.ActivityServiceImpl;
 
 import az.codeworld.springboot.exceptions.CourseOfferingAlreadyExistsException;
 import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
 import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.SubjectAlreadyExistsException;
-import az.codeworld.springboot.exceptions.UserNotFoundException;
 
-import az.codeworld.springboot.security.filters.UserActivityFilter;
 import az.codeworld.springboot.security.services.auditservices.AuditService;
 import az.codeworld.springboot.security.services.authservices.RegistrationService;
-import az.codeworld.springboot.security.services.emailservices.EmailService;
 import az.codeworld.springboot.security.services.sessionservices.SessionKiller;
 
-import az.codeworld.springboot.utilities.WriteLog;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
-import az.codeworld.springboot.utilities.configurations.ApplicationProperties.Payriff;
+
 import az.codeworld.springboot.utilities.constants.accounterror;
-import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.accountsuccess;
 import az.codeworld.springboot.utilities.constants.dtotype;
-import az.codeworld.springboot.utilities.constants.emailstatus;
 import az.codeworld.springboot.utilities.constants.eventtype;
-import az.codeworld.springboot.utilities.constants.mode;
 import az.codeworld.springboot.utilities.constants.paymentDueStatus;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.spa;
@@ -126,8 +102,6 @@ import az.codeworld.springboot.web.services.ImpressionService;
 import az.codeworld.springboot.web.services.ProfileService;
 import az.codeworld.springboot.web.services.SubjectService;
 
-import jakarta.servlet.Registration;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -138,24 +112,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserActivityFilter userActivityFilter;
     private final ApplicationProperties applicationProperties;
     private final ActivityService activityService;
     private final RequestService requestService;
     private final TransactionService transactionService;
-    private final EmailService emailService;
     private final RegistrationService registrationService;
     private final ProfileService profileService;
     private final UserService userService;
     private final StudentService studentService;
     private final TeacherService teacherService;
-    private final LogoutService logoutService;
     private final SessionKiller sessionKiller;
     private final ImpressionService impressionService;
     private final AuditService auditService;
@@ -168,18 +138,15 @@ public class AdminController {
     public AdminController(
         RequestService requestService,
         TransactionService transactionService,
-        EmailService emailService,
         RegistrationService registrationService,
         ProfileService profileService,
         UserService userService,
         StudentService studentService,
         TeacherService teacherService,
-        LogoutService logoutService,
         SessionKiller sessionKiller,
         ImpressionService impressionService,
         AuditService auditService,
         ActivityService activityService,
-        UserActivityFilter userActivityFilter,
         SubjectService subjectService,
         ApplicationProperties applicationProperties,
         ContactService contactService,
@@ -189,18 +156,15 @@ public class AdminController {
     ) {
         this.requestService = requestService;
         this.transactionService = transactionService;
-        this.emailService = emailService;
         this.registrationService = registrationService;
         this.profileService = profileService;
         this.userService = userService;
         this.studentService = studentService;
         this.teacherService = teacherService;
-        this.logoutService = logoutService;
         this.sessionKiller = sessionKiller;
         this.impressionService = impressionService;
         this.auditService = auditService;
         this.activityService = activityService;
-        this.userActivityFilter = userActivityFilter;
         this.subjectService = subjectService;
         this.applicationProperties = applicationProperties;
         this.contactService = contactService;
@@ -212,6 +176,20 @@ public class AdminController {
     @GetMapping({ "", "/" })
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
     public String admin(Model model) {
+
+        ZoneId zone = ZoneId.of(applicationProperties.getTime().getZone());
+
+        List<ChartPoint> incomeOverTime = transactionService.getTransactionsOverTime(roles.STUDENT);
+        List<ChartPoint> outcomeOverTime = transactionService.getTransactionsOverTime(roles.TEACHER);
+
+        ChartPoint incomeThisMonthPoint = getThisMonthPoint(incomeOverTime, zone);
+        ChartPoint outcomeThisMonthPoint = getThisMonthPoint(outcomeOverTime, zone);
+
+        model.addAttribute("incomeThisMonth", incomeThisMonthPoint.getTransactionAmount());
+        model.addAttribute("incomeTxCountThisMonth", incomeThisMonthPoint.getTransactionCount());
+
+        model.addAttribute("outcomeThisMonth", outcomeThisMonthPoint.getTransactionAmount());
+        model.addAttribute("outcomeTxCountThisMonth", outcomeThisMonthPoint.getTransactionCount());
 
         int newThisMonth = userService.countTotalNewThisMonth();
         int bannedUsers = userService.countTotalBannedUsers();
@@ -250,7 +228,8 @@ public class AdminController {
 
         model.addAllAttributes(
                 Map.of(
-                        "chartPoints", transactionService.getChartPoints(),
+                        "incomeOverTime", incomeOverTime,
+                        "outcomeOverTime", outcomeOverTime,
                         "requests", requestService.getRecentRequests(),
                         "studentTransactions", transactionService.getRecentTransactions(roles.STUDENT),
                         "teacherTransactions", transactionService.getRecentTransactions(roles.TEACHER)));
@@ -505,9 +484,6 @@ public class AdminController {
             HttpServletRequest request,
             Model model) {
 
-        WriteLog.main("The role must be STUDENT, the current role is : " + role.getRoleNameString(),
-                AdminController.class);
-
         PageImpl<UserCombineRecord> report = fetchPaginatedUsers(pageIndex, perPage, sortBy, direction,
                 payablePageIndex, payableSortBy, role, model);
 
@@ -530,8 +506,6 @@ public class AdminController {
             Model model) {
 
         boolean spaRequest = isSpaRequest(fragment, request);
-
-        WriteLog.main("This has to be an SPA request, is it? : " + spaRequest, AdminController.class);
 
         fetchPaginatedUsers(pageIndex, perPage, sortBy, direction, payablePageIndex, payableSortBy, role, model);
         listPaymentOverDues(paymentDueStatus, model);
@@ -1235,20 +1209,12 @@ public class AdminController {
 
         boolean spaRequest = isSpaRequest(fragment, request);
 
-        WriteLog.main("Recording the transactions... is this request an SPA? : " + spaRequest, AdminController.class);
-
         try {
             transactionService.recordTransaction(teacherId, transactionCreateDTO);
             model.addAttribute("success", "Transaction Recorded");
-
-            WriteLog.main("Successfully recorded the transaction", AdminController.class);
         } catch (RuntimeException e) {
-            WriteLog.main("An Error happened during the recording : " + e.getLocalizedMessage(), AdminController.class);
             model.addAttribute("error", e.getLocalizedMessage());
         }
-
-        WriteLog.main("Make Sure you are passing the correct role (TEACHER), the current role is : "
-                + role.getRoleNameString(), AdminController.class);
 
         fetchPaginatedUsers(pageIndex, perPage, sortBy, direction, payablePageIndex, payableSortBy, role, model);
 
@@ -1308,6 +1274,15 @@ public class AdminController {
     // filename=\"report.csv\"")
     // .body(resource);
     // }
+
+    private ChartPoint getThisMonthPoint(List<ChartPoint> series, ZoneId zone) {
+        YearMonth now = YearMonth.now(zone);
+
+        return series.stream()
+            .filter(p -> p.getYear() == now.getYear() && p.getMonth() == now.getMonthValue())
+            .findFirst()
+            .orElse(new ChartPoint(now.getYear(), now.getMonthValue(), 0L, BigDecimal.ZERO));
+    }
 
     private String mainFragment(spa s) {
         return switch (s) {
@@ -1422,9 +1397,7 @@ public class AdminController {
             String payableSortBy,
             roles role,
             Model model) {
-        
-        WriteLog.main("Made it to fetchPaginatedUsers(), current role must be teacher, the current role is : " + role.getRoleNameString(), AdminController.class);
-
+   
         Set<String> allowedSort = Set.of("affiliationDate", "id", "payment", "nextDate");
         Pagination pagination = normalizePagination(pageIndex, perPage, sortBy, payableSortBy, allowedSort, "id");
 
@@ -1440,18 +1413,11 @@ public class AdminController {
 
         switch (role) {
             case TEACHER -> {
-
-                WriteLog.main("This is a teacher and the switch case made it here as it should", AdminController.class);
-
                 usersOnPage = teacherService.getPaginatedTeachers(
                         pageIndex - 1,
                         perPage,
                         sortBy,
                         direction);
-
-                usersOnPage.forEach(u -> {
-                    WriteLog.main("Results : " + u.toString(), AdminController.class);
-                });
             }
             case STUDENT -> {
                 usersOnPage = studentService.getPaginatedStudents(

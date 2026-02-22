@@ -1,22 +1,21 @@
 <div class="activity" th:fragment="teachers">
   <div class="title">
-    <h1>Teachers</h1>
+    <h1 th:text="#{admin.teachers.title}">Teachers</h1>
   </div>
   <div class="panel">
 
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th class="description">Full name</th>
-          <th>Email</th>
-          <th>Affiliation Date</th>
+          <th th:text="#{admin.table.id}">ID</th>
+          <th class="description" th:text="#{admin.teachers.fullName}">Full name</th>
+          <th th:text="#{admin.table.email}">Email</th>
+          <th th:text="#{admin.teachers.affiliationDate}">Affiliation Date</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
     
-      <!-- th:if="${spa == 'TEACHERS'}" -->
       <tbody
         th:replace="~{admin/fragments/tables/entity-pagination.html :: tableBody(${teachersOnPage})}"
       ></tbody>
@@ -24,9 +23,6 @@
     </table>
   </div>
   <div id="pagination-container">
-    <!-- <div
-      th:replace="~{admin/fragments/tables/transaction-pagination.html :: view-all-teachers}"
-    ></div> -->
     <nav
       th:replace="~{admin/fragments/tables/entity-pagination.html :: pagination('/admin/teachers', ${teachersOnPage}, ${pagesForTeachers}, 'pageIndex')}"
     ></nav>

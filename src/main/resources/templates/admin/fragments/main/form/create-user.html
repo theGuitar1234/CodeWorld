@@ -25,10 +25,10 @@
     <fieldset>
       <legend>
         <select name="role" required>
-          <option disabled selected>USER</option>
-          <option value="ADMIN">ADMIN</option>
-          <option value="STUDENT">STUDENT</option>
-          <option value="TEACHER">TEACHER</option>
+          <option disabled selected th:text="#{admin.createUser.role.user}">USER</option>
+          <option value="ADMIN" th:text="#{admin.createUser.role.admin}">ADMIN</option>
+          <option value="STUDENT" th:text="#{admin.createUser.role.student}">STUDENT</option>
+          <option value="TEACHER" th:text="#{admin.createUser.role.teacher}">TEACHER</option>
         </select>
       </legend>
 
@@ -38,13 +38,15 @@
         data-empty="Enter your First Name"
         data-valid="Valid First Name"
         th:attr="data-invalid=#{auth.firstName.invalid}, data-empty=#{auth.firstName.empty}, data-valid=#{auth.firstName.valid}"
+        th:inline="text"
       >
-        FirstName :
+        [[#{auth.firstName.label}]]
         <input
           id="firstName"
           type="text"
           name="firstName"
           placeholder="John"
+          th:placeholder="#{auth.firstName.placeholder}"
           aria-describedby="first-name-help-request"
           pattern="^[A-Z]{1}[a-z]{1,14}$"
           maxlength="15"
@@ -58,13 +60,15 @@
         data-empty="Enter your Last Name"
         data-valid="Valid Last Name"
         th:attr="data-invalid=#{auth.lastName.invalid}, data-empty=#{auth.lastName.empty}, data-valid=#{auth.lastName.valid}"
+        th:inline="text"
       >
-        LastName :
+        [[#{auth.lastName.label}]]
         <input
           id="lastName"
           type="text"
           name="lastName"
           placeholder="Doe"
+          th:placeholder="#{auth.lastName.placeholder}"
           aria-describedby="last-name-help-request"
           autocomplete="family-name"
           pattern="^[A-Z]{1}[a-z]{1,19}$"
@@ -77,8 +81,10 @@
         data-invalid="Invalid Email"
         data-empty="Input an Email"
         data-valid="Email is Valid"
+        th:attr="data-invalid=#{auth.email.invalid}, data-empty=#{auth.email.empty}, data-valid=#{auth.email.valid}"
+        th:inline="text"
       >
-        Email :
+        [[#{auth.email.label}]]
         <!-- \. is how you escape in Browser Regex -->
         <input
           id="email"
@@ -86,6 +92,7 @@
           name="email"
           required
           placeholder="example@email.com"
+          th:placeholder="#{auth.email.placeholder}"
           aria-describedby="email-help"
           pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9._%+-]+\.[A-Za-z]{2,6}$"
           autocomplete="email"
@@ -97,13 +104,16 @@
         data-invalid="Invalid Password"
         data-empty="Input a Password"
         data-valid="Password is Valid"
+        th:attr="data-invalid=#{auth.password.invalid}, data-empty=#{auth.password.empty}, data-valid=#{auth.password.valid}"
+        th:inline="text"
       >
-        Enter New Password :
+        [[#{auth.password.label}]]
         <input
           type="password"
           id="password"
           aria-describedby="password-help"
           placeholder="password"
+          th:placeholder="#{auth.password.placeholder}"
           pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
           name="password"
           autocomplete="new-password"
@@ -115,13 +125,16 @@
         data-invalid="Invalid Password"
         data-empty="Input a Password"
         data-valid="Password is Valid"
+        th:attr="data-invalid=#{auth.password.invalid}, data-empty=#{auth.password.empty}, data-valid=#{auth.password.valid}"
+        th:inline="text"
       >
-        Enter The New Password Again :
+        [[#{auth.password.confirmLabel}]]
         <input
           type="password"
           id="password2"
           aria-describedby="password-help"
           placeholder="password"
+          th:placeholder="#{auth.password.placeholder}"
           pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
           name="password2"
           autocomplete="new-password"
@@ -130,28 +143,22 @@
       </label>
       <div class="show-password">
         <input type="checkbox" aria-checked="false" id="show-password" />
-        <label for="show-password">Show Password</label>
+        <label for="show-password" th:text="#{auth.showPassword}">Show Password</label>
       </div>
-      <label for="payment">User Payment : </label>
+      <label for="payment" th:text="#{admin.createUser.payment.label}">User Payment : </label>
       <input id="payment" type="number" name="amount" />
-      <label for="currency">Currency : </label>
+      <label for="currency" th:text="#{admin.createUser.currency.label}">Currency : </label>
       <select name="currency" id="currency" required>
         <option value="USD">USD</option>
         <option value="AZN">AZN</option>
         <option value="TRY">TRY</option>
         <option value="EURO">EURO</option>
       </select>
-      <!-- <label for="roles">Role : </label>
-      <select name="role">
-        <option value="ADMIN">ADMIN</option>
-        <option value="STUDENT">STUDENT</option>
-        <option value="TEACHER">TEACHER</option>
-      </select> -->
-      <label for="payment-date">Payment Date : </label>
+      <label for="payment-date" th:text="#{admin.createUser.paymentDate.label}">Payment Date : </label>
       <input type="date" name="nextDate" id="payment-date" required />
-      <label for="affiliation-date">Affiliation Date : </label>
+      <label for="affiliation-date" th:text="#{admin.createUser.affiliationDate.label}">Affiliation Date : </label>
       <input type="date" id="affiliation-date" />
     </fieldset>
-    <button type="submit">Submit</button>
+    <button type="submit" th:text="#{common.submit}">Submit</button>
   </form>
 </div>

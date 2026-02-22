@@ -2,7 +2,7 @@
   <div class="logo">
     <a th:href="@{/admin/subjects}">
       <div class="icon"></div>
-      Subjects
+      <span th:text="#{admin.subjects.title}">Subjects</span>
     </a>
   </div>
   <div class="location">
@@ -19,7 +19,7 @@
         />
       </svg>
       <br />
-      / Subjects
+      <span th:text="#{admin.subjects.breadcrumb}">/ Subjects</span>
     </a>
   </div>
 </header>

@@ -1,12 +1,10 @@
 package az.codeworld.springboot.admin.services;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
-import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.create.UserCreateDTO;
@@ -15,14 +13,12 @@ import az.codeworld.springboot.admin.dtos.update.UserAdminUpdateDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.projections.UserAdminProjection;
-import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.exceptions.PasswordsMustBePresentException;
 import az.codeworld.springboot.exceptions.PasswordsMustMatchException;
 import az.codeworld.springboot.exceptions.UserNotFoundException;
 import az.codeworld.springboot.security.dtos.LoginAuditDTO;
-import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.roles;
 
@@ -83,4 +79,6 @@ public interface UserService {
     void createNewUserAdmin(UserCreateDTO userCreateDTO) throws PasswordsMustMatchException, PasswordsMustBePresentException;
 
     Object createNewRequestUser(UserAuthDTO userAuthDTO, dtotype dtotype);
+
+    void disable2FA(String name);
 }

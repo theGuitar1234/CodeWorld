@@ -1,9 +1,12 @@
 <div th:fragment="transaction-pagination">
   <table>
     <tbody th:fragment="tableBody" pagination-table-root>
-      <tr th:if="${transactionsOnPage == null or #lists.isEmpty(transactionsOnPage)}">
+      <tr 
+        th:if="${transactions == null or #lists.isEmpty(transactions)}"
+        style="pointer-events: none; cursor: not-allowed;"
+      >
         <td colspan="4" th:text="#{transactions.none}">
-          No transactions found.
+          No transactions found...
         </td>
       </tr>
 

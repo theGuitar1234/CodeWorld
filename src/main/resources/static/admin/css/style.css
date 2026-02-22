@@ -376,9 +376,6 @@ dialog[pay].is-open {
   transform: translateY(0%);
   opacity: 1;
 }
-#dialog-wrapper {
-  display: flex;
-}
 
 /* Header start */
 
@@ -465,7 +462,7 @@ header .collapse-menu label {
 }
 
 header .collapse-menu label svg path {
-  fill: var(--svg-fill-color);
+  fill: var(--text-color);
 }
 
 header .collapse-menu label .close-svg {
@@ -497,17 +494,22 @@ details .expandable {
   position: absolute;
   bottom: -0.5em;
   left: 0;
-  padding: 0.5em;
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; */
   transform: translate(-50%, 100%);
-  background-color: var(--background-color);
+  background-color: var(--base-color);
   border-radius: var(--border-radius-low);
-  box-shadow: var(--shadow-medium);
+  /* box-shadow: var(--shadow-hard); */
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.5);
 
   display: flex;
   flex-direction: column;
 
   z-index: 9999;
+
+  max-height: 500px;
+  width: clamp(min(50vw, 200px), 250px, 500px);
+  overflow: visible;
+  scrollbar-width: thin;
 }
 .expandable::before {
   content: "";
@@ -524,13 +526,21 @@ details .expandable {
 
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 20px solid var(--background-color);
+  border-bottom: 20px solid var(--base-color);
 
   pointer-events: none;
 }
 
-details .expandable.notifications ul {
+.expandable.profile {
+  width: fit-content;
+  height: fit-content;
+  aspect-ratio: unset;
+}
+
+details .expandable ul {
   list-style-type: none;
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 .icon {
@@ -614,7 +624,12 @@ header .i18n select:focus {
   outline: 1px solid var(--highlight-color);
 }
 
+#lang {
+  color: var(--text-color);
+}
+
 #theme {
+
   display: none;
 }
 #theme:checked ~ #light-mode {
@@ -750,7 +765,9 @@ aside nav ul li a:hover {
 }
 .sub-menu .wrapper li {
   padding: 0.5em 0.5em;
+  margin-bottom: .5em;
 }
+
 
 /* Main start */
 
@@ -820,6 +837,8 @@ main header {
   grid-column: 1 / -2;
   grid-row: 1 / span 3;
   display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
 }
 
 #container2,
@@ -1042,6 +1061,7 @@ main header {
 }
 #container9 form {
   border-radius: 0px;
+  width: 100%;
 }
 #container9.create-subject {
   gap: 0;
@@ -1059,12 +1079,36 @@ main header {
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-low);
+
+  flex-grow: 1;
 }
 
 .chartCard canvas {
   width: 100% !important;
   height: 100% !important;
 }
+
+.chart .finance {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.chart .finance div {
+  /* background-color: var(--background-color);
+  box-shadow: var(--shadow-hard);
+  border-radius: var(--border-radius-low); */
+  padding: .5em 1.5em;
+  transition: .5s ease;
+  /* cursor: pointer; */
+  font-size: clamp(.1rem, calc(.5rem + .5vw), 1rem);
+  /* text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: scroll;
+  scrollbar-width: none; */
+}
+/* .chart .finance div:hover {
+  transform: translateY(-15%);
+} */
 
 .pie-chart {
   width: min(200px, 50%);
@@ -1246,8 +1290,11 @@ table td button:active {
   transform: scale(0.8);
 }
 
-button:disabled {
+button[type="submit"]:disabled {
   background-color: grey;
+  cursor: not-allowed;
+  pointer-events: none;
+  border: none;
 }
 
 #date-cell::before {
@@ -1465,11 +1512,12 @@ dialog[transaction-dialog] .wrapper {
   height: 100%;
   width: 100%;
   gap: 0;
+  padding: 0;
 }
-dialog[transaction-dialog] .wrapper > * {
+/* dialog[transaction-dialog] .wrapper > * {
   border-radius: 0px;
-}
-dialog[transaction-dialog] .wrapper .transaction {
+} */
+dialog[transaction-dialog] .transaction {
   background-color: var(--accent-color);
   flex-grow: 1;
   padding: 2em 5em;
@@ -1492,11 +1540,15 @@ dialog[transaction-dialog] .wrapper .transaction h3 {
   font-weight: 400;
   color: var(--base-color);
 }
-dialog[transaction-dialog] .wrapper .transaction h1 {
+dialog[transaction-dialog] .wrapper .transaction-details .header .title {
   font-weight: 600;
-  color: white;
+  color: var(--text-color);
+  font-size: clamp(0.1rem, calc(0.5rem + 0.7vw), 1rem);
 }
 dialog[transaction-dialog] .wrapper .transaction small {
+  color: white;
+}
+.data-total-header {
   color: white;
 }
 
@@ -1575,6 +1627,22 @@ dialog[transaction-dialog].is-open {
 #dialog-wrapper {
   display: flex;
 }
+button[clsBttn] {
+  box-shadow: none;
+  background-color: transparent;
+  border-radius: 0px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: .5em;
+  padding: .2em;
+  border: 0;
+}
+button[clsBttn]:hover {
+  background-color: transparent;
+}
+
+
 
 /* Fetch User */
 .title {
@@ -1664,25 +1732,39 @@ input[type="password"] {
   font-weight: normal;
 }
 
-.transactions .panel .statements {
+.statements {
   position: absolute;
   right: 5%;
   top: 5%;
   color: var(--secondary-text-color);
   font-size: clamp(0.5rem, calc(0.5rem + 0.7vw), 1rem);
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
-
-.transactions .panel .statements a:hover svg path {
-  fill: var(--accent-color);
+.statements a {
+  text-decoration: none;
+  color: var(--text-color);
+  display: flex;
+  height: fit-content;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
 }
-
-.transactions .panel .statements a svg path {
+.statements a:hover svg path {
+  fill: var(--text-color);
+}
+.statements a svg path {
   fill: var(--secondary-text-color);
 }
-
-main .wrapper .transactions .panel .statements a:hover {
+.statements a:hover {
   text-decoration: underline;
+}
+.statements a:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
 }
 
 input:not(
@@ -1940,12 +2022,13 @@ label[for="create"] svg {
 label[for="create"] svg path {
   fill: var(--accent-color);
 }
-label[for="create"] svg:nth-child(1) {
+/* label[for="create"] svg:nth-child(1) {
   margin-right: 0.5em;
-}
-label[for="create"] svg:nth-child(2) {
+} */
+/* label[for="create"] svg:nth-child(2) {
   margin-left: 2em;
-}
+} */
+
 
 /* Footer start */
 
@@ -2130,6 +2213,9 @@ footer .terms .terms-of-service ul li a {
 }
 .expand {
   --aside-width: clamp(0px, 28vw, 220px);
+}
+.anchor svg path {
+  fill: var(--text-color);
 }
 
 /* Fetch User */

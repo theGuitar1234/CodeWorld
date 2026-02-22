@@ -12,6 +12,8 @@ const KEY = "resend";
 function cacheElements() {
   authForm = document.querySelector("form[authForm]");
   resend = document.querySelector("a[resend]");
+  timer = document.querySelector("#timer");
+  submit = document.querySelector("button[resend]");
 }
 
 function getRemainingMs() {
@@ -39,12 +41,12 @@ function startCountDown() {
     clearResendTimer();
     timer.textContent = "";
     if (submit) submit.disabled = false;
-    if (resend) resend.disabled = false;
+    if (resend) resend.classList.remove("disabled");
     return;
   }
 
   if (submit) submit.disabled = true;
-  if (resend) resend.disabled = true;
+  if (resend) resend.classList.add("disabled");
 
   const totalSeconds = Math.floor(remainingMs / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -147,14 +149,9 @@ function initIntercept() {
 
   cacheElements();
 
-  if (
-    !authForm ||
-    !resend
-    //!timer
-    //!submit
-  ) return;
-
+  console.log(authForm);
   console.log(resend);
+  console.log(timer);
 
   startOrResumeCountDown();
 

@@ -13,49 +13,54 @@
         />
       </svg>
       <h3 data-paid-by-header></h3>
-      <h1 data-total-header></h1>
+      <h1 class="data-total-header" data-total-header></h1>
       <small data-date></small>
     </div>
     <div class="transaction-details">
       <div class="header">
-        <h1 class="title">Transaction Details</h1>
-        <button id="dialog-button" clsBttn>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
-          >
-            <path
-              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-            />
-          </svg>
-        </button>
+        <h1 class="title" th:text="#{transaction.details.title}">
+          Transaction Details
+        </h1>
       </div>
+      <button id="dialog-button" clsBttn>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#e8eaed"
+        >
+          <path
+            d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+          />
+        </svg>
+      </button>
       <div class="amount-details">
         <div class="data">
-          <small>Payment Amount</small
+          <small th:text="#{transaction.details.paymentAmount}"
+            >Payment Amount</small
           ><small data-amount style="color: var(--text-color)"></small>
         </div>
         <div class="data">
-          <small>Fee</small
+          <small th:text="#{transaction.details.fee}">Fee</small
           ><small data-fee style="color: var(--text-color)"></small>
         </div>
       </div>
       <div class="transfer-details">
         <div class="data">
-          <h3>Total Amount</h3>
+          <h3 th:text="#{transaction.details.totalAmount}">Total Amount</h3>
           <h3 data-total></h3>
         </div>
         <div class="others">
-          <h3>Paid By:</h3>
+          <h3 th:text="#{transaction.details.paidBy}">Paid By:</h3>
           <small data-paid-by></small>
-          <h3>Transaction ID:</h3>
+          <h3 th:text="#{transaction.details.transactionId}">
+            Transaction ID:
+          </h3>
           <small data-transaction-id></small>
-          <h3>Description:</h3>
+          <h3 th:text="#{transaction.details.description}">Description:</h3>
           <small data-details></small>
-          <h3>Status</h3>
+          <h3 th:text="#{transaction.details.status}">Status</h3>
           <div class="checked-unchecked" dialog-status-icon>
             <small data-status></small>
             <div class="checkbox" style="width: 16px; height: 16px">

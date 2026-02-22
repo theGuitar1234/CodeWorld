@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -22,12 +23,17 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "ROLE")
+@Table(
+    name = "ROLE",
+    indexes = {
+        @Index(name = "idx_role_name", columnList = "role_name")
+    }
+)
 public class Role {
     @Id
     private Long roleId;
 
-    @Column
+    @Column(name = "role_name", unique = true)
     private String roleNameString;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)

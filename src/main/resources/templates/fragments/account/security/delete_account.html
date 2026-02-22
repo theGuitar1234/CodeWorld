@@ -4,7 +4,8 @@
   </div>
   <div class="panel">
     <button
-      onclick="showDialog(true)"
+      commonDialogButton
+      dialog="deleteUser"
       type="submit"
       style="background-color: red; border: none"
       th:text="#{account.delete.button}"
@@ -12,16 +13,27 @@
       DELETE ACCOUNT
     </button>
 
-    <dialog id="dialog">
+    <dialog 
+      commonDialog
+      class="delete-account-dialog"
+      deleteUser
+    >
       <div id="wrapper" class="wrapper">
-        <h2 th:text="#{account.delete.confirmTitle}">Are You Sure You Want To Delete The Account?</h2>
-        <form th:action="@{/account/deleteAccount}" method="POST">
+        <h2 
+          class="delete-user-title" 
+          th:text="#{account.delete.confirmTitle}"
+          style="
+            width: 100%;
+            text-align: center;
+          "  
+        >Are You Sure You Want To Delete The Account?</h2>
+        <form class="delete-user-form" th:action="@{/account/deleteAccount}" method="POST">
           <button type="submit" class="delete-user" style="background-color: red;" th:text="#{account.delete.button}">
             DELETE ACCOUNT
           </button>
-          <button onclick="showDialog(false)" type="button" class="cancel" th:text="#{common.cancel}">Cancel</button>
+          <button type="button" class="cancel" th:text="#{common.cancel}" clsBttn>Cancel</button>
         </form>
-        <button onclick="showDialog(false)" type="button" class="close-button" clsBttn>
+        <button type="button" class="close-button" clsBttn>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -36,30 +48,5 @@
         </button>
       </div>
     </dialog>
-    <script>
-      const dialog = document.getElementById("dialog");
-      function showDialog(show) {
-        const dialog = document.querySelector("#dialog");
-        if (!dialog) return;
-
-        if (!dialog.isConnected) document.body.appendChild(dialog);
-
-        show ? dialog.showModal() : dialog.close();
-      }
-      const wrapper = document.getElementById("wrapper");
-      dialog.addEventListener("click", (e) => {
-        if (!wrapper.contains(e.target)) showDialog(false);
-      });
-      document.addEventListener(
-        "cancel",
-        (e) => {
-          const d = e.target.closest?.("#dialog");
-          if (!d) return;
-          e.preventDefault();
-          showDialog(d, false);
-        },
-        true,
-      );
-    </script>
   </div>
 </div>

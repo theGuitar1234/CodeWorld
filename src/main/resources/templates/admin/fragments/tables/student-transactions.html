@@ -1,6 +1,6 @@
 <div class="activity" th:fragment="student-transactions">
   <div class="title">
-    <h1>Student Payments</h1>
+    <h1 th:text="#{admin.studentTransactions.title}">Student Payments</h1>
   </div>
   <div class="panel">
 
@@ -11,10 +11,10 @@
     <table dialog-table>
       <thead>
         <tr>
-          <th>Date</th>
-          <th class="description">Description</th>
-          <th>Status</th>
-          <th>Amount</th>
+          <th th:text="#{transactions.date}">Date</th>
+          <th class="description" th:text="#{transactions.description}">Description</th>
+          <th th:text="#{transactions.status}">Status</th>
+          <th th:text="#{transactions.amount}">Amount</th>
         </tr>
       </thead>
       

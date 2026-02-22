@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,10 +16,8 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -37,12 +36,9 @@ import az.codeworld.springboot.security.controllers.SecurityController;
 import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.security.services.JpaUserDetailsService;
-import az.codeworld.springboot.security.services.authservices.RegistrationService;
-import az.codeworld.springboot.security.services.authservices.authservicesImpl.RegistrationServiceImpl;
 import az.codeworld.springboot.security.services.rbacservices.AuthorityService;
 import az.codeworld.springboot.security.services.rbacservices.RoleService;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
-import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.currency;
 import az.codeworld.springboot.utilities.constants.notificationtype;
@@ -54,22 +50,19 @@ import az.codeworld.springboot.web.entities.ClassSection;
 import az.codeworld.springboot.web.entities.CourseEnrollment;
 import az.codeworld.springboot.web.entities.CourseOffering;
 import az.codeworld.springboot.web.entities.Enrollment;
-import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.entities.Subject;
 import az.codeworld.springboot.web.entities.SubjectEnrollment;
 import az.codeworld.springboot.web.entities.TeachingAssignment;
-import az.codeworld.springboot.web.repositories.CourseEnrollmentRepository;
-import az.codeworld.springboot.web.repositories.CourseOfferingRepository;
-import az.codeworld.springboot.web.repositories.SubjectEntrollmentRepository;
-import az.codeworld.springboot.web.services.GenericWebService;
+import az.codeworld.springboot.web.repositories.*;
 import az.codeworld.springboot.web.services.NotificationService;
-import az.codeworld.springboot.web.services.ProfileService;
 
 @Component
 @Profile("dev")
 public class SeedData implements ApplicationRunner {
 
     private final ApplicationProperties applicationProperties;
+
+    private final TeachingAssignmentRepository teachingAssignmentRepository;
 
     private static final Logger log = LoggerFactory.getLogger(SecurityController.class);
 
@@ -79,19 +72,19 @@ public class SeedData implements ApplicationRunner {
     private final UserService userService;
     private final TransactionService transactionService;
     private final JpaUserDetailsService jpaUserDetailsService;
-    private final ProfileService profileService;
+    // private final ProfileService profileService;
 
     private final RequestService requestService;
 
-    private final GenericWebService genericWebService;
-
-    private final RegistrationServiceImpl registrationService;
+    // private final RegistrationServiceImpl registrationService;
 
     private final NotificationService notificationService;
 
-    private final SubjectEntrollmentRepository subjectEntrollmentRepository;
+    private final SubjectEnrollmentRepository subjectEnrollmentRepository;
     private final CourseEnrollmentRepository courseEnrollmentRepository;
     private final CourseOfferingRepository courseOfferingRepository;
+    private final SubjectRepository subjectRepository;
+    private final ClassSectionRepository classSectionRepository;
 
     public SeedData(
         PasswordEncoder passwordEncoder,
@@ -100,30 +93,33 @@ public class SeedData implements ApplicationRunner {
         UserService userService,
         JpaUserDetailsService jpaUserDetailsService,
         TransactionService transactionService,
-        GenericWebService genericWebService,
         RequestService requestService,
-        RegistrationServiceImpl registrationService,
-        ProfileService profileService,
+        // RegistrationServiceImpl registrationService,
+        // ProfileService profileService,
         NotificationService notificationService,
-        SubjectEntrollmentRepository subjectEntrollmentRepository,
+        SubjectEnrollmentRepository subjectEnrollmentRepository,
         CourseEnrollmentRepository courseEnrollmentRepository,
-        CourseOfferingRepository courseOfferingRepository, 
-        ApplicationProperties applicationProperties
-    ) {
+        CourseOfferingRepository courseOfferingRepository,
+        SubjectRepository subjectRepository, 
+        TeachingAssignmentRepository teachingAssignmentRepository,
+        ClassSectionRepository classSectionRepository
+    , ApplicationProperties applicationProperties) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
         this.roleService = roleService;
         this.userService = userService;
         this.jpaUserDetailsService = jpaUserDetailsService;
         this.transactionService = transactionService;
-        this.genericWebService = genericWebService;
         this.requestService = requestService;
-        this.registrationService = registrationService;
-        this.profileService = profileService;
+        // this.registrationService = registrationService;
+        // this.profileService = profileService;
         this.notificationService = notificationService;
-        this.subjectEntrollmentRepository = subjectEntrollmentRepository;
+        this.subjectEnrollmentRepository = subjectEnrollmentRepository;
         this.courseEnrollmentRepository = courseEnrollmentRepository;
         this.courseOfferingRepository = courseOfferingRepository;
+        this.subjectRepository = subjectRepository;
+        this.teachingAssignmentRepository = teachingAssignmentRepository;
+        this.classSectionRepository = classSectionRepository;
         this.applicationProperties = applicationProperties;
     }
 
@@ -188,6 +184,8 @@ public class SeedData implements ApplicationRunner {
         }
 
         Random random = new Random();
+        int monthCursor = 0;
+        ZoneId zone = ZoneId.of(applicationProperties.getTime().getZone());
 
         Subject math = new Subject();
         Subject physics = new Subject();
@@ -206,15 +204,14 @@ public class SeedData implements ApplicationRunner {
         biology.setSubjectTitle("Biology");
         biology.setSubjectBody("Subject Body for Biology");
 
-        genericWebService.saveType(Subject.class, math);
-        genericWebService.saveType(Subject.class, physics);
-        genericWebService.saveType(Subject.class, computerScience);
-        genericWebService.saveType(Subject.class, biology);
+        subjectRepository.save(math);
+        subjectRepository.save(physics);
+        subjectRepository.save(computerScience);
+        subjectRepository.save(biology);
 
         List<Subject> allSubjects = new ArrayList<>(List.of(math, physics, computerScience, biology));
 
         Transaction transaction;
-        ProfilePicture profilePicture;
 
         Teacher teacher;
 
@@ -225,7 +222,7 @@ public class SeedData implements ApplicationRunner {
         teacher.setLastName("Dhones");
         teacher.setEmail("exampleTEACHER@email.com");
         teacher.setPassword(passwordEncoder.encode("1234Aa@as"));
-        teacher.setPhoneNumber("+994519889192");
+        //teacher.setPhoneNumber("+994519889192");
 
         teacher.setDepartment("Biology");
         teacher.setTitle("Biology");
@@ -244,13 +241,6 @@ public class SeedData implements ApplicationRunner {
         teacher.setLanguage("English (United States)");
         teacher.setZoneId("America/Guatemala");
 
-        profilePicture = new ProfilePicture();
-        profilePicture.setProfileTitle("Silly Profile Picture");
-        profilePicture.setDescription("Silly Profile Picture Description");
-
-        teacher.setProfilePicture(profilePicture);
-        profilePicture.setUser(teacher);
-
         userService.saveUser(teacher);
 
         roleService.addRolesToUser(teacher.getId(), Set.of(roles.TEACHER.getRoleId()));
@@ -268,7 +258,7 @@ public class SeedData implements ApplicationRunner {
             courseOffering.setSubject(subject);
             teacher.addCourseOfferings(List.of(courseOffering));
 
-            genericWebService.saveType(CourseOffering.class, courseOffering);
+            courseOfferingRepository.save(courseOffering);
 
             offerings.add(courseOffering);
             offeringsBySubjectId
@@ -281,13 +271,19 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionPaidBy("TTT - HDFC TEACHER Bank");
             transaction.setTransactionDescription("Withdraw to TEACHER Bank account");
             transaction.setTransactionDetails("Transfer to HDFC Bank via Secure3D");
-            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setStatus(transactionstatus.CHECKED);
             transaction.setTransactionFee(new BigDecimal("4.82"));
             transaction.setTransactionAmount(new BigDecimal(random.nextInt(100)).add(BigDecimal.valueOf(j)));
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.TEACHER);
-            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
+            
+            transaction.setTransactionTime(
+                LocalDateTime.now()
+                    .minusMonths(monthCursor++ % 12)
+                    .atZone(zone)
+                    .toInstant()
+            );
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
@@ -328,13 +324,6 @@ public class SeedData implements ApplicationRunner {
             teacher.setLanguage("English (United States)");
             teacher.setZoneId("America/Guatemala");
 
-            profilePicture = new ProfilePicture();
-            profilePicture.setProfileTitle("Silly Profile Picture");
-            profilePicture.setDescription("Silly Profile Picture Description");
-
-            teacher.setProfilePicture(profilePicture);
-            profilePicture.setUser(teacher);
-
             userService.saveUser(teacher);
 
             roleService.addRolesToUser(teacher.getId(), Set.of(roles.TEACHER.getRoleId()));
@@ -349,7 +338,7 @@ public class SeedData implements ApplicationRunner {
                 courseOffering.setSubject(subject);
                 teacher.addCourseOfferings(List.of(courseOffering));
 
-                genericWebService.saveType(CourseOffering.class, courseOffering);
+                courseOfferingRepository.save(courseOffering);
 
                 offerings.add(courseOffering);
                 offeringsBySubjectId
@@ -362,13 +351,19 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionPaidBy("HDFC TEACHER Bank");
                 transaction.setTransactionDescription("Withdraw to TEACHER Bank account");
                 transaction.setTransactionDetails("Transfer to HDFC Bank via Secure3D");
-                transaction.setStatus(transactionstatus.PENDING);
+                transaction.setStatus(transactionstatus.CHECKED);
                 transaction.setTransactionFee(new BigDecimal("4.82"));
                 transaction.setTransactionAmount(new BigDecimal(random.nextInt(100)).add(BigDecimal.valueOf(j)));
                 transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
                 transaction.setBelongsTo(roles.TEACHER);
-                transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
+                
+                transaction.setTransactionTime(
+                    LocalDateTime.now()
+                        .minusMonths(monthCursor++ % 12)
+                        .atZone(zone)
+                        .toInstant()
+                );
 
                 transactionService.saveTransaction(transaction);
                 transactionService.addTransactionsToUser(teacher.getUserName(), Set.of(transaction.getTransactionId()));
@@ -410,13 +405,6 @@ public class SeedData implements ApplicationRunner {
         student.setLanguage("English (United States)");
         student.setZoneId("America/Guatemala");
 
-        profilePicture = new ProfilePicture();
-        profilePicture.setProfileTitle("Silly Profile Picture");
-        profilePicture.setDescription("Silly Profile Picture Description");
-
-        student.setProfilePicture(profilePicture);
-        profilePicture.setUser(student);
-
         userService.saveUser(student);
 
         roleService.addRolesToUser(student.getId(), Set.of(roles.STUDENT.getRoleId()));
@@ -427,11 +415,11 @@ public class SeedData implements ApplicationRunner {
         chosenSubjects = allSubjects.subList(0, num);
 
         for (Subject subject : chosenSubjects) {
-            if (!subjectEntrollmentRepository.existsByStudent_idAndSubject_id(student.getId(), subject.getId())) {
+            if (!subjectEnrollmentRepository.existsByStudent_idAndSubject_id(student.getId(), subject.getId())) {
                 SubjectEnrollment subjectEnrollment = new SubjectEnrollment();
                 subjectEnrollment.setStudent(student);
                 subjectEnrollment.setSubject(subject);
-                genericWebService.saveType(SubjectEnrollment.class, subjectEnrollment);
+                subjectEnrollmentRepository.save(subjectEnrollment);
             }
 
             List<CourseOffering> possibleOfferings = offeringsBySubjectId.get(subject.getId());
@@ -444,7 +432,7 @@ public class SeedData implements ApplicationRunner {
                     CourseEnrollment courseEnrollment = new CourseEnrollment();
                     courseEnrollment.setStudent(student);
                     chosenCourseOffering.addCourseEnrollments(List.of(courseEnrollment));
-                    genericWebService.saveType(CourseEnrollment.class, courseEnrollment);
+                    courseEnrollmentRepository.save(courseEnrollment);
                 }
             }
         }
@@ -454,13 +442,19 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionPaidBy("SSS - HDFC STUDENT Bank");
             transaction.setTransactionDescription("Withdraw to STUDENT Bank account");
             transaction.setTransactionDetails("Transfer to HDFC STUDENT Bank via Secure3D");
-            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setStatus(transactionstatus.CHECKED);
             transaction.setTransactionFee(new BigDecimal("4.82"));
             transaction.setTransactionAmount(new BigDecimal(random.nextInt(100)).add(BigDecimal.valueOf(j)));
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.STUDENT);
-            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
+            
+            transaction.setTransactionTime(
+                LocalDateTime.now()
+                    .minusMonths(monthCursor++ % 12)
+                    .atZone(zone)
+                    .toInstant()
+            );
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
@@ -501,13 +495,6 @@ public class SeedData implements ApplicationRunner {
             student.setLanguage("English (United States)");
             student.setZoneId("America/Guatemala");
 
-            profilePicture = new ProfilePicture();
-            profilePicture.setProfileTitle("Silly Profile Picture");
-            profilePicture.setDescription("Silly Profile Picture Description");
-
-            student.setProfilePicture(profilePicture);
-            profilePicture.setUser(student);
-
             userService.saveUser(student);
 
             roleService.addRolesToUser(student.getId(), Set.of(roles.STUDENT.getRoleId()));
@@ -518,11 +505,11 @@ public class SeedData implements ApplicationRunner {
             chosenSubjects = allSubjects.subList(0, num);
 
             for (Subject subject : chosenSubjects) {
-                if (!subjectEntrollmentRepository.existsByStudent_idAndSubject_id(student.getId(), subject.getId())) {
+                if (!subjectEnrollmentRepository.existsByStudent_idAndSubject_id(student.getId(), subject.getId())) {
                     SubjectEnrollment subjectEnrollment = new SubjectEnrollment();
                     subjectEnrollment.setStudent(student);
                     subjectEnrollment.setSubject(subject);
-                    genericWebService.saveType(SubjectEnrollment.class, subjectEnrollment);
+                    subjectEnrollmentRepository.save(subjectEnrollment);
                 }
 
                 List<CourseOffering> possibleOfferings = offeringsBySubjectId.get(subject.getId());
@@ -535,7 +522,7 @@ public class SeedData implements ApplicationRunner {
                         CourseEnrollment courseEnrollment = new CourseEnrollment();
                         courseEnrollment.setStudent(student);
                         chosenCourseOffering.addCourseEnrollments(List.of(courseEnrollment));
-                        genericWebService.saveType(CourseEnrollment.class, courseEnrollment);
+                        courseEnrollmentRepository.save(courseEnrollment);
                     }
                 }
             }
@@ -545,13 +532,19 @@ public class SeedData implements ApplicationRunner {
                 transaction.setTransactionPaidBy("HDFC STUDENT Bank");
                 transaction.setTransactionDescription("Withdraw to STUDENT Bank account");
                 transaction.setTransactionDetails("Transfer to HDFC STUDENT Bank via Secure3D");
-                transaction.setStatus(transactionstatus.PENDING);
+                transaction.setStatus(transactionstatus.CHECKED);
                 transaction.setTransactionFee(new BigDecimal("4.82"));
                 transaction.setTransactionAmount(new BigDecimal(random.nextInt(100)).add(BigDecimal.valueOf(j)));
                 transaction.setTransactionTotal(new BigDecimal("562"));
                 transaction.setCurrency(currency.USD);
                 transaction.setBelongsTo(roles.STUDENT);
-                transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
+                
+                transaction.setTransactionTime(
+                    LocalDateTime.now()
+                        .minusMonths(monthCursor++ % 12)
+                        .atZone(zone)
+                        .toInstant()
+                );
 
                 transactionService.saveTransaction(transaction);
                 transactionService.addTransactionsToUser(student.getUserName(), Set.of(transaction.getTransactionId()));
@@ -575,13 +568,13 @@ public class SeedData implements ApplicationRunner {
             classSection.setClassDate(LocalDate.now());
             classSection.setSubject(offering.getSubject());
 
-            genericWebService.saveType(ClassSection.class, classSection);
+            classSectionRepository.save(classSection);
 
             teachingAssignment = new TeachingAssignment();
             teachingAssignment.setTeacher(offering.getTeacher());
             classSection.addAssignment(teachingAssignment);
 
-            genericWebService.saveType(TeachingAssignment.class, teachingAssignment);
+            teachingAssignmentRepository.save(teachingAssignment);
 
             List<CourseEnrollment> courseEnrollments = courseEnrollmentRepository.findByCourseOffering_Id(offering.getId());
             for (CourseEnrollment courseEnrollment : courseEnrollments) {
@@ -589,7 +582,7 @@ public class SeedData implements ApplicationRunner {
                 enrollment.setStudent(courseEnrollment.getStudent());
                 enrollment.setPresent(random.nextBoolean());
                 classSection.addEnrollment(enrollment);
-                genericWebService.saveType(Enrollment.class, enrollment);
+                courseEnrollmentRepository.save(courseEnrollment);
             }
         }
 
@@ -614,13 +607,6 @@ public class SeedData implements ApplicationRunner {
 
         //admin.setTwoFactorEnabled(true);
 
-        profilePicture = new ProfilePicture();
-        profilePicture.setProfileTitle("Silly Profile Picture");
-        profilePicture.setDescription("Silly Profile Picture Description");
-
-        admin.setProfilePicture(profilePicture);
-        profilePicture.setUser(admin);
-
         userService.saveUser(admin);
 
         roleService.addRolesToUser(admin.getId(), Set.of(roles.ADMIN.getRoleId()));
@@ -630,13 +616,19 @@ public class SeedData implements ApplicationRunner {
             transaction.setTransactionPaidBy("HDFC ADMIN Bank");
             transaction.setTransactionDescription("Withdraw to ADMIN Bank account");
             transaction.setTransactionDetails("Transfer to HDFC ADMIN Bank via Secure3D");
-            transaction.setStatus(transactionstatus.PENDING);
+            transaction.setStatus(transactionstatus.CHECKED);
             transaction.setTransactionFee(new BigDecimal("4.82"));
             transaction.setTransactionAmount(new BigDecimal(random.nextInt(100)).add(BigDecimal.valueOf(j)));
             transaction.setTransactionTotal(new BigDecimal("562"));
             transaction.setCurrency(currency.USD);
             transaction.setBelongsTo(roles.ADMIN);
-            transaction.setTransactionTime(Instant.now().minus(Duration.ofHours(j)));
+            
+            transaction.setTransactionTime(
+                LocalDateTime.now()
+                    .minusMonths(monthCursor++ % 12)
+                    .atZone(zone)
+                    .toInstant()
+            );
 
             transactionService.saveTransaction(transaction);
             transactionService.addTransactionsToUser(admin.getUserName(), Set.of(transaction.getTransactionId()));

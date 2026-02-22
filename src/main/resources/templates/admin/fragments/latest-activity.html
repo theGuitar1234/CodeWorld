@@ -1,10 +1,10 @@
 <div th:fragment="latest-activity" style="display: contents;">
   <div class="title header">
-    <h3>Latest Activity</h3>
+    <h3 th:text="#{admin.latestActivity.title}">Latest Activity</h3>
   </div>
   <div class="wrapper latest-activity">
      <ul th:if="${latestActivities.size() == 0}">
-      <li>No New Activities so far...</li>
+      <li th:text="#{admin.latestActivity.empty}">No New Activities so far...</li>
     </ul>
     <ul th:if="${latestActivities.size() > 0}">
       <li th:each="activity : ${latestActivities}" th:style="'--accent-color:' + ${activity.activityColor}">

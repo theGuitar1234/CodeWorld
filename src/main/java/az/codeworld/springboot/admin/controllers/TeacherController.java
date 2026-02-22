@@ -1,10 +1,5 @@
 package az.codeworld.springboot.admin.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -17,38 +12,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import az.codeworld.springboot.admin.dtos.UserDTO;
 import az.codeworld.springboot.admin.services.TeacherService;
-import az.codeworld.springboot.admin.services.UserService;
-import az.codeworld.springboot.exceptions.ClassSectionAlreadyExistsException;
-import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.services.contactservices.ContactService;
 import az.codeworld.springboot.web.services.ClassSectionService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
 
-    private final UserService userService;
+    
     private final TeacherService teacherService;
     private final ContactService contactService;
     private final ClassSectionService classSectionService;
 
     public TeacherController(
-        UserService userService,
         TeacherService teacherService,
         ContactService contactService,
         ClassSectionService classSectionService
     ) {
-        this.userService = userService;
         this.teacherService = teacherService;
         this.contactService = contactService;
         this.classSectionService = classSectionService;

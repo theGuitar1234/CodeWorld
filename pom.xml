@@ -211,17 +211,17 @@
 		</dependency>
 
 		<!-- Hibernate Envers -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
 			<version>7.1.7.Final</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- Enver Repositories-->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-envers</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Reactive Web -->
 		<dependency>

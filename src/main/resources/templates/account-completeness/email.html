@@ -66,7 +66,7 @@
               You must enter your OTP Code you received via email
             </div>
 
-            <input type="hidden" name="email" th:value="${email}"/>
+            <!-- <input type="hidden" name="email" th:value="${email}"/> -->
 
             <th:block th:text="#{auth.otp.prompt}">Enter Your OTP code :</th:block>
             <input
@@ -83,7 +83,7 @@
         </fieldset>
         <button type="submit" th:text="#{common.submit}">Submit</button>
       </form>
-      <a id="refresh-otp-code" th:href="@{/restricted/refreshOtpCode/{email}(email=${email})}" th:text="#{auth.otp.resend}">Resend</a>
+      <a id="refresh-otp-code" th:href="@{/restricted/refreshOtpCode(email=${email})}" th:text="#{auth.otp.resend}" resend>Resend</a>
     </div>
     <div class="container2">
       <div class="wrapper">

@@ -2,7 +2,6 @@ package az.codeworld.springboot.security.controllers;
 
 import java.util.Map;
 
-import org.springframework.boot.web.server.servlet.Session;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,7 +9,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +19,8 @@ import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.security.auth.JpaUserDetails;
 import az.codeworld.springboot.security.services.authservices.OtpService;
 import az.codeworld.springboot.security.services.authservices.PasswordResetTokenService;
-import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.roles;
-import az.codeworld.springboot.admin.dtos.auth.UserRequestDTO;
 import az.codeworld.springboot.admin.records.RequestRecord;
-import az.codeworld.springboot.admin.records.UserAuthRecord;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,11 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/restricted")
@@ -117,7 +110,8 @@ public class SecurityController {
     public String tokenResetPassword(@RequestParam("token") String token, Model model) {
         if (passwordResetTokenService.isTokenValid(token)) {
             model.addAttribute("token", token);
-            return "auth/reset-password/reset_password?success=Password%20Reset%20Token%20Valid";
+            model.addAttribute("success", "Password Reset Token Valid");
+            return "auth/reset-password/reset_password";
         } else {
             return "redirect:/restricted/forgotPassword?error=Invalid%20Reset%20Token";
         }
@@ -139,19 +133,27 @@ public class SecurityController {
 
     @GetMapping("/2fa")
     public String get2fa(
-        @RequestParam("userName") String userName,
         HttpServletRequest request, 
         Model model
     ) {
-        UserAuthRecord userAuthRecord = userService.getUserRecordByUserName(userName);
-        String email = userAuthRecord.email();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isPre2fa = auth != null && auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_" + roles.PRE_2FA.getRoleNameString()));
+
+        if (!isPre2fa) return "redirect:/restricted/?expired";
+
+        JpaUserDetails user = (JpaUserDetails) auth.getPrincipal();
+        String email = userService.getUserRecordByUserName(user.getUsername()).email();
+
         otpService.createOtpCode(email);
 
         model.addAllAttributes(
             Map.of(
                 //"error", request.getParameter("error"),
                 "email", email,
-                "otpFormAction", "/restricted/2fa"
+                "otpFormAction", "/restricted/2fa",
+                "otpRefreshAction", "/restricted/refreshOtpCode",
+                "error", request.getParameter("error")
             )
         );
         return "auth/otp-code/otp_code";
@@ -177,14 +179,14 @@ public class SecurityController {
         JpaUserDetails jpaUserDetails = (JpaUserDetails) authentication.getPrincipal();
 
         if (!otpService.isOtpValid(email, otpCode)) {
-            model.addAllAttributes(
-                Map.of(
-                    "email", email,
-                    "otpFormAction", "/restricted/2fa"
-                )
-            );
-            return "redirect:/restricted/2fa?error=Invalid+ot+expired+code";
-        } 
+            model.addAllAttributes(Map.of(
+                "email", email,
+                "otpFormAction", "/restricted/2fa",
+                "otpRefreshAction", "/restricted/refreshOtpCode",
+                "error", "Invalid or expired code"
+            ));
+            return "auth/otp-code/otp_code";
+        }
 
         UsernamePasswordAuthenticationToken privilegedAuthentication = 
             new UsernamePasswordAuthenticationToken(
@@ -210,7 +212,6 @@ public class SecurityController {
     
     @PostMapping("/refreshOtpCode/{email}")
     public String refreshOtpCode(
-        HttpServletRequest request,
         @PathVariable("email") String email,
         Model model
     ) {
@@ -218,11 +219,13 @@ public class SecurityController {
         model.addAllAttributes(
             Map.of(
                 "email", email,
-                "otpFormAction", "/restricted/2fa"
+                "otpFormAction", "/restricted/2fa",
+                "otpRefreshAction", "/account/refreshOtpCode"
             )
         );
 
-        return "redirect:/restricted/2fa";
+        // return "redirect:/restricted/2fa";
+        return "auth/otp-code/otp_code";
     }
     
 }

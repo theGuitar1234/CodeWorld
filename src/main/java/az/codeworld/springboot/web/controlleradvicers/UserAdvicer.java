@@ -1,13 +1,13 @@
 package az.codeworld.springboot.web.controlleradvicers;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import az.codeworld.springboot.admin.controllers.AccountController;
@@ -16,13 +16,9 @@ import az.codeworld.springboot.admin.controllers.UserController;
 import az.codeworld.springboot.admin.dtos.create.TransactionCreateDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.projections.AdminContactProjection;
-import az.codeworld.springboot.admin.projections.UserIdProjection;
-import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.web.controllers.HomeController;
-import az.codeworld.springboot.web.records.NotificationRecord;
-import az.codeworld.springboot.web.services.NotificationService;
 
 @ControllerAdvice(assignableTypes = { AdminController.class, UserController.class, HomeController.class, AccountController.class })
 public class UserAdvicer {
@@ -37,6 +33,13 @@ public class UserAdvicer {
 
     @ModelAttribute
     public void addUserData(Principal principal, Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || 
+            auth instanceof AnonymousAuthenticationToken ||
+            !auth.isAuthenticated()
+        )
+            return;
 
         UserDashboardDTO userDashboardDTO = new UserDashboardDTO();
         AdminContactProjection adminContactProjection = (AdminContactProjection) userService.getUserProjectionByUserName("A-AAAA-AAAA-A", AdminContactProjection.class);

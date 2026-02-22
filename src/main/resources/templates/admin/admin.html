@@ -82,13 +82,27 @@
 
       const ctx = document.getElementById("tsChart");
 
-      const points = /*[[${chartPoints}]]*/ [];
-      //console.log(points);
+      const income = /*[[${incomeOverTime}]]*/ [];
+      const outcome = /*[[${outcomeOverTime}]]*/ [];
 
-      const normalized = (Array.isArray(points) ? points : []).map((p) => {
-        let x = Number(p.timestamp);
-        if (x < 1e12) x *= 1000;
-        return { x, y: Number(p.transactionAmount) };
+      const normalizedIncome = (Array.isArray(income) ? income : []).map((p) => {
+        const x = luxon.DateTime.fromObject({
+          year: Number(p.year),
+          month: Number(p.month),
+          day: 1,
+        }).toJSDate();
+
+        return { x, y: Number(p.transactionAmount ?? 0) };
+      });
+
+      const normalizedOutcome = (Array.isArray(outcome) ? outcome : []).map((p) => {
+        const x = luxon.DateTime.fromObject({
+          year: Number(p.year),
+          month: Number(p.month),
+          day: 1,
+        }).toJSDate();
+
+        return { x, y: Number(p.transactionAmount ?? 0) };
       });
 
       const chart = new Chart(ctx, {
@@ -97,7 +111,13 @@
           datasets: [
             {
               label: "Income Over Time",
-              data: normalized,
+              data: normalizedIncome,
+              tension: 0.25,
+              pointRadius: 2,
+            },
+            {
+              label: "Outcome Over Time",
+              data: normalizedOutcome,
               tension: 0.25,
               pointRadius: 2,
             },
@@ -107,15 +127,19 @@
           responsive: true,
           maintainAspectRatio: false,
 
-          parsing: true, //Use This for formatting
+          parsing: true, // use this for formatting
           scales: {
             x: {
               type: "time",
-              time: { tooltipFormat: "DD T" },
-              title: { display: true, text: "Date" },
+              time: {
+                unit: "month",
+                tooltipFormat: "LLL yyyy",
+                displayFormats: {month: "LLL yyyy"}
+              },
+              title: {display: true, text: "Months"},
             },
             y: {
-              title: { display: true, text: "Value" },
+              title: { display: true, text: "Amount" },
             },
           },
         },

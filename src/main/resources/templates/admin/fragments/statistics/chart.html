@@ -1,5 +1,19 @@
-<div th:fragment="chart" style="display: contents;">
+<div class="chart" th:fragment="chart" style="display: contents;">
   <div class="chartCard">
     <canvas id="tsChart"></canvas>
+  </div>
+  <div class="finance">
+    <div style="color: green;">
+      <p><span th:text="#{admin.chart.incomeThisMonth}">Income this month:</span> <span th:text="${incomeThisMonth}">0</span></p>
+    </div>
+    <div style="color: red;">
+      <p><span th:text="#{admin.chart.outcomeThisMonth}">Outcome this month:</span> <span th:text="${outcomeThisMonth}">0</span></p>
+    </div>
+    <div style="color: green;">
+      <p><span th:text="#{admin.chart.totalIns}">Total ins:</span> <span th:text="${incomeTxCountThisMonth}">0</span></p>
+    </div>
+    <div style="color: red;">
+      <p><span th:text="#{admin.chart.totalOuts}">Total outs:</span> <span th:text="${outcomeTxCountThisMonth}">0</span></p>
+    </div>
   </div>
 </div>

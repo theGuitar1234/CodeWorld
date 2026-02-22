@@ -1,15 +1,15 @@
 <div class="activity" th:fragment="subjects">
   <div class="title">
-    <h1>Subjects</h1>
+    <h1 th:text="#{admin.subjects.title}">Subjects</h1>
   </div>
   <div class="panel">
 
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th class="description">Description</th>
+          <th th:text="#{admin.table.id}">ID</th>
+          <th th:text="#{admin.subjects.table.title}">Title</th>
+          <th class="description" th:text="#{admin.subjects.table.description}">Description</th>
         </tr>
       </thead>
 

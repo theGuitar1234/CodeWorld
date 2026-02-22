@@ -1,87 +1,29 @@
 package az.codeworld.springboot.admin.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
-import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 
-import az.codeworld.springboot.admin.dtos.RequestDTO;
 import az.codeworld.springboot.admin.dtos.UserDTO;
-import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
-import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
-import az.codeworld.springboot.admin.entities.User;
-import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.services.LogoutService;
-import az.codeworld.springboot.admin.services.RequestService;
-import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
-import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
-import az.codeworld.springboot.exceptions.UserNotFoundException;
-import az.codeworld.springboot.security.auth.JpaUserDetails;
 import az.codeworld.springboot.security.services.authservices.OtpService;
-import az.codeworld.springboot.security.services.authservices.RegistrationService;
-import az.codeworld.springboot.utilities.WriteLog;
-import az.codeworld.springboot.utilities.constants.contenttypes;
 import az.codeworld.springboot.utilities.constants.dtotype;
-import az.codeworld.springboot.utilities.constants.mode;
-import az.codeworld.springboot.utilities.constants.profileError;
-import az.codeworld.springboot.utilities.constants.roles;
-import az.codeworld.springboot.web.dtos.ProfilePayloadDTO;
-import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.services.NotificationService;
-import az.codeworld.springboot.web.services.ProfileService;
 import az.codeworld.springboot.web.services.TimeZoneService;
-import az.codeworld.springboot.web.services.serviceImpl.NotificationServiceImpl;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.awt.image.BufferedImage;
 
 @Controller
 @RequestMapping("/account")
@@ -90,37 +32,21 @@ public class AccountController {
     private final NotificationService notificationService;
 
     private final UserService userService;
-    private final ProfileService profileService;
-
-    private Logger log = LoggerFactory.getLogger(AccountController.class);
-
-    private final RegistrationService registrationService;
-
-    private final TransactionService transactionService;
-    private final RequestService requestService;
     private final LogoutService logoutService;
 
     private final OtpService otpService;
 
     private final TimeZoneService timeZoneService;
 
-    public AccountController(
-            TransactionService transactionService,
-            RequestService requestService,
+    public AccountController( 
             LogoutService logoutService,
-            RegistrationService registrationService,
             UserService userService,
-            ProfileService profileService,
             OtpService otpService,
             NotificationService notificationService,
             TimeZoneService timeZoneService
         ) {
-        this.transactionService = transactionService;
-        this.requestService = requestService;
         this.logoutService = logoutService;
-        this.registrationService = registrationService;
         this.userService = userService;
-        this.profileService = profileService;
         this.otpService = otpService;
         this.notificationService = notificationService;
         this.timeZoneService = timeZoneService;
@@ -171,14 +97,6 @@ public class AccountController {
     public String accountSecurity(
             Principal principal,
             Model model) {
-        // UserDashboardDTO userDashboardDTO = (UserDashboardDTO)
-        // userService.getUserByUserName(principal.getName(), dtotype.DASHBOARD);
-
-        // model.addAllAttributes(
-        // Map.of(
-        // "user", userDashboardDTO
-        // )
-        // );
 
         return "user/account_security";
     }
@@ -266,7 +184,9 @@ public class AccountController {
             model.addAllAttributes(
                     Map.of(
                             "email", email,
-                            "otpFormAction", "/account/2fa"));
+                            "otpFormAction", "/account/2fa",
+                            "otpRefreshAction", "/restricted/refreshOtpCode"
+                    ));
             return "auth/otp-code/otp_code";
         } else {
             return "account-completeness/email";
@@ -275,37 +195,58 @@ public class AccountController {
 
     @PostMapping("/2fa")
     public String post2fa(
-            @RequestParam("otpCode") String otpCode,
-            @RequestParam("email") String email,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Model model) {
+        @RequestParam("otpCode") String otpCode,
+        Principal principal,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Model model
+    ) {
 
+        String email = userService.getUserRecordByUserName(principal.getName()).email();
         if (!otpService.isOtpValid(email, otpCode)) {
-            model.addAllAttributes(
-                    Map.of(
-                            "email", email,
-                            "otpFormAction", "/account/2fa"));
-            return "redirect:/restricted/2fa?error=Invalid+ot+expired+code";
+            model.addAllAttributes(Map.of(
+                "email", email,
+                "otpFormAction", "/account/2fa",
+                "otpRefreshAction", "/account/refreshOtpCode",
+                "error", "Invalid or expired code"
+            ));
+            return "auth/otp-code/otp_code";
         }
 
         userService.enable2FA(email);
 
-        return "redirect:/?success=2fa+successfully+activated!";
+        return "redirect:/account/accountSecurity?success=2fa+successfully+activated!";
     }
 
-    @PostMapping("/refreshOtpCode/{email}")
-    public String refreshOtpCode(
+    @PostMapping("/2fa/unset")
+    public String post2faUnset(
+            Principal principal,
             HttpServletRequest request,
-            @PathVariable("email") String email,
+            HttpServletResponse response,
+            Model model) {
+
+        userService.disable2FA(principal.getName());
+
+        return "redirect:/account/accountSecurity?success=2fa+successfully+disabled!";
+    }
+
+    @PostMapping("/refreshOtpCode")
+    public String refreshOtpCode(
+            @RequestParam(
+                name = "email",
+                required = true
+            ) String email,
             Model model) {
         otpService.createOtpCode(email);
         model.addAllAttributes(
-                Map.of(
-                        "email", email,
-                        "otpFormAction", "/account/2fa"));
+            Map.of(
+                "email", email,
+                "otpFormAction", "/account/2fa",
+                "otpRefreshAction", "/account/refreshOtpCode"
+            ));
 
-        return "redirect:/account/2fa";
+        // return "redirect:/account/2fa";
+        return "auth/otp-code/otp_code";
     }
 
     @PostMapping("/deleteAccount")

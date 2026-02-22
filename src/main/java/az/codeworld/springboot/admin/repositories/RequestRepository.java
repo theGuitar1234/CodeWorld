@@ -1,6 +1,5 @@
 package az.codeworld.springboot.admin.repositories;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,13 +15,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    @Query("SELECT r FROM Request r")
-    List<Optional<Request>> findAllRequests();
-
     Optional<Request> findByRequestToken(String requestToken);
 
-    @Query("SELECT r FROM Request r ORDER BY r.expiresAt DESC LIMIT 10")
-    List<Optional<Request>> findRecentRequests();
+    List<Request> findTop10ByOrderByExpiresAtDesc();
 
     Optional<Request> findById(Long id);
 

@@ -19,11 +19,9 @@ import az.codeworld.springboot.security.records.EmailRequestedEvent;
 import az.codeworld.springboot.security.repositories.OtpRepository;
 import az.codeworld.springboot.security.services.authservices.OtpService;
 import az.codeworld.springboot.security.services.emailservices.EmailOutboxService;
-import az.codeworld.springboot.security.services.emailservices.EmailService;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.generators.OtpGenerator;
 import az.codeworld.springboot.web.services.ThymeleafService;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -63,10 +61,11 @@ public class OtpServiceImpl implements OtpService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            if (user.getOtpCode() != null) {
-                OtpCode otpCode = user.getOtpCode();
+            OtpCode currentOtpCode = user.getOtpCode();
+            if (currentOtpCode != null) {
+                if (currentOtpCode.getExpiresAtEpochMillis() > System.currentTimeMillis()) return;
                 user.setOtpCode(null);
-                otpRepository.delete(otpCode);
+                otpRepository.delete(currentOtpCode);
                 otpRepository.flush();
             }
 

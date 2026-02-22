@@ -86,7 +86,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationRecord> getLatestNotifications(Long userId) {
-        return notificationRepository.findLatestNotifications(userId)
+        return notificationRepository.findTop5ByNotificationRecipients_RecipientIdAndNotificationRecipients_IsReadFalseOrderByCreatedAtAsc(userId)
             .stream()
             .map(n -> new NotificationRecord(n.getId(), n.getNotificationContent(), LocalDateTime.ofInstant(n.getCreatedAt(), ZoneId.of(applicationProperties.getTime().getZone())).format(DateTimeFormatter.ofPattern(applicationProperties.getTime().getDateTimeFormat())), n.getLink()))
             .toList();

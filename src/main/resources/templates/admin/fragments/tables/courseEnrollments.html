@@ -1,17 +1,17 @@
 <div class="activity" th:fragment="courseEnrollments">
   <div class="title">
-    <h1>Course Enrollments</h1>
+    <h1 th:text="#{admin.courseEnrollments.title}">Course Enrollments</h1>
   </div>
   <div class="panel">
 
     <table>
-      <caption th:text="${'ID: ' + courseOffering.id + ' Course Offering based on ' + courseOffering.subjectTitle}"></caption>
+      <caption th:text="#{admin.courseEnrollments.caption(courseOffering.id, courseOffering.subjectTitle)}">ID: 0 Course Offering based on Subject</caption>
       <thead>
         <tr>
-          <th>ID</th>
-          <th class="description">Full name</th>
-          <th>Email</th>
-          <th>EnrolledAt</th>
+          <th th:text="#{admin.table.id}">ID</th>
+          <th class="description" th:text="#{admin.students.fullName}">Full name</th>
+          <th th:text="#{admin.table.email}">Email</th>
+          <th th:text="#{admin.students.enrolledAt}">EnrolledAt</th>
         </tr>
       </thead>
 

@@ -16,13 +16,18 @@ import az.codeworld.springboot.admin.entities.User;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "LOGIN_AUDIT")
+@Table(
+    name = "LOGIN_AUDIT",
+    indexes = {
+        @Index(name = "idx_last_login_at", columnList = "last_login_at"),
+    }
+)
 public class LoginAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long auditId;
 
-    @Column
+    @Column(name = "last_login_at")
     private Instant lastLoginAt;
 
     @Column

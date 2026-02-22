@@ -2,16 +2,13 @@ package az.codeworld.springboot.admin.services.serviceImpl;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.h2.mvstore.tx.TransactionMap;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,36 +17,40 @@ import org.springframework.stereotype.Service;
 import az.codeworld.springboot.admin.dtos.ChartPoint;
 import az.codeworld.springboot.admin.dtos.create.TransactionCreateDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
-import az.codeworld.springboot.admin.entities.Teacher;
 import az.codeworld.springboot.admin.entities.Transaction;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.mappers.TransactionMapper;
-import az.codeworld.springboot.admin.repositories.TeacherRepository;
+import az.codeworld.springboot.admin.projections.MonthlyTransactionProjection;
 import az.codeworld.springboot.admin.repositories.TransactionRepository;
 import az.codeworld.springboot.admin.repositories.UserRepository;
 import az.codeworld.springboot.admin.services.TransactionService;
+import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
 import jakarta.transaction.Transactional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+
+    private final ApplicationProperties applicationProperties;
     
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
-    private final TeacherRepository teacherRepository;
+    // private final TeacherRepository teacherRepository;
     private final TransactionMapper transactionMapper;
 
     public TransactionServiceImpl(
         TransactionRepository transactionRepository,
         UserRepository userRepository,
-        TeacherRepository teacherRepository,
+        // TeacherRepository teacherRepository,
         TransactionMapper transactionMapper
-    ) {
+    , ApplicationProperties applicationProperties) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
-        this.teacherRepository = teacherRepository;
+        // this.teacherRepository = teacherRepository;
         this.transactionMapper = transactionMapper;
+        // this.teacherRepository = teacherRepository;
+        this.applicationProperties = applicationProperties;
     }
 
     @Override
@@ -84,9 +85,18 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDTO> getAllTransactions(roles role) {
+    public List<TransactionDTO> getAllTransactions(
+        int pageIndex, 
+        int pageSize, 
+        String sortBy,
+        Direction direction,
+        roles role
+    ) {
         return transactionRepository
-            .findAllTransactionsByBelongsTo(role)
+            .findAllTransactionsByBelongsTo(
+                role,
+                PageRequest.of(pageIndex, pageSize).withSort(direction, sortBy)
+            )
             .stream()
             .map(transaction -> {
                 return transactionMapper.toTransactionDTO(
@@ -171,10 +181,27 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<ChartPoint> getChartPoints() {
-        return transactionRepository.findTop15ByBelongsToOrderByTransactionTimeAsc(roles.STUDENT)
-            .stream()
-            .map(t -> new ChartPoint(t.getTransactionTime().toEpochMilli(), t.getTransactionAmount()))
+    public List<ChartPoint> getTransactionsOverTime(roles role) {
+        ZoneId zone = ZoneId.of(applicationProperties.getTime().getZone()); 
+
+        YearMonth endMonth = YearMonth.now(zone);
+        YearMonth startMonth = endMonth.minusMonths(11);
+
+        Instant startTime = startMonth.atDay(1).atStartOfDay(zone).toInstant();
+        Instant endTime = endMonth.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant();
+
+        List<MonthlyTransactionProjection> monthlyTransactionProjections =
+            transactionRepository.getMonthlyAmount(
+                startTime,
+                endTime,
+                role,
+                transactionstatus.CHECKED
+            );
+        
+        return monthlyTransactionProjections.stream()
+            .map(m -> {
+                return new ChartPoint(m.getYear(), m.getMonth(), m.getTxCount(), m.getAmount());
+            })
             .toList();
     }
 

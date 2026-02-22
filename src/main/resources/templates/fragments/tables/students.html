@@ -1,4 +1,4 @@
-<table th:fragment="students">
+<table th:fragment="students" id="students-table">
   <thead>
     <tr>
       <th th:text="#{students.table.id}">ID</th>
@@ -8,6 +8,7 @@
   </thead>
   <tbody>
     <tr
+      style="pointer-events: none; cursor: not-allowed;"
       th:if="${selectedSection == null or selectedSection.enrollments == null or #lists.isEmpty(selectedSection.enrollments)}"
     >
       <td colspan="3" th:text="#{students.table.noStudents}">No students found.</td>

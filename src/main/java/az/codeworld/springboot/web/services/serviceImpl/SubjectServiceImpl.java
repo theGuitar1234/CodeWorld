@@ -7,8 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import az.codeworld.springboot.admin.dtos.StudentDTO;
-import az.codeworld.springboot.admin.mappers.StudentMapper;
 import az.codeworld.springboot.exceptions.SubjectAlreadyExistsException;
 import az.codeworld.springboot.web.dtos.SubjectDTO;
 import az.codeworld.springboot.web.dtos.create.SubjectCreateDTO;

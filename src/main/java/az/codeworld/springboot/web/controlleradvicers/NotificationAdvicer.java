@@ -7,16 +7,13 @@ import java.util.Map;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import az.codeworld.springboot.admin.controllers.AccountController;
 import az.codeworld.springboot.admin.controllers.AdminController;
 import az.codeworld.springboot.admin.controllers.StudentController;
 import az.codeworld.springboot.admin.controllers.UserController;
-import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.projections.UserIdProjection;
-import az.codeworld.springboot.admin.services.TransactionService;
 import az.codeworld.springboot.admin.services.UserService;
 import az.codeworld.springboot.web.controllers.HomeController;
 import az.codeworld.springboot.web.records.NotificationRecord;

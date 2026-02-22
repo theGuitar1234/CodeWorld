@@ -1,27 +1,82 @@
 <aside th:fragment="aside">
   <div class="logo">
-    <a th:href="@{/admin/}" class="admin-panel">
-      <!-- <div class="icon"></div> -->
+    <a th:href="@{/admin/}" class="admin-panel" th:text="#{admin.aside.panel}">
       ADMIN PANEL
     </a>
   </div>
   <nav>
     <ul>
-      <li>Entities</li>
-      <li><a data-spa th:href="@{/admin/teachers}">Teachers</a></li>
-      <li><a data-spa th:href="@{/admin/students}">Students</a></li>
-      <li><a data-spa th:href="@{/admin/fetchUser}">Fetch User</a></li>
-      <li><a data-spa th:href="@{/admin/createUser}">Create User</a></li>
-      <li><a data-spa th:href="@{/admin/subjects}">Subjects</a></li>
+      <li th:text="#{admin.aside.entities}">Entities</li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/teachers}"
+          th:text="#{admin.aside.teachers}"
+          >Teachers</a
+        >
+      </li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/students}"
+          th:text="#{admin.aside.students}"
+          >Students</a
+        >
+      </li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/fetchUser}"
+          th:text="#{admin.aside.fetchUser}"
+          >Fetch User</a
+        >
+      </li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/createUser}"
+          th:text="#{admin.aside.createUser}"
+          >Create User</a
+        >
+      </li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/subjects}"
+          th:text="#{admin.aside.subjects}"
+          >Subjects</a
+        >
+      </li>
     </ul>
     <ul>
-      <li>Business</li>
-      <li><a data-spa th:href="@{/admin/teacherTransactions}">Teachers Transactions</a></li>
-      <li><a data-spa th:href="@{/admin/studentTransactions}">Students Transactions</a></li>
+      <li th:text="#{admin.aside.business}">Business</li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/teacherTransactions}"
+          th:text="#{admin.aside.teacherTransactions}"
+          >Teachers Transactions</a
+        >
+      </li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/studentTransactions}"
+          th:text="#{admin.aside.studentTransactions}"
+          >Students Transactions</a
+        >
+      </li>
     </ul>
     <ul>
-      <li>Auth</li>
-      <li><a data-spa th:href="@{/admin/requests}">Requests</a></li>
+      <li th:text="#{admin.aside.auth}">Auth</li>
+      <li>
+        <a
+          data-spa
+          th:href="@{/admin/requests}"
+          th:text="#{admin.aside.requests}"
+          >Requests</a
+        >
+      </li>
     </ul>
     <!-- <ul>
       <li>Media</li>

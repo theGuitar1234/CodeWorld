@@ -1,25 +1,24 @@
 <div class="activity" th:fragment="teacher-pay-over-dues">
   <div class="title">
-    <h1>Teachers pay over dues</h1>
+    <h1 th:text="#{admin.teacherPayOverDues.title}">Teachers pay over dues</h1>
   </div>
   <div class="panel">
 
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th class="description">Full name</th>
-          <th>Pay over due amount</th>
-          <th>Pay over due date</th>
-          <th>CreatedAt</th>
-          <th>Status</th>
+          <th th:text="#{admin.table.id}">ID</th>
+          <th class="description" th:text="#{admin.teachers.fullName}">Full name</th>
+          <th th:text="#{admin.teacherPayOverDues.amount}">Pay over due amount</th>
+          <th th:text="#{admin.teacherPayOverDues.dueDate}">Pay over due date</th>
+          <th th:text="#{admin.table.createdAt}">CreatedAt</th>
+          <th th:text="#{transactions.status}">Status</th>
         </tr>
       </thead>
     
-      <!-- th:if="${spa == 'TEACHERS'}" -->
       <tbody>
         <tr colspan="7">
-          <td>No Teacher Pay Overdues yet...</td>
+          <td th:text="#{admin.teacherPayOverDues.none}">No Teacher Pay Overdues yet...</td>
         </tr>
         <tr th:each="p : ${paymentOverDues}">
           <td th:text="${p.id}"></td>
@@ -34,9 +33,6 @@
     </table>
   </div>
   <div id="pagination-container">
-    <!-- <div
-      th:replace="~{admin/fragments/tables/transaction-pagination.html :: view-all-teachers}"
-    ></div> -->
     <nav
       th:replace="~{admin/fragments/tables/entity-pagination.html :: pagination('/admin/teachers', ${payableTeachersOnPage}, ${pagesForPayableTeachers}, 'payablePageIndex')}"
     ></nav>

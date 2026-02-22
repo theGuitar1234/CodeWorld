@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -15,7 +14,6 @@ import az.codeworld.springboot.admin.dtos.StudentDTO;
 import az.codeworld.springboot.admin.dtos.TeacherDTO;
 import az.codeworld.springboot.admin.entities.Student;
 import az.codeworld.springboot.admin.entities.Teacher;
-import az.codeworld.springboot.admin.mappers.StudentMapper;
 import az.codeworld.springboot.admin.mappers.TeacherMapper;
 import az.codeworld.springboot.admin.repositories.StudentRepository;
 import az.codeworld.springboot.admin.repositories.TeacherRepository;
@@ -30,42 +28,38 @@ import az.codeworld.springboot.web.entities.Subject;
 import az.codeworld.springboot.web.entities.SubjectEnrollment;
 import az.codeworld.springboot.web.entities.TeachingAssignment;
 import az.codeworld.springboot.web.repositories.*;
-import az.codeworld.springboot.web.services.GenericWebService;
-import az.codeworld.springboot.web.services.SubjectService;
 import jakarta.transaction.Transactional;
 
 @Service
 public class JpaTeacherServiceImpl implements TeacherService {
 
-    private final SubjectEntrollmentRepository subjectEntrollmentRepository;
-
+    private final SubjectEnrollmentRepository subjectEnrollmentRepository;
     private final CourseOfferingRepository courseOfferingRepository;
-
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
-    private final GenericWebService genericWebService;
     private final CourseEnrollmentRepository courseEnrollmentRepository;
     private final ClassSectionRepository classSectionRepository;
     private final SubjectRepository subjectRepository;
+    private final TeachingAssignmentRepository teachingAssignmentRepository;
 
     public JpaTeacherServiceImpl(
         TeacherRepository teacherRepository,
         StudentRepository studentRepository,
-        GenericWebService genericWebService,
         CourseEnrollmentRepository courseEnrollmentRepository,
         ClassSectionRepository classSectionRepository,
         SubjectRepository subjectRepository, 
         CourseOfferingRepository courseOfferingRepository, 
-        SubjectEntrollmentRepository subjectEntrollmentRepository
+        SubjectEnrollmentRepository subjectEnrollmentRepository,
+        TeachingAssignmentRepository teachingAssignmentRepository
     ) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
-        this.genericWebService = genericWebService;
         this.courseEnrollmentRepository = courseEnrollmentRepository;
         this.classSectionRepository = classSectionRepository;
         this.subjectRepository = subjectRepository;
         this.courseOfferingRepository = courseOfferingRepository;
-        this.subjectEntrollmentRepository = subjectEntrollmentRepository;
+        this.subjectEnrollmentRepository = subjectEnrollmentRepository;
+        this.teachingAssignmentRepository = teachingAssignmentRepository;
     }
 
     @Override
@@ -147,7 +141,7 @@ public class JpaTeacherServiceImpl implements TeacherService {
             )
         );
         
-        genericWebService.saveType(TeachingAssignment.class, teachingAssignment);
+        teachingAssignmentRepository.save(teachingAssignment);
     }
 
     
@@ -170,23 +164,23 @@ public class JpaTeacherServiceImpl implements TeacherService {
 
         courseOffering.setSubject(subject);
         teacher.addCourseOfferings(List.of(courseOffering));
-        genericWebService.saveType(CourseOffering.class, courseOffering);
+        courseOfferingRepository.save(courseOffering);
         
         studentIds.forEach(studentId -> {
             if (!courseEnrollmentRepository.existsByStudent_idAndCourseOffering_id(studentId, subjectId)) {
                CourseEnrollment courseEnrollment = new CourseEnrollment();
                Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student Not Found By ID"));
                
-               if (!subjectEntrollmentRepository.existsByStudent_idAndSubject_id(studentId, subjectId)) {
+               if (!subjectEnrollmentRepository.existsByStudent_idAndSubject_id(studentId, subjectId)) {
                 SubjectEnrollment subjectEnrollment = new SubjectEnrollment();
                 subjectEnrollment.setStudent(student);
                 subjectEnrollment.setSubject(subject);
-                genericWebService.saveType(SubjectEnrollment.class, subjectEnrollment);
+                subjectEnrollmentRepository.save(subjectEnrollment);
                }
 
                courseEnrollment.setStudent(student);
                courseOffering.addCourseEnrollments(List.of(courseEnrollment));
-               genericWebService.saveType(CourseEnrollment.class, courseEnrollment);
+               courseEnrollmentRepository.save(courseEnrollment);
             }
         });
     }

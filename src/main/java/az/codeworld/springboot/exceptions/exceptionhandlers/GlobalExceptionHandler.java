@@ -1,14 +1,6 @@
 package az.codeworld.springboot.exceptions.exceptionhandlers;
 
-import java.io.IOException;
-
-import org.springframework.ui.Model;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
-import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

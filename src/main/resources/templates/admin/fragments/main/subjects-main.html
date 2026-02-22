@@ -9,7 +9,7 @@
   <div class="wrapper">
     <div class="containers">
       <div
-        th:replace="~{admin/fragments/main/filters/subjects_filter.html :: subjects-filter('Subjects', '/admin/subjects', '/admin/subjects/getReport')}"
+        th:replace="~{admin/fragments/main/filters/subjects_filter.html :: subjects-filter(#{admin.subjects.title}, '/admin/subjects', '/admin/subjects/getReport')}"
       ></div>
       <div class="container" id="container8">
         <div
@@ -18,7 +18,7 @@
       </div>
       <div class="container create-subject" id="container9">
         <div class="title">
-          <h3>Create New Subject</h3>
+          <h3 th:text="#{admin.subjects.create.title}">Create New Subject</h3>
         </div>
         <form
           action="/admin/createNewSubject"
@@ -31,25 +31,27 @@
             th:name="${_csrf.parameterName}"
             th:value="${_csrf.token}"
           />
-          <label for="subject-title-input">Subject Title : </label>
+          <label for="subject-title-input" th:text="#{admin.subjects.create.subjectTitleLabel}">Subject Title : </label>
           <input
             id="subject-title-input"
             type="text"
             name="subjectTitle"
+            th:placeholder="#{admin.subjects.create.subjectTitlePlaceholder}"
             placeholder="Subject Title"
             required
           />
 
-          <label for="subject-body-input">Subject Description : </label>
+          <label for="subject-body-input" th:text="#{admin.subjects.create.subjectDescriptionLabel}">Subject Description : </label>
           <input
             type="text"
             id="subject-body-input"
             name="subjectBody"
+            th:placeholder="#{admin.subjects.create.subjectDescriptionPlaceholder}"
             placeholder="Subject Description"
             required
           />
 
-          <button type="submit">Submit</button>
+          <button type="submit" th:text="#{common.submit}">Submit</button>
         </form>
       </div>
     </div>

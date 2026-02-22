@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,13 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "EMAIL_OUTBOX")
+@Table(
+    name = "EMAIL_OUTBOX",
+    indexes = {
+        @Index(name = "idx_status", columnList = "status"),
+        @Index(name = "idx_created_at", columnList = "created_at")
+    }
+)
 public class EmailOutbox {
 
     @Id
@@ -39,6 +46,7 @@ public class EmailOutbox {
     @Column(columnDefinition = "TEXT")
     private String html;
 
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private emailstatus status;
 
@@ -48,7 +56,7 @@ public class EmailOutbox {
     @Column
     private String lastError;
 
-    @Column
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @Column

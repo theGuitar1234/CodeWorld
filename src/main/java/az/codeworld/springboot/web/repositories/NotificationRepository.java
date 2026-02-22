@@ -9,22 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import az.codeworld.springboot.web.entities.Notification;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.repository.query.Param;
 import jakarta.transaction.Transactional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     
-    @Query("""
-        SELECT n FROM Notification n 
-        JOIN n.notificationRecipients nr 
-        WHERE nr.recipientId = :recipientId
-        AND nr.isRead = false
-        ORDER BY n.createdAt ASC LIMIT 5
-    """)
-    List<Notification> findLatestNotifications(@Param("recipientId") Long recipientId);
+    List<Notification> findTop5ByNotificationRecipients_RecipientIdAndNotificationRecipients_IsReadFalseOrderByCreatedAtAsc(Long recipientId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("DELETE FROM Notification n WHERE n.createdAt < :cutoff")
     int deleteNotificationsByCreatedAtBefore(@Param("cutoff") Instant cutoff);

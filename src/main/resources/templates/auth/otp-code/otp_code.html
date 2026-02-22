@@ -12,16 +12,8 @@
   </head>
 
   <body class="layout auth">
-    <style>
-      .error {
-        position: fixed;
-        top: 0;
-        left: 10%;
-        z-index: 9999;
-        color: red;
-      }
-    </style>
-    <div class="error" th:text="${error}"></div>
+    <div th:replace="admin/fragments/error/error.html :: error"></div>
+    <div th:replace="admin/fragments/success/success.html :: success"></div>
 
     <div class="help" id="password-help" th:text="#{auth.password.help}">
       At least 1 uppercase, lowercase character, number and a special character
@@ -63,7 +55,6 @@
         class="form-login"
         method="POST"
         id="forgot-password-form"
-        authForm
       >
         <input
           type="hidden"
@@ -83,7 +74,7 @@
               You must enter your OTP Code you received via email
             </div>
 
-            <input type="hidden" name="email" th:value="${email}" />
+            <!-- <input type="hidden" name="email" th:value="${email}" /> -->
 
             <th:block th:text="#{auth.otp.prompt}">Enter Your OTP code :</th:block>
             <input
@@ -104,7 +95,7 @@
         
         <a
           id="refresh-otp-code"
-          th:href="@{/account/refreshOtpCode/{email}(email=${email})}"
+          th:href="@{/account/refreshOtpCode(email=${email})}"
           resend
           th:text="#{auth.otp.resend}"
           >Resend</a

@@ -1,19 +1,11 @@
 package az.codeworld.springboot.security.auth;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import az.codeworld.springboot.admin.entities.User;
-import az.codeworld.springboot.security.entities.Authority;
 import az.codeworld.springboot.security.entities.LoginAudit;
-import az.codeworld.springboot.security.entities.Role;
 import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.authorities;
 import az.codeworld.springboot.utilities.constants.roles;

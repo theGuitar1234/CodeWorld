@@ -8,6 +8,7 @@
   </thead>
   <tbody>
     <tr
+      style="pointer-events: none; cursor: not-allowed;"
       th:if="${selectedSection == null or #lists.isEmpty(selectedSection)}"
     >
       <td colspan="3" th:text="#{students.table.noStudents}">No students found.</td>

@@ -2,12 +2,9 @@ package az.codeworld.springboot.admin.services.serviceImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,8 +17,6 @@ import az.codeworld.springboot.admin.repositories.RequestRepository;
 import az.codeworld.springboot.admin.services.RequestService;
 import az.codeworld.springboot.exceptions.InvalidRequestTokenException;
 import az.codeworld.springboot.utilities.generators.TokenGenerator;
-import az.codeworld.springboot.web.dtos.CourseEnrollmentDTO;
-import az.codeworld.springboot.web.mappers.CourseEnrollmentMapper;
 import az.codeworld.springboot.admin.records.RequestRecord;
 
 @Service
@@ -81,23 +76,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<RequestDTO> getAllRequests() {
         return requestRepository
-                .findAllRequests()
+                .findAll()
                 .stream()
-                .map(requestOptional -> {
-                    if (requestOptional.isPresent()) {
-                        Request request = requestOptional.get();
-                        return requestMapper.toRequestDTO(
-                            request.getId(),
-                            request.getFirstName(),
-                            request.getLastName(),
-                            request.getEmail(),
-                            request.getRole(),
-                            request.getRequestToken(),
-                            request.getExpiresAt());
-                    } else {
-                        return null;
-                    }
-                    
+                .map(request -> {
+                    return requestMapper.toRequestDTO(
+                        request.getId(),
+                        request.getFirstName(),
+                        request.getLastName(),
+                        request.getEmail(),
+                        request.getRole(),
+                        request.getRequestToken(),
+                        request.getExpiresAt());
                 })
                 .toList();
     }
@@ -105,22 +94,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<RequestDTO> getRecentRequests() {
         return requestRepository
-                .findRecentRequests()
+                .findTop10ByOrderByExpiresAtDesc()
                 .stream()
-                .map(requestOptional -> {
-                    if (requestOptional.isPresent()) {
-                        Request request = requestOptional.get();
-                        return requestMapper.toRequestDTO(
-                                request.getId(),
-                                request.getFirstName(),
-                                request.getLastName(),
-                                request.getEmail(),
-                                request.getRole(),
-                                request.getRequestToken(),
-                                request.getExpiresAt());
-                    } else {
-                        return null;
-                    }
+                .map(request -> {
+                    return requestMapper.toRequestDTO(
+                        request.getId(),
+                        request.getFirstName(),
+                        request.getLastName(),
+                        request.getEmail(),
+                        request.getRole(),
+                        request.getRequestToken(),
+                        request.getExpiresAt());
                 })
                 .toList();
     }

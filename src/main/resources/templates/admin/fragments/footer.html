@@ -2,24 +2,22 @@
   <div class="reach">
     <div class="contact">
       <ul>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.contact.item}">Element</a></li>
       </ul>
     </div>
   </div>
   <div class="terms">
-    <small
-      >Copyright &copy; 2020 <span>CodeWorld</span>. All Rights Reserved</small
-    >
+    <small th:text="#{footer.copyright(2020, 'CodeWorld')}">Copyright &copy; 2020 <span>CodeWorld</span>. All Rights Reserved</small>
     <div class="terms-of-service">
       <ul>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
-        <li><a href="#">Element</a></li>
+        <li><a href="#" th:text="#{footer.terms.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.terms.item}">Element</a></li>
+        <li><a href="#" th:text="#{footer.terms.item}">Element</a></li>
       </ul>
     </div>
   </div>
@@ -27,6 +25,8 @@
     <a
       href="#top-anchor"
       style="display: flex; align-items: center; justify-content: center"
+      th:attr="aria-label=#{footer.backToTop.aria}"
+      aria-label="Back to top"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

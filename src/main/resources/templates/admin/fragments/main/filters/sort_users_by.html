@@ -13,7 +13,7 @@
     aria-haspopup="true"
     tabindex="0"
   >
-    Sort By
+    <span th:text="#{transactions.sortBy}">Sort By</span>
     <svg
       width="100%"
       height="100%"
@@ -42,7 +42,7 @@
           th:checked="${sortBy == 'affiliationDate'}"
           autocomplete="off"
         />
-        <label for="hire-date"><small>Affiliation Date</small></label>
+        <label for="hire-date"><small th:text="#{admin.users.sort.affiliationDate}">Affiliation Date</small></label>
       </li>
       <li role="menuitem" sec:authorize="hasRole('STUDENT') and !hasRole('TEACHER')">
         <input
@@ -53,7 +53,7 @@
           th:checked="${sortBy == 'affiliationDate'}"
           autocomplete="off"
         />
-        <label for="enrollment-date"><small>EnrolledAt</small></label>
+        <label for="enrollment-date"><small th:text="#{admin.users.sort.enrolledAt}">EnrolledAt</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -64,7 +64,7 @@
           th:checked="${sortBy == 'id'}"
           autocomplete="off"
         />
-        <label for="user-id"><small>ID Users</small></label>
+        <label for="user-id"><small th:text="#{admin.users.sort.idUsers}">ID Users</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -75,7 +75,7 @@
           th:checked="${payableSortBy == 'id'}"
           autocomplete="off"
         />
-        <label for="payable-user-id"><small>ID Payable Users</small></label>
+        <label for="payable-user-id"><small th:text="#{admin.users.sort.idPayableUsers}">ID Payable Users</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -86,7 +86,7 @@
           th:checked="${payableSortBy == 'payment'}"
           autocomplete="off"
         />
-        <label for="payment"><small>Payment</small></label>
+        <label for="payment"><small th:text="#{admin.users.sort.payment}">Payment</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -97,7 +97,7 @@
           th:checked="${payableSortBy == 'nextDate'}"
           autocomplete="off"
         />
-        <label for="payment-date"><small>Payment Date</small></label>
+        <label for="payment-date"><small th:text="#{admin.users.sort.paymentDate}">Payment Date</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -108,7 +108,7 @@
           th:checked="${direction == 'ASC'}"
           autocomplete="off"
         />
-        <label for="direction-ascending"><small>Ascending</small></label>
+        <label for="direction-ascending"><small th:text="#{transactions.sort.ascending}">Ascending</small></label>
       </li>
       <li role="menuitem">
         <input
@@ -119,7 +119,7 @@
           th:checked="${direction == 'DESC'}"
           autocomplete="off"
         />
-        <label for="direction-descending"><small>Descending</small></label>
+        <label for="direction-descending"><small th:text="#{transactions.sort.descending}">Descending</small></label>
       </li>
     </div>
   </ul>

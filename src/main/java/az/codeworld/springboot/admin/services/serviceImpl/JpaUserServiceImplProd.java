@@ -1,14 +1,10 @@
 package az.codeworld.springboot.admin.services.serviceImpl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,7 +25,6 @@ import az.codeworld.springboot.admin.entities.Money;
 import az.codeworld.springboot.admin.entities.User;
 import az.codeworld.springboot.admin.mappers.UserMapper;
 import az.codeworld.springboot.admin.projections.UserAdminProjection;
-import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.UserAuthRecord;
 import az.codeworld.springboot.admin.records.UserLatestRecord;
 import az.codeworld.springboot.admin.repositories.UserRepository;
@@ -45,6 +40,7 @@ import az.codeworld.springboot.utilities.constants.accountstatus;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.generators.UsernameGenerator;
+import az.codeworld.springboot.web.entities.ProfilePicture;
 import jakarta.transaction.Transactional;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -55,6 +51,8 @@ import org.springframework.cache.annotation.Caching;
 @Service
 @Profile("prod")
 public class JpaUserServiceImplProd implements UserService {
+
+    private static final String DEFAULT_PROFILE_PHOTO = "/assets/sprites/profile-thumb.jpg";
 
     private final UserRepository userRepository;
     private final RoleService roleService;
@@ -78,11 +76,15 @@ public class JpaUserServiceImplProd implements UserService {
 
     @Override
     public void saveUser(User user) {
-        if (user.getCreatedAt() == null) {
+        if (user.getCreatedAt() == null)
             user.setCreatedAt(Instant.now());
-        } if (user.getZoneId() == null) {
+        if (user.getZoneId() == null)
             user.setZoneId(applicationProperties.getTime().getZone());
-        }
+        if (user.getNextDate() == null)
+            user.updateNextPaymentDate();
+
+        ensureProfilePicture(user);
+
         userRepository.save(user);
         userRepository.flush();
     }
@@ -312,7 +314,6 @@ public class JpaUserServiceImplProd implements UserService {
             .findByRolesAndBillingEnabledTrueAndNextDateLessThanEqual(
                 roleEntity,
                 Instant.now(), 
-                true,
                 PageRequest.of(pageIndex, pageSize)
             )
             .map(u -> (UserPayableDTO) userMapper.toUserDTO(u, dtotype.PAYABLE.getDtoTypeString()));
@@ -417,4 +418,37 @@ public class JpaUserServiceImplProd implements UserService {
     @Override
     public Object createNewUser(UserCreateDTO userCreateDTO, dtotype dtotype) throws PasswordsMustMatchException { return null; }
 
+    @Override
+    @Transactional
+    public void disable2FA(String userName) {
+        User user = userRepository.findByUserName(userName)
+            .orElseThrow(() -> new RuntimeException("User not found by username"));
+        user.setTwoFactorEnabled(false);
+        saveUser(user);
+    }
+
+    private void ensureProfilePicture(User user) {
+        if (user == null)
+            return;
+
+        ProfilePicture pp = user.getProfilePicture();
+
+        if (pp == null) {
+            pp = new ProfilePicture();
+            pp.setProfileTitle("Default Profile Picture");
+            pp.setDescription("Auto-created default profile picture");
+            pp.setProfilePhoto(DEFAULT_PROFILE_PHOTO);
+            pp.setUser(user);
+            user.setProfilePicture(pp);
+            return;
+        }
+
+        if (pp.getUser() == null) {
+            pp.setUser(user);
+        }
+
+        if (pp.getProfilePhoto() == null || pp.getProfilePhoto().isBlank()) {
+            pp.setProfilePhoto(DEFAULT_PROFILE_PHOTO);
+        }
+    }
 }

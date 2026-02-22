@@ -1,25 +1,18 @@
 package az.codeworld.springboot.admin.controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
-
 import javax.imageio.ImageIO;
 
 import org.imgscalr.Scalr;
@@ -42,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import az.codeworld.springboot.admin.dtos.RequestDTO;
@@ -51,8 +43,6 @@ import az.codeworld.springboot.admin.dtos.auth.UserAuthDTO;
 import az.codeworld.springboot.admin.dtos.dashboard.UserDashboardDTO;
 import az.codeworld.springboot.admin.dtos.transactions.TransactionDTO;
 import az.codeworld.springboot.admin.dtos.update.UserUpdateDTO;
-import az.codeworld.springboot.admin.entities.User;
-import az.codeworld.springboot.admin.projections.UserAdminProjection;
 import az.codeworld.springboot.admin.projections.UserLogoutProjection;
 import az.codeworld.springboot.admin.records.TransactionLinkRecord;
 import az.codeworld.springboot.admin.services.LogoutService;
@@ -69,7 +59,6 @@ import az.codeworld.springboot.utilities.configurations.ApplicationProperties;
 import az.codeworld.springboot.utilities.constants.contenttypes;
 import az.codeworld.springboot.utilities.constants.dtotype;
 import az.codeworld.springboot.utilities.constants.exceptionmessages;
-import az.codeworld.springboot.utilities.constants.mode;
 import az.codeworld.springboot.utilities.constants.profileError;
 import az.codeworld.springboot.utilities.constants.roles;
 
@@ -77,10 +66,6 @@ import az.codeworld.springboot.web.dtos.ProfilePayloadDTO;
 import az.codeworld.springboot.web.entities.ProfilePicture;
 import az.codeworld.springboot.web.services.ProfileService;
 import az.codeworld.springboot.web.services.TimeZoneService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -429,7 +414,6 @@ public class UserController {
         try {
 
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            UserDTO userDTO = (UserDTO) userService.getUserByUserName(username, dtotype.FULL);
 
             ProfilePicture profilePicture = new ProfilePicture();
             profilePicture.setProfileTitle(profilePayloadDTO.getProfileTitle());

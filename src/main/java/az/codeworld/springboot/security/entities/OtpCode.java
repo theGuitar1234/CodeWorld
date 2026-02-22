@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -20,7 +21,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "OTP_CODES")
+@Table(
+    name = "OTP_CODES",
+    indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_expiration_date", columnList = "expiration_date"),
+        @Index(name = "idx_otp_code", columnList = "otp_code"),
+    }
+)
 public class OtpCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

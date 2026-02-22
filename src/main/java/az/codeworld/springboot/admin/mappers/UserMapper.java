@@ -80,6 +80,7 @@ public class UserMapper {
                     .profilePhoto(resolveProfilePhoto(user))
                     .isNearPayment(Instant.now().isAfter(user.getNextDate().minus(Duration.ofDays(2))))
                     .isPastPayment(Instant.now().isAfter(user.getNextDate()))
+                    .is2FaEnabled(user.isTwoFactorEnabled())
                     .build();
             case "DASHBOARD":
                 return UserDashboardDTO
@@ -99,6 +100,7 @@ public class UserMapper {
                     .passwordLastUpdatedAt(resolvePasswordLastUpdatedAt(user))
                     .isNearPayment(Instant.now().isAfter(user.getNextDate().minus(Duration.ofDays(2))))
                     .isPastPayment(Instant.now().isAfter(user.getNextDate()))
+                    .is2FaEnabled(user.isTwoFactorEnabled())
                     .build();
             case "TRANSACTION":
                 return UserTransactionDTO

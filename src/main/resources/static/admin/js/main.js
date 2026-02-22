@@ -14,6 +14,8 @@ import { initTransactionDialogs } from "./transactionDialogs.js";
 import { initCommonDialog } from "./commongDialog.js";
 import { initContactMain } from "./contact_main.js";
 import { initRemoveSuccess } from "./removeSuccess.js";
+import { initExpandables } from "./expandables.js";
+import { initI18n } from "./i18n.js";
 
 function mountAdminPage() {
   initTable();
@@ -24,8 +26,6 @@ function mountAdminPage() {
   //initChart();
   initMatchPassword();
   initShowPassword();
-  initRemoveError();
-  initRemoveSuccess();
   
   initReport();
 
@@ -38,7 +38,15 @@ document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initFragment();
     initScrollTop();
+
+    initI18n();
+    
     initExpand();
+
+    initRemoveError();
+    initRemoveSuccess();
+
+    initExpandables();
 
     initMatchPassword();
     initShowPassword();

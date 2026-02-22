@@ -1,23 +1,12 @@
 package az.codeworld.springboot.web.entities;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.hibernate.envers.NotAudited;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import az.codeworld.springboot.admin.entities.Teacher;
-import az.codeworld.springboot.admin.entities.User;
-import az.codeworld.springboot.security.entities.Role;
 import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
