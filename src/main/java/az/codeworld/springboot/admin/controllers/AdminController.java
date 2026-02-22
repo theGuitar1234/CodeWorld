@@ -134,26 +134,25 @@ public class AdminController {
     private final CourseOfferingRepository courseOfferingRepository;
     private final CourseOfferingService courseOfferingService;
     private final PaymentOverDueService paymentOverDueService;
-    
+
     public AdminController(
-        RequestService requestService,
-        TransactionService transactionService,
-        RegistrationService registrationService,
-        ProfileService profileService,
-        UserService userService,
-        StudentService studentService,
-        TeacherService teacherService,
-        SessionKiller sessionKiller,
-        ImpressionService impressionService,
-        AuditService auditService,
-        ActivityService activityService,
-        SubjectService subjectService,
-        ApplicationProperties applicationProperties,
-        ContactService contactService,
-        CourseOfferingRepository courseOfferingRepository,
-        CourseOfferingService courseOfferingService,
-        PaymentOverDueService paymentOverDueService
-    ) {
+            RequestService requestService,
+            TransactionService transactionService,
+            RegistrationService registrationService,
+            ProfileService profileService,
+            UserService userService,
+            StudentService studentService,
+            TeacherService teacherService,
+            SessionKiller sessionKiller,
+            ImpressionService impressionService,
+            AuditService auditService,
+            ActivityService activityService,
+            SubjectService subjectService,
+            ApplicationProperties applicationProperties,
+            ContactService contactService,
+            CourseOfferingRepository courseOfferingRepository,
+            CourseOfferingService courseOfferingService,
+            PaymentOverDueService paymentOverDueService) {
         this.requestService = requestService;
         this.transactionService = transactionService;
         this.registrationService = registrationService;
@@ -245,7 +244,7 @@ public class AdminController {
         return "admin/admin.html";
     }
 
-    //@ResponseBody
+    // @ResponseBody
     @DeleteMapping("/rejectRequest/{requestId}")
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
     public String rejectRequest(@PathVariable("requestId") Long requestId, Model model) {
@@ -261,13 +260,13 @@ public class AdminController {
         }
     }
 
-    //@ResponseBody
+    // @ResponseBody
     @DeleteMapping("/acceptRequest/{requestId}")
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
     public String acceptRequest(@PathVariable("requestId") Long requestId, Model model) {
         try {
             RequestDTO requestDTO = requestService.getRequestById(requestId);
-            //requestService.deleteRequestByRequestId(requestId);
+            // requestService.deleteRequestByRequestId(requestId);
             registrationService.sendAcceptanceEmail(requestDTO);
             model.addAttribute("success", accountsuccess.ACCEPT_REQUEST_SUCCESS.getAccountSuccessString());
             return "admin/fragments/success/success.html :: success";
@@ -394,11 +393,10 @@ public class AdminController {
             sortBy = pagination.sortBy();
 
             Page<RequestDTO> transactionsOnPage = requestService.getPaginatedRequests(
-                pageIndex - 1, 
-                perPage, 
-                sortBy, 
-                direction
-            );
+                    pageIndex - 1,
+                    perPage,
+                    sortBy,
+                    direction);
 
             TransactionLinkRecord linkRecord;
             List<TransactionLinkRecord> pages = new ArrayList<>();
@@ -440,11 +438,10 @@ public class AdminController {
             Model model) {
 
         Page<RequestDTO> report = requestService.getPaginatedRequests(
-            pageIndex - 1, 
-            perPage, 
-            sortBy, 
-            direction
-        );
+                pageIndex - 1,
+                perPage,
+                sortBy,
+                direction);
 
         return ResponseEntity.ok(report.toList());
     }
@@ -513,11 +510,52 @@ public class AdminController {
         return render(model, spa.TEACHERS, spaRequest, "admin/fragments/main/teachers-main.html :: teachers-main");
     }
 
+    @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
     @ResponseBody
     @PostMapping("/catchup/run")
     public String runCatchUpNow() {
         paymentOverDueService.synchAllTeacherPayDues();
         return "Catch-up executed.";
+    }
+
+    @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
+    @PostMapping("/teachers/paymentOverDue/{id}/pay")
+    public String payTeacherOverDue(
+            @PathVariable("id") Long id,
+            @RequestParam(required = false, defaultValue = "CASH") String paidBy,
+            @RequestParam(required = false, defaultValue = "0") BigDecimal fee,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false, name = "paymentDueStatus", defaultValue = "DUE") paymentDueStatus paymentDueStatus,
+            @RequestParam(required = false, name = "role", defaultValue = "TEACHER") roles role,
+            @RequestParam(required = false, name = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(required = false, name = "payableSortBy", defaultValue = "nextDate") String payableSortBy,
+            @RequestParam(required = false, name = "perPage", defaultValue = "8") int perPage,
+            @RequestParam(required = false, name = "pageIndex", defaultValue = "1") int pageIndex,
+            @RequestParam(required = false, name = "payablePageIndex", defaultValue = "1") int payablePageIndex,
+            @RequestParam(required = false, name = "direction", defaultValue = "ASC") Direction direction,
+            @RequestParam(required = false, name = "fragment", defaultValue = "false") boolean fragment,
+            HttpServletRequest request,
+            Authentication auth,
+            Model model) {
+        boolean spaRequest = isSpaRequest(fragment, request);
+
+        try {
+            String effectivePaidBy = (paidBy == null || paidBy.isBlank())
+                    ? (auth != null ? auth.getName() : "ADMIN")
+                    : paidBy;
+
+            ((az.codeworld.springboot.utilities.services.paymentservices.paymentserviceImpl.PaymentOverDueServiceImpl) paymentOverDueService)
+                    .payOverDue(id, effectivePaidBy, fee, description);
+
+            model.addAttribute("success", "Overdue #" + id + " paid.");
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+
+        fetchPaginatedUsers(pageIndex, perPage, sortBy, direction, payablePageIndex, payableSortBy, role, model);
+        listPaymentOverDues(paymentDueStatus, model);
+
+        return render(model, spa.TEACHERS, spaRequest, "admin/fragments/main/teachers-main.html :: teachers-main");
     }
 
     @PreAuthorize("hasAuthority('ACCESS_ADMIN_PANEL')")
@@ -622,10 +660,12 @@ public class AdminController {
                 populateTeacherCourseOfferings(userId, model, pageIndex, perPage, sortBy, direction);
             }
 
-            model.addAllAttributes(
-                    Map.of(
-                            "userProjection", userAdminProjection,
-                            "userId", userId));
+            model.addAllAttributes(Map.of(
+                    "userProjection", userAdminProjection,
+                    "nextDate", userAdminProjection.getNextDate() == null ? null
+                            : LocalDate.ofInstant(userAdminProjection.getNextDate(),
+                                    ZoneId.of(applicationProperties.getTime().getZone())),
+                    "userId", userId));
 
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getLocalizedMessage());
@@ -643,7 +683,8 @@ public class AdminController {
 
         boolean spaRequest = isSpaRequest(fragment, request);
 
-        return render(model, spa.CREATE_USER, spaRequest, "admin/fragments/main/create-user-main.html :: create-user-main");
+        return render(model, spa.CREATE_USER, spaRequest,
+                "admin/fragments/main/create-user-main.html :: create-user-main");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -657,17 +698,18 @@ public class AdminController {
         try {
             userService.createNewUserAdmin(userCreateDTO);
             model.addAttribute("success", accountsuccess.ACCOUNT_ADDED.getAccountSuccessString());
-        } catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", e.getLocalizedMessage());
-        } catch(PasswordsMustBePresentException e) {
+        } catch (PasswordsMustBePresentException e) {
             model.addAttribute("error", e.getExceptionMessage());
-        } catch(PasswordsMustMatchException e) {
+        } catch (PasswordsMustMatchException e) {
             model.addAttribute("error", e.getExceptionMessage());
         }
 
         boolean spaRequest = isSpaRequest(fragment, request);
 
-        return render(model, spa.CREATE_USER, spaRequest, "admin/fragments/main/create-user-main.html :: create-user-main");
+        return render(model, spa.CREATE_USER, spaRequest,
+                "admin/fragments/main/create-user-main.html :: create-user-main");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -1279,9 +1321,9 @@ public class AdminController {
         YearMonth now = YearMonth.now(zone);
 
         return series.stream()
-            .filter(p -> p.getYear() == now.getYear() && p.getMonth() == now.getMonthValue())
-            .findFirst()
-            .orElse(new ChartPoint(now.getYear(), now.getMonthValue(), 0L, BigDecimal.ZERO));
+                .filter(p -> p.getYear() == now.getYear() && p.getMonth() == now.getMonthValue())
+                .findFirst()
+                .orElse(new ChartPoint(now.getYear(), now.getMonthValue(), 0L, BigDecimal.ZERO));
     }
 
     private String mainFragment(spa s) {
@@ -1338,9 +1380,8 @@ public class AdminController {
     }
 
     private void listPaymentOverDues(
-        paymentDueStatus paymentDueStatus,
-        Model model
-    ) {
+            paymentDueStatus paymentDueStatus,
+            Model model) {
         List<PaymentOverDueRecord> paymentOverDueRecords = paymentOverDueService.listPaymentOverDues(paymentDueStatus);
         model.addAttribute("paymentOverDues", paymentOverDueRecords);
     }
@@ -1397,7 +1438,7 @@ public class AdminController {
             String payableSortBy,
             roles role,
             Model model) {
-   
+
         Set<String> allowedSort = Set.of("affiliationDate", "id", "payment", "nextDate");
         Pagination pagination = normalizePagination(pageIndex, perPage, sortBy, payableSortBy, allowedSort, "id");
 

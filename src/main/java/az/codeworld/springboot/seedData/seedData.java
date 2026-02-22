@@ -46,6 +46,7 @@ import az.codeworld.springboot.utilities.constants.roles;
 import az.codeworld.springboot.utilities.constants.transactionstatus;
 import az.codeworld.springboot.utilities.generators.TokenGenerator;
 import az.codeworld.springboot.utilities.generators.UsernameGenerator;
+import az.codeworld.springboot.utilities.services.paymentservices.PaymentOverDueService;
 import az.codeworld.springboot.web.entities.ClassSection;
 import az.codeworld.springboot.web.entities.CourseEnrollment;
 import az.codeworld.springboot.web.entities.CourseOffering;
@@ -55,6 +56,7 @@ import az.codeworld.springboot.web.entities.SubjectEnrollment;
 import az.codeworld.springboot.web.entities.TeachingAssignment;
 import az.codeworld.springboot.web.repositories.*;
 import az.codeworld.springboot.web.services.NotificationService;
+import jakarta.transaction.Transactional;
 
 @Component
 @Profile("dev")
@@ -86,6 +88,8 @@ public class SeedData implements ApplicationRunner {
     private final SubjectRepository subjectRepository;
     private final ClassSectionRepository classSectionRepository;
 
+    private final PaymentOverDueService paymentOverDueService;
+
     public SeedData(
         PasswordEncoder passwordEncoder,
         AuthorityService authorityService,
@@ -102,8 +106,10 @@ public class SeedData implements ApplicationRunner {
         CourseOfferingRepository courseOfferingRepository,
         SubjectRepository subjectRepository, 
         TeachingAssignmentRepository teachingAssignmentRepository,
-        ClassSectionRepository classSectionRepository
-    , ApplicationProperties applicationProperties) {
+        ClassSectionRepository classSectionRepository, 
+        ApplicationProperties applicationProperties,
+        PaymentOverDueService paymentOverDueService
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.authorityService = authorityService;
         this.roleService = roleService;
@@ -121,9 +127,11 @@ public class SeedData implements ApplicationRunner {
         this.teachingAssignmentRepository = teachingAssignmentRepository;
         this.classSectionRepository = classSectionRepository;
         this.applicationProperties = applicationProperties;
+        this.paymentOverDueService = paymentOverDueService;
     }
 
     @Override
+    @Transactional
     public void run(ApplicationArguments args) throws Exception {
         log.info("Seeding Data...");
 
@@ -229,7 +237,7 @@ public class SeedData implements ApplicationRunner {
         teacher.setAffiliationDate(LocalDate.of(2005, 12, 4));
         teacher.setOfficeRoom("457-Jackson");
         teacher.setPayment(new Money(new BigDecimal("200.00"), currency.AZN));
-        teacher.setNextDate(Instant.now().minus(Duration.ofDays(1)));
+        teacher.setNextDate(LocalDate.now(zone).minusMonths(3).withDayOfMonth(1).atStartOfDay(zone).toInstant());
         teacher.setBillingEnabled(true);
 
         teacher.setBirthDate(LocalDate.of(1969, 1, 1));
@@ -655,6 +663,8 @@ public class SeedData implements ApplicationRunner {
 
             requestService.saveRequest(request);
         }
+
+        paymentOverDueService.synchAllTeacherPayDues();
 
     }
 

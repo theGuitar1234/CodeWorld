@@ -2,63 +2,68 @@ package az.codeworld.springboot.admin.entities;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import az.codeworld.springboot.utilities.constants.paymentDueStatus;
-import az.codeworld.springboot.utilities.constants.transactionstatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PAYMENT_OVER_DUES")
+@Table(
+    name = "PAYMENT_OVER_DUES",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "uk_teacher_cycle",
+            columnNames = { "teacher_id", "cycle_year", "cycle_month" }
+        )
+    },
+    indexes = {
+        @Index(name = "idx_pod_status_due", columnList = "payment_due_status,due_date"),
+        @Index(name = "idx_pod_teacher", columnList = "teacher_id")
+    }
+)
 public class PaymentOverDue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "cycle_year", nullable = false)
     private int cycleYear;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "cycle_month", nullable = false)
     private int cycleMonth;
 
-    @Column(nullable = false)
+    @Column(name = "due_date", nullable = false)
     private Instant dueDate;
 
-    @Size(min = 6)
-    @Column(nullable = false)
+    @NotNull
+    @DecimalMin("0.01")
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
-    @Column
     @Enumerated(EnumType.STRING)
-    private paymentDueStatus paymentDueStatus;
+    @Column(name = "payment_due_status", nullable = false)
+    private paymentDueStatus status = paymentDueStatus.DUE;
 
-    @Column
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column
+    @Column(name = "paid_at")
     private Instant paidAt;
+
+    @PrePersist
+    void prePersist() {
+        if (createdAt == null) createdAt = Instant.now();
+        if (status == null) status = paymentDueStatus.DUE;
+    }
 }

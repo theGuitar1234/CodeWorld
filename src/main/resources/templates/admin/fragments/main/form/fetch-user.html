@@ -72,7 +72,7 @@
       <label for="payment-date">Payment Date : </label>
       <input
         type="date"
-        th:value="${userProjection != null ? nextDate : ''}"
+        th:value="${nextDate != null ? nextDate : ''}"
         name="nextDate"
         id="payment-date"
       />
@@ -326,7 +326,7 @@
 
         <div class="opts-dialog">
           <button type="submit" class="deleteUser">Delete User</button>
-          <button type="button" class="cancel" clsBttn>Cancel</button>
+          <!-- <button type="button" class="cancel" clsBttn>Cancel</button> -->
         </div>
       </form>
       <button class="close-button" clsBttn>

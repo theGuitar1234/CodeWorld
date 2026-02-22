@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import az.codeworld.springboot.utilities.services.paymentservices.PaymentOverDueService;
 import az.codeworld.springboot.utilities.services.paymentservices.SynchPaymentOverDuesService;
+import jakarta.transaction.Transactional;
 
 @Component
 public class SynchPaymentOverDuesServiceImpl implements SynchPaymentOverDuesService {
@@ -18,6 +19,7 @@ public class SynchPaymentOverDuesServiceImpl implements SynchPaymentOverDuesServ
     }
 
     @Override
+    @Transactional
     @Scheduled(cron = "0 5 0 * * *")
     public void synchPaymentOverDues() {
         paymentOverDueService.synchAllTeacherPayDues();
